@@ -13,6 +13,12 @@ Similar to `lodash`, but more lightweight and specialised. Differences:
 * Emphasis on simplicity of source code
 * Not a kitchen sink for everything
 
+Install with `npm`:
+
+```sh
+npm i --save fpx
+```
+
 All examples on this page imply an import:
 
 ```js
