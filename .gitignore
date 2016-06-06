@@ -1,0 +1,8 @@
+# Files
+.DS_Store
+*.log
+
+# Folders
+dist
+gh-pages
+node_modules

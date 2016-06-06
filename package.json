@@ -1,0 +1,45 @@
+{
+  "name": "fpx",
+  "version": "0.0.1",
+  "description": "Functional programming extensions for JavaScript",
+  "main": "dist/fpx.js",
+  "scripts": {
+    "start": "gulp",
+    "test": "node test/test",
+    "prepublish": "gulp build && node test/test",
+    "push-docs": "gulp build && (cd gh-pages && git add -A . && git commit -a -m autocommit && git push origin gh-pages)"
+  },
+  "keywords": ["functional", "fp"],
+  "authors": ["Mitranim <me@mitranim.com>"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mitranim/fpx.git"
+  },
+  "devDependencies": {
+    "babel-plugin-check-es2015-constants": "^6.8.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
+    "babel-plugin-transform-es2015-block-scoping": "^6.9.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
+    "babel-plugin-transform-es2015-template-literals": "^6.8.0",
+    "browser-sync": "^2.12.10",
+    "del": "^2.2.0",
+    "emerge": "0.0.23",
+    "font-awesome": "^4.6.3",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean-css": "^2.0.9",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.1",
+    "gulp-statil": "^0.1.0",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.6",
+    "gulp-wrap": "^0.13.0",
+    "highlight.js": "^9.4.0",
+    "marked": "^0.3.5",
+    "stylific-lite": "0.0.1"
+  }
+}
