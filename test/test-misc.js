@@ -3,7 +3,6 @@
 const {test} = require('./utils')
 const fpx = require('../lib/fpx')
 
-function id (val)   {return val}
 function double (a) {return a * 2}
 
 id: {

@@ -19,7 +19,7 @@ list: {
 
 foldl: {
   test(fpx.foldl,
-    {in: [, 1, ],               out: 1},
+    {in: [, 1, undefined],      out: 1},
     {in: [, , []],              out: undefined},
     {in: [join, [], [1, 2, 3]], out: join(join(join([], 1), 2), 3)},
     {in: [pairs, [], [10, 20]], out: pairs(pairs([], 10, 0), 20, 1)},
@@ -29,7 +29,7 @@ foldl: {
 
 foldr: {
   test(fpx.foldr,
-    {in: [, 1, ],               out: 1},
+    {in: [, 1, undefined],      out: 1},
     {in: [, , []],              out: undefined},
     {in: [join, [], [1, 2, 3]], out: join(join(join([], 3), 2), 1)},
     {in: [pairs, [], [10, 20]], out: pairs(pairs([], 20, 1), 10, 0)},

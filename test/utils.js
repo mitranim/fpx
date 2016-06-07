@@ -2,8 +2,6 @@
 
 const {inspect} = require('util')
 const {deepEqual} = require('emerge')
-const {keys} = Object
-const {max} = Math
 const {slice} = Array.prototype
 
 exports.test = test
@@ -32,7 +30,6 @@ function test (fun) {
 
 const BLUE = '\x1b[34m'
 const RED = '\x1b[31m'
-const INVERSE = '\x1b[7m'
 const RESET = '\x1b[0m'
 
 exports.blue = blue

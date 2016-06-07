@@ -5,7 +5,7 @@
 const $ = require('gulp-load-plugins')()
 const bs = require('browser-sync').create()
 const del = require('del')
-const {exec, fork} = require('child_process')
+const {exec} = require('child_process')
 const gulp = require('gulp')
 const statilConfig = require('./statil')
 
@@ -69,9 +69,10 @@ gulp.task('lib:minify', () => (
 gulp.task('lib:test', done => {
   $.util.log('Test started.')
 
-  exec('node test/test', (err, stdout, stderr) => {
+  exec(testCommand, (err, stdout, stderr) => {
     process.stdout.write(stdout)
     process.stderr.write(stderr)
+
     if (err) {
       throw new $.util.PluginError('lib:test', 'Test failed', {showProperties: false})
     } else {

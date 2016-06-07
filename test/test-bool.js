@@ -1,12 +1,12 @@
 'use strict'
 
+/* global Symbol, Promise */
+
 const {test} = require('./utils')
 const fpx = require('../lib/fpx')
 
-function join (a, b)  {return a.concat([b])}
-function plus (a, b)  {return a + b}
-function id (a)       {return a}
-function args ()      {return arguments}
+function id (a)  {return a}
+function args () {return arguments}
 
 const {create} = Object
 
