@@ -87,7 +87,7 @@
     }
 
     return function throttled () {
-      if (!id) id = start()
+      if (!id) id = apply(start, arguments)
       else if (!tail) tail = true
     }
   }
