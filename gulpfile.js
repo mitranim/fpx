@@ -18,7 +18,7 @@ const src = {
   docStyles: 'docs/styles/**/*.scss',
   docStylesMain: 'docs/styles/docs.scss',
   docFonts: 'node_modules/font-awesome/fonts/**/*',
-  docScriptLib: 'lib/fpx.js',
+  docScriptLib: 'dist/fpx.js',
   docScripts: 'docs/scripts/**/*.js',
   test: 'test/**/*.js'
 }
@@ -163,8 +163,10 @@ gulp.task('docs:scripts:clear', () => (
 gulp.task('docs:scripts:lib', () => (
   gulp.src(src.docScriptLib)
     .pipe($.wrap(
-`!function (exports) {
+`// Built version. See lib/fpx.js.
+!function (exports) {
 <%= contents %>
+
 Object.assign(window, exports);
 }(window.fpx = {});`))
     .pipe(gulp.dest(out.docScripts))
@@ -172,6 +174,13 @@ Object.assign(window, exports);
 
 gulp.task('docs:scripts:copy', () => (
   gulp.src(src.docScripts)
+    .pipe($.babel())
+    .pipe($.wrap(
+`!function () {
+'use strict';
+
+<%= contents %>
+}();`))
     .pipe(gulp.dest(out.docScripts))
 ))
 

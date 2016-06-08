@@ -1,94 +1,96 @@
-!function () {
-  const {
-    and, bind, apply, defer, rest, getAt, seq, pipe, id: exists, ifelse, ifthen,
-    slice, find
-  } = window.fpx
+const {
+  and, bind, apply, defer, rest, getAt, seq, pipe, id: exists, ifelse, ifthen,
+  slice, find
+} = window.fpx
 
-  const sidenav = document.getElementById('sidenav')
+// Elems
 
-  const main = document.getElementById('main')
+const sidenav = document.getElementById('sidenav')
 
-  const links = sidenav.getElementsByTagName('a')
+const main = document.getElementById('main')
 
-  const targets = main.querySelectorAll('[id]:not([id=""])')
+const links = slice(sidenav.getElementsByTagName('a'))
 
-  const getf = rest(defer(getAt))
+const targets = main.querySelectorAll('[id]:not([id=""])')
 
-  const hasVisibleId = and(exists, tangible, withinViewport, getf('id'))
+// Utils
 
-  const findId = pipe(bind(find, hasVisibleId, targets), getf('id'))
+const getf = rest(defer(getAt))
 
-  const ifexists = bind(ifthen, exists)
+const hasVisibleId = and(exists, tangible, withinViewport, getf('id'))
 
-  const getLink = ifexists(id => find(bind(matchHref, id), links))
+const findId = pipe(bind(find, hasVisibleId, targets), getf('id'))
 
-  const reactivate = ifexists(link => {
-    slice(links).forEach(deactivate)
-    activate(link)
-    link.scrollIntoViewIfNeeded()
-  })
+const ifexists = bind(ifthen, exists)
 
-  const updateHash = ifelse(exists, setHash, unsetHash)
+const getLink = ifexists(id => find(bind(matchHref, id), links))
 
-  const update = pipe(findId, seq(updateHash, pipe(getLink, reactivate)))
+const updateHash = ifelse(exists, setHash, unsetHash)
 
-  main.addEventListener('scroll', throttle(update, 250))
+function linksOff () {links.forEach(deactivate)}
 
-  // Utils
+const reactivate = ifexists(seq(activate, scrollIntoViewIfNeeded))
 
-  function tangible (elem) {
-    const {height, width} = elem.getBoundingClientRect()
-    return height > 0 && width > 0
+const update = pipe(findId, seq(updateHash, linksOff, pipe(getLink, reactivate)))
+
+function tangible (elem) {
+  const {height, width} = elem.getBoundingClientRect()
+  return height > 0 && width > 0
+}
+
+function withinViewport (elem) {
+  const {top, bottom} = elem.getBoundingClientRect()
+  return (
+    bottom > -3 && bottom < window.innerHeight ||
+    top > 3 && top < (window.innerHeight + 3)
+  )
+}
+
+function activate (elem) {
+  elem.classList.add('active')
+}
+
+function deactivate (elem) {
+  elem.classList.remove('active')
+}
+
+function matchHref (id, link) {
+  return !!~link.href.indexOf('#' + id)
+}
+
+function setHash (id) {
+  history.replaceState('', null, `${location.origin}${location.pathname}#${id}`)
+}
+
+function unsetHash () {
+  history.replaceState('', null, location.origin + location.pathname)
+}
+
+function scrollIntoViewIfNeeded (elem) {
+  if (!withinViewport(elem)) elem.scrollIntoView()
+}
+
+function throttle (fun, delay) {
+  let id
+  let tail = false
+
+  function start () {
+    return setInterval(() => {
+      if (!tail) {
+        clearInterval(id)
+        id = null
+      }
+      tail = false
+      apply(fun, arguments)
+    }, delay)
   }
 
-  function withinViewport (elem) {
-    const {top, bottom} = elem.getBoundingClientRect()
-    return (
-      bottom > -3 && bottom < window.innerHeight ||
-      top > 3 && top < (window.innerHeight + 3)
-    )
+  return function throttled () {
+    if (!id) id = apply(start, arguments)
+    else if (!tail) tail = true
   }
+}
 
-  function activate (elem) {
-    elem.classList.add('active')
-  }
+// Setup
 
-  function deactivate (elem) {
-    elem.classList.remove('active')
-  }
-
-  function matchHref (id, link) {
-    return !!~link.href.indexOf('#' + id)
-  }
-
-  function setHash (id) {
-    history.replaceState('', null, `${location.origin}${location.pathname}#${id}`)
-  }
-
-  function unsetHash () {
-    history.replaceState('', null, location.origin + location.pathname)
-  }
-
-  function throttle (fun, delay) {
-    let id
-    let tail = false
-
-    function start () {
-      return setInterval(() => {
-        if (!tail) {
-          clearInterval(id)
-          id = null
-        }
-
-        tail = false
-
-        apply(fun, arguments)
-      }, delay)
-    }
-
-    return function throttled () {
-      if (!id) id = apply(start, arguments)
-      else if (!tail) tail = true
-    }
-  }
-}()
+main.addEventListener('scroll', throttle(update, 250))
