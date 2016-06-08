@@ -1,8 +1,10 @@
+---
+
 ## Fun
 
 Various higher-order functions.
 
-{{include('partials/toc-fun.md')}}
+---
 
 ### `call(fun, ...args)`
 
@@ -25,6 +27,8 @@ call(add, 1, 2)
 // add.call(null, 1, 2)
 ```
 
+---
+
 ### `apply(fun, args)`
 
 Like
@@ -43,6 +47,8 @@ apply(add, [1, 2])
 // apply(add, [1, 2])
 // add.apply(null, [1, 2])
 ```
+
+---
 
 ### `bind(fun, ...args)`
 
@@ -77,6 +83,8 @@ incMany([1, 2, 3])
 // bind(map, inc) = map.bind(null, inc)
 ```
 
+---
+
 ### `flip(fun)`
 
 Returns a function that passes its arguments to `fun` in reverse.
@@ -92,6 +100,8 @@ mappend('left', '-', 'right')
 flip(mappend)('left', '-', 'right')
 // 'right-left'
 ```
+
+---
 
 ### `pipe(...funs)`
 
@@ -122,6 +132,8 @@ pipe(add, double)(1, 2)
 // (1 + 2) * 2 = 6
 ```
 
+---
+
 ### `comp(...funs)`
 
 Returns a new function that represents
@@ -146,6 +158,8 @@ double(add(1, 2))
 comp(double, add)(1, 2)
 // (1 + 2) * 2 = 6
 ```
+
+---
 
 ### `seq(...funs)`
 
@@ -173,6 +187,8 @@ x(1, 2)
 // prints 'second: 1 2'
 // 3
 ```
+
+---
 
 ### `and(...funs)`
 
@@ -206,6 +222,8 @@ isPosNum('1')
 // isNumber('1') = false
 ```
 
+---
+
 ### `or(...funs)`
 
 Represents the `||` operation in terms of functions rather than expressions.
@@ -238,6 +256,8 @@ isPrintable([])
 // isNumber([]) || isString([]) = false
 ```
 
+---
+
 ### `not(fun)`
 
 Represents the `!` operation in function terms. Returns a new function that
@@ -259,6 +279,8 @@ function different () {
 different(1, 2)
 // !eq(1, 2) = true
 ```
+
+---
 
 ### `ifelse(test, left, right)`
 
@@ -295,6 +317,8 @@ oneone11('1')
 // isNumber('1') ? _ : bang('1') = '1!'
 ```
 
+---
+
 ### `ifthen(test, fun)`
 
 Like `ifelse` without the `else` clause.
@@ -318,6 +342,8 @@ x('1')
 // undefined
 ```
 
+---
+
 ### `ifonly(test, fun)`
 
 Like `ifelse` but returns the first argument when `test` fails.
@@ -340,6 +366,8 @@ x(1)
 x('1')
 // '1'
 ```
+
+---
 
 ### `cond(...funs)`
 
@@ -394,6 +422,8 @@ function negate (x) {return !x}
 function nil () {return null}
 ```
 
+---
+
 ### `defer(fun, ...args)`
 
 Similar to
@@ -401,6 +431,9 @@ Similar to
 but the original function is invoked after exactly two calls, regardless of
 how many arguments were passed. Extra arguments passed to `defer` are prepended
 to the rest.
+
+Note this is completely different from lodash's `_.defer` (which is basically
+`setTimeout`).
 
 ```js
 function add (a, b, c) {
@@ -429,6 +462,8 @@ addf(1)(2)
 // NaN
 ```
 
+---
+
 ### `rest(fun)`
 
 Returns a function that collects its arguments and passes them to `fun` as the
@@ -442,6 +477,8 @@ rest(id)(1, 2, 3)
 id([1, 2, 3])
 // [1, 2, 3]
 ```
+
+---
 
 ### `spread(fun)`
 

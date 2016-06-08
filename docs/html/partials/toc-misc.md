@@ -1,7 +1,0 @@
-* [`id`](#-id-value-)
-* [`val`](#-val-value-)
-* [`mask`](#-mask-pattern-)
-* [`noop`](#-noop-)
-* [`rethrow`](#-rethrow-val-)
-* [`validate`](#-validate-test-value-)
-* [`validateEach`](#-validateeach-test-list-)

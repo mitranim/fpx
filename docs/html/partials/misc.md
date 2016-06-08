@@ -1,8 +1,10 @@
+---
+
 ## Misc
 
 Uncategorised utils.
 
-{{include('partials/toc-misc.md')}}
+---
 
 ### `id(value)`
 
@@ -12,6 +14,8 @@ Identity function: returns its argument unchanged. Useful in boolean contexts.
 id(1)
 // 1
 ```
+
+---
 
 ### `val(value)`
 
@@ -29,6 +33,8 @@ one()
 one(100)
 // 1
 ```
+
+---
 
 ### `mask(pattern)`
 
@@ -67,14 +73,21 @@ mask({two: isArray})   ≈  x => ({two: isArray(get(x, 'two'))})
 mask({a: {b: 'c'}})    ≈  x => ({a: {b: 'c'}})
 ```
 
+---
+
 ### `noop`
 
-Empty function. Functional equivalent of `;` or `return`. Useful in composition
-contexts.
+Empty function. Functional equivalent of `;` or `undefined`. Useful in
+composition contexts.
 
 ```js
+noop()
+// undefined
+
 ifthen(a, b) = ifelse(a, b, noop)
 ```
+
+---
 
 ### `rethrow(val)`
 
@@ -88,13 +101,15 @@ const x = someTest ? someValue : rethrow(Error('unreachable'))
 Promise.reject(Error('fail')).catch(pipe(log, rethrow))
 ```
 
+---
+
 ### `validate(test, value)`
 
 If `value` doesn't satisfy the provided `test` function, raises an exception
 with a message including `test`'s name and the failing value.
 
 Convenient and minification-friendly way to assert values. Used internally for
-most assertions.
+most assertions. Exported because why not.
 
 ```js
 validate(isFunction, x => x)
@@ -103,6 +118,8 @@ validate(isFunction, x => x)
 validate(isFunction, 1)
 // Uncaught Error: Expected 1 to satisfy test isFunction
 ```
+
+---
 
 ### `validateEach(test, list)`
 

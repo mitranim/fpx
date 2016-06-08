@@ -18,7 +18,8 @@ const src = {
   docStyles: 'docs/styles/**/*.scss',
   docStylesMain: 'docs/styles/docs.scss',
   docFonts: 'node_modules/font-awesome/fonts/**/*',
-  docScript: 'lib/fpx.js',
+  docScriptLib: 'lib/fpx.js',
+  docScripts: 'docs/scripts/**/*.js',
   test: 'test/**/*.js'
 }
 
@@ -106,7 +107,8 @@ gulp.task('docs:html:compile', () => (
 gulp.task('docs:html:build', gulp.series('docs:html:clear', 'docs:html:compile'))
 
 gulp.task('docs:html:watch', () => {
-  $.watch(src.docHtml, gulp.series('docs:html:build'))
+  // No docs:html:clear because it confuses browser-sync's file watcher
+  $.watch(src.docHtml, gulp.series('docs:html:compile'))
 })
 
 /* -------------------------------- Styles ----------------------------------*/
@@ -132,7 +134,8 @@ gulp.task('docs:styles:build',
   gulp.series('docs:styles:clear', 'docs:styles:compile'))
 
 gulp.task('docs:styles:watch', () => {
-  $.watch(src.docStyles, gulp.series('docs:styles:build'))
+  // No docs:styles:clear because it confuses browser-sync's file watcher
+  $.watch(src.docStyles, gulp.series('docs:styles:compile'))
 })
 
 /* -------------------------------- Fonts -----------------------------------*/
@@ -157,8 +160,8 @@ gulp.task('docs:scripts:clear', () => (
   del(out.docScripts).catch(noop)
 ))
 
-gulp.task('docs:scripts:prepare', () => (
-  gulp.src(src.docScript)
+gulp.task('docs:scripts:lib', () => (
+  gulp.src(src.docScriptLib)
     .pipe($.wrap(
 `!function (exports) {
 <%= contents %>
@@ -167,10 +170,20 @@ Object.assign(window, exports);
     .pipe(gulp.dest(out.docScripts))
 ))
 
-gulp.task('docs:scripts:build', gulp.series('docs:scripts:prepare'))
+gulp.task('docs:scripts:copy', () => (
+  gulp.src(src.docScripts)
+    .pipe(gulp.dest(out.docScripts))
+))
+
+gulp.task('docs:scripts:build', gulp.series(
+  'docs:scripts:clear',
+  gulp.parallel('docs:scripts:lib', 'docs:scripts:copy')
+))
 
 gulp.task('docs:scripts:watch', () => {
-  $.watch(src.docScript, gulp.series('docs:scripts:build'))
+  // No docs:scripts:clear because it confuses browser-sync's file watcher
+  $.watch(src.docScriptLib, gulp.series('docs:scripts:lib'))
+  $.watch(src.docScripts, gulp.series('docs:scripts:copy'))
 })
 
 /* -------------------------------- Server ----------------------------------*/
@@ -205,7 +218,8 @@ gulp.task('build', gulp.series(
 ))
 
 gulp.task('watch', gulp.parallel(
-  'lib:watch', 'docs:html:watch', 'docs:styles:watch', 'docs:fonts:watch', 'docs:server'
+  'lib:watch', 'docs:html:watch', 'docs:styles:watch', 'docs:fonts:watch',
+  'docs:scripts:watch', 'docs:server'
 ))
 
 gulp.task('default', gulp.series('build', 'watch'))

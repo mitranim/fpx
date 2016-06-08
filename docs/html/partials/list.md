@@ -1,8 +1,10 @@
+---
+
 ## List
 
 List manipulation utils.
 
-{{include('partials/toc-list.md')}}
+---
 
 ### `foldl(fun, accumulator, list)`
 
@@ -20,6 +22,8 @@ foldl(add, 10, [1, 2, 3])
 // 10 + 1 + 2 + 3 = 16
 ```
 
+---
+
 ### `foldr(fun, accumulator, list)`
 
 Similar to
@@ -34,6 +38,8 @@ function sub (a, b) {
 foldr(sub, 100, [1, 5, 20])
 // 100 - 20 - 5 - 1 = 74
 ```
+
+---
 
 ### `map(fun, list)`
 
@@ -50,6 +56,8 @@ map(double, [1, 2, 3])
 // [2, 4, 6]
 ```
 
+---
+
 ### `filter(test, list)`
 
 Like
@@ -63,6 +71,8 @@ filter(isBoolean, [1, 2, true, false])
 filter(test({val: id}), [{val: 0}, null, {val: 1}])
 // [{val: 1}]
 ```
+
+---
 
 ### `find(test, list)`
 
@@ -78,6 +88,8 @@ find(test({val: id}), [{val: 0}, null, {val: 1}])
 // {val: 1}
 ```
 
+---
+
 ### `includes(list, value)`
 
 Similar to
@@ -89,6 +101,8 @@ includes([3, 2, 1], NaN)
 includes([3, 2, NaN], NaN)
 // true
 ```
+
+---
 
 ### `indexOf(list, value)`
 
@@ -102,6 +116,8 @@ indexOf([3, 2, NaN], NaN)
 // 2
 ```
 
+---
+
 ### `slice(value, [start], [end])`
 
 Like
@@ -112,8 +128,10 @@ but with the sliceable as the first argument.
 slice([1, 2, 3], 2)
 // [3]
 slice('hello world', 3, 5)
-// 'lo'
+// ['l', 'o']
 ```
+
+---
 
 ### `append(list, value)`
 
@@ -124,6 +142,8 @@ append([1, 2], 3)
 // [1, 2, 3]
 ```
 
+---
+
 ### `prepend(list, value)`
 
 Returns a copy of `list` with `value` prepended at the start.
@@ -132,6 +152,8 @@ Returns a copy of `list` with `value` prepended at the start.
 prepend([2, 3], 1)
 // [1, 2, 3]
 ```
+
+---
 
 ### `remove(list, value)`
 
@@ -143,6 +165,8 @@ remove(['one', 'two', 'three'], 'two')
 // ['one', 'three']
 ```
 
+---
+
 ### `flat(list)`
 
 Deeply flattens the given list.
@@ -151,6 +175,8 @@ Deeply flattens the given list.
 flat([1, [2], [[3]]])
 // [1, 2, 3]
 ```
+
+---
 
 ### `head(list)`
 
@@ -165,6 +191,8 @@ head('str')
 // undefined
 ```
 
+---
+
 ### `tail(list)`
 
 Returns all but first element of the given list.
@@ -178,6 +206,8 @@ tail('str')
 // []
 ```
 
+---
+
 ### `init(list)`
 
 Returns all but last element of the given list.
@@ -190,6 +220,8 @@ init([1, 2, 3])
 init('str')
 // []
 ```
+
+---
 
 ### `last(list)`
 

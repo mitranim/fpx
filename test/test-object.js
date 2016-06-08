@@ -25,14 +25,25 @@ scan: {
   )
 }
 
-getAt: {
-  test(fpx.getAt,
+getIn: {
+  test(fpx.getIn,
     {in: [],                                out: undefined},
     {in: [, []],                            out: undefined},
     {in: [, ['one']],                       out: undefined},
     {in: [{one: 1}],                        out: {one: 1}},
     {in: [{one: 1}, ['one']],               out: 1},
     {in: [{one: {two: 2}}, ['one', 'two']], out: 2}
+  )
+}
+
+getAt: {
+  test(fpx.getAt,
+    {in: [],                                out: undefined},
+    {in: [[]],                              out: undefined},
+    {in: [['one']],                         out: undefined},
+    {in: [, {one: 1}],                      out: {one: 1}},
+    {in: [['one'], {one: 1}],               out: 1},
+    {in: [['one', 'two'], {one: {two: 2}}], out: 2}
   )
 }
 

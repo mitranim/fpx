@@ -1,8 +1,10 @@
+---
+
 ## Bool
 
 Boolean tests.
 
-{{include('partials/toc-bool.md')}}
+---
 
 ### `is(one, other)`
 
@@ -19,12 +21,16 @@ is(NaN, NaN)
 // true
 ```
 
+---
+
 ### `isNumber(value)`
 
 ```js
 isNumber(1)
 // true
 ```
+
+---
 
 ### `isString(value)`
 
@@ -33,12 +39,16 @@ isString('blah')
 // true
 ```
 
+---
+
 ### `isBoolean(value)`
 
 ```js
 isBoolean(false)
 // true
 ```
+
+---
 
 ### `isSymbol(value)`
 
@@ -47,12 +57,16 @@ isSymbol(Symbol('blah'))
 // true
 ```
 
+---
+
 ### `isFunction(value)`
 
 ```js
 isFunction(isFunction)
 // true
 ```
+
+---
 
 ### `isObject(value)`
 
@@ -77,6 +91,8 @@ isObject(() => {})
 // false
 ```
 
+---
+
 ### `isPlainObject(value)`
 
 True if `value` is a normal, honest-to-goodness object and not something
@@ -96,6 +112,8 @@ isPlainObject([])
 // false
 ```
 
+---
+
 ### `isArray(value)`
 
 True if `value` inherits from `Array.prototype`.
@@ -104,6 +122,8 @@ True if `value` inherits from `Array.prototype`.
 isArray([])
 // true
 ```
+
+---
 
 ### `isList(value)`
 
@@ -127,12 +147,16 @@ isList('str')
 // false
 ```
 
+---
+
 ### `isRegExp(value)`
 
 ```js
 isRegExp(/blah/)
 // true
 ```
+
+---
 
 ### `isPromise(value)`
 
@@ -152,6 +176,8 @@ isPromise({then () {}})
 // false
 ```
 
+---
+
 ### `isPrimitive(value)`
 
 Definition:
@@ -167,6 +193,8 @@ This includes:
   * symbols
   * `null` and `undefined`
 
+  ---
+
 ### `isNil(value)`
 
 Definition:
@@ -178,6 +206,8 @@ function isNil (value) {
 ```
 
 This includes `null` and `undefined`.
+
+---
 
 ### `test(pattern)`
 

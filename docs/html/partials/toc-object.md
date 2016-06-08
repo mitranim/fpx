@@ -1,5 +1,0 @@
-* [`get`](#-get-value-key-)
-* [`scan`](#-scan-value-path-)
-* [`getAt`](#-getat-value-path-)
-* [`mapVals`](#-mapvals-fun-value-)
-* [`mapKeys`](#-mapkeys-fun-value-)

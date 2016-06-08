@@ -1,8 +1,10 @@
+---
+
 ## Object
 
 Utils for dealing with properties and property maps.
 
-{{include('partials/toc-object.md')}}
+---
 
 ### `get(value, key)`
 
@@ -22,6 +24,8 @@ get({one: 1}, 'one')
 get('str', 'length')
 // 3
 ```
+
+---
 
 ### `scan(value, ...path)`
 
@@ -44,18 +48,44 @@ scan({one: {two: 2}}, 'one', 'two')
 // 2
 ```
 
-### `getAt(value, path)`
+---
 
-Like `scan` but expects `path` as the second argument. Useful in function
-composition contexts or when `path` is coming from another source.
+### `getIn(value, path)`
+
+Like `scan` but expects the entire `path` as the second argument. Useful when
+path is determined dynamically.
 
 ```js
-getAt(1, [])
+getIn(1, [])
 // 1
 
-getAt({one: {two: 2}}, ['one', 'two'])
+getIn({one: {two: 2}}, ['one', 'two'])
 // 2
 ```
+
+---
+
+### `getAt(path, value)`
+
+Like `getIn` but expects the entire `path` as the _first_ argument. Useful in
+function composition contexts when path is known in advance.
+
+```js
+getAt([], 1)
+// 1
+
+getAt(['one', 'two'], {one: {two: 2}})
+// 2
+
+const from = defer(getAt)
+
+const read = from(['one', 'two'])
+
+read({one: {two: 2}})
+// 2
+```
+
+---
 
 ### `mapVals(fun, value)`
 
@@ -70,6 +100,8 @@ function bang (a) {
 mapVals(bang, {ping: 'ping', pong: 'pong'})
 // {ping: 'ping!', pong: 'pong!'}
 ```
+
+---
 
 ### `mapKeys(fun, value)`
 

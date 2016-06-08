@@ -3,15 +3,24 @@
 <base href="/fpx/">
 <meta charset="utf-8">
 <title>fpx</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=2, initial-scale=1, user-scalable=yes">
 <link rel="stylesheet" href="styles/docs.css">
 <link rel="icon" href="data:;base64,=">
 
-<body></body>
+<body class="fix-full flex-row flex-between flex-stretch">
+  <div id="sidenav" class="sidenav pad scroll-y flex-1">
+    {{include('partials/sidenav.html')}}
+  </div>
 
-<article>
-  {{include('partials/index.md')}}
-</article>
+  <article id="main" class="pad scroll-y flex-4">
+    {{include('partials/overview.md')}}
+    {{include('partials/fun.md')}}
+    {{include('partials/bool.md')}}
+    {{include('partials/list.md')}}
+    {{include('partials/object.md')}}
+    {{include('partials/misc.md')}}
+    {{include('partials/author.md')}}
+  </article>
+</body>
 
 <script src="scripts/fpx.js"></script>
+<script src="scripts/docs.js"></script>
