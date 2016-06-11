@@ -6,18 +6,30 @@ List manipulation utils.
 
 ---
 
+### `list(...values)`
+
+Same as ES2015's
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of" target="_blank">`Array.of`</a>. Returns its arguments as an `Array`.
+
+```js
+list()
+// []
+
+list(1)
+// [1]
+
+list(1, [2])
+// [1, [2]]
+```
+
 ### `foldl(fun, accumulator, list)`
 
 Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank">`Array#reduce`</a>,
-but with an FP-friendly argument order (more suitable for currying and partial
-application).
+but with an FP-friendly argument order, more suitable for currying and partial
+application.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
 foldl(add, 10, [1, 2, 3])
 // 10 + 1 + 2 + 3 = 16
 ```
@@ -31,10 +43,6 @@ Similar to
 but with an FP-friendly argument order.
 
 ```js
-function sub (a, b) {
-  return a - b
-}
-
 foldr(sub, 100, [1, 5, 20])
 // 100 - 20 - 5 - 1 = 74
 ```
@@ -48,9 +56,7 @@ Like
 but with an FP-friendly argument order.
 
 ```js
-function double (a) {
-  return a * 2
-}
+function double (a) {return a * 2}
 
 map(double, [1, 2, 3])
 // [2, 4, 6]
@@ -98,6 +104,7 @@ Similar to
 ```js
 includes([3, 2, 1], NaN)
 // false
+
 includes([3, 2, NaN], NaN)
 // true
 ```
@@ -112,6 +119,7 @@ Similar to
 ```js
 indexOf([3, 2, 1], 1)
 // 2
+
 indexOf([3, 2, NaN], NaN)
 // 2
 ```
@@ -127,6 +135,7 @@ but with the sliceable as the first argument.
 ```js
 slice([1, 2, 3], 2)
 // [3]
+
 slice('hello world', 3, 5)
 // ['l', 'o']
 ```
@@ -185,8 +194,10 @@ Returns the first element of the given list.
 ```js
 head()
 // undefined
+
 head([1, 2, 3])
 // 1
+
 head('str')
 // undefined
 ```
@@ -200,8 +211,10 @@ Returns all but first element of the given list.
 ```js
 tail()
 // []
+
 tail([1, 2, 3])
 // [2, 3]
+
 tail('str')
 // []
 ```
@@ -215,8 +228,10 @@ Returns all but last element of the given list.
 ```js
 init()
 // []
+
 init([1, 2, 3])
 // [1, 2]
+
 init('str')
 // []
 ```
@@ -230,8 +245,10 @@ Returns the last element of the given list.
 ```js
 last()
 // undefined
+
 last([1, 2, 3])
 // 3
+
 last('str')
 // undefined
 ```

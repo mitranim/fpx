@@ -63,7 +63,7 @@ A regex produces a regex test:
 mask(/blah/)  =  x => /blah/.test(x)
 ```
 
-An object produces a mask that treats properties as masks in their own right
+A dictionary produces a mask that treats properties as masks in their own right
 (recursively), overlaying them and hiding other properties.
 
 ```js

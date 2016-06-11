@@ -3,44 +3,44 @@
 const {test} = require('./utils')
 const fpx = require('../lib/fpx')
 
-function self ()      {return this}
-function args ()      {return arguments}
-function plus (a, b)  {return a + b}
-function minus (a, b) {return a - b}
-function double (a)   {return a * 2}
-function id (a)       {return a}
-function pos (a)      {return a > 0}
-function neg (a)      {return a < 0}
+function self ()    {return this}
+function args ()    {return arguments}
+function add (a, b) {return a + b}
+function sub (a, b) {return a - b}
+function double (a) {return a * 2}
+function id (a)     {return a}
+function pos (a)    {return a > 0}
+function neg (a)    {return a < 0}
 
 call: {
   test(fpx.call,
-    {in: [self],       out: undefined},
-    {in: [plus, 1, 2], out: plus(1, 2)}
+    {in: [self],      out: undefined},
+    {in: [add, 1, 2], out: add(1, 2)}
   )
 }
 
 apply: {
   test(fpx.apply,
-    {in: [self],         out: undefined},
-    {in: [plus, [1, 2]], out: plus(1, 2)}
+    {in: [self],        out: undefined},
+    {in: [add, [1, 2]], out: add(1, 2)}
   )
 }
 
 bind: {
   test(fpx.bind,
-    {in: [self],       test: [{in: [],  out: self()}]},
-    {in: [plus, 1],    test: [{in: [2], out: plus(1, 2)}]},
-    {in: [plus, 1, 2], test: [{in: [],  out: plus(1, 2)}]}
+    {in: [self],      test: [{in: [],  out: self()}]},
+    {in: [add, 1],    test: [{in: [2], out: add(1, 2)}]},
+    {in: [add, 1, 2], test: [{in: [],  out: add(1, 2)}]}
   )
 }
 
 flip: {
   test(id,
-    {in: [minus], test: [{in: [2, 1], out: minus(2, 1)}]}
+    {in: [sub], test: [{in: [2, 1], out: sub(2, 1)}]}
   )
 
   test(fpx.flip,
-    {in: [minus], test: [{in: [2, 1], out: minus(1, 2)}]}
+    {in: [sub], test: [{in: [2, 1], out: sub(1, 2)}]}
   )
 }
 
@@ -50,16 +50,16 @@ pipe: {
       {in: [],  out: undefined},
       {in: [1], out: 1}
     ]},
-    {in: [plus],         test: [{in: [1, 2], out: plus(1, 2)}]},
-    {in: [plus, double], test: [{in: [1, 2], out: double(plus(1, 2))}]}
+    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
+    {in: [add, double], test: [{in: [1, 2], out: double(add(1, 2))}]}
   )
 }
 
 seq: {
   test(fpx.seq,
-    {in: [],             test: [{in: [1],    out: undefined}]},
-    {in: [plus],         test: [{in: [1, 2], out: plus(1, 2)}]},
-    {in: [plus, double], test: [{in: [2, 3], out: double(2)}]}
+    {in: [],            test: [{in: [1],    out: undefined}]},
+    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
+    {in: [add, double], test: [{in: [2, 3], out: double(2)}]}
   )
 }
 
@@ -67,13 +67,13 @@ and: {
   test(fpx.and,
     {in: [], test: [{in: [1], out: 1}]},
 
-    {in: [plus, double], test: [
+    {in: [add, double], test: [
       // both
-      {in: [2, 3],  out: plus(2, 3) && double(2, 3)},
-      // not plus
-      {in: [-1, 1], out: plus(-1, 1) && double(-1, 1)},
+      {in: [2, 3],  out: add(2, 3) && double(2, 3)},
+      // not add
+      {in: [-1, 1], out: add(-1, 1) && double(-1, 1)},
       // not double
-      {in: [0, 1],  out: plus(0, 1) && double(0, 1)}
+      {in: [0, 1],  out: add(0, 1) && double(0, 1)}
     ]}
   )
 }
@@ -82,27 +82,27 @@ or: {
   test(fpx.or,
     {in: [], test: [{in: [1], out: 1}]},
 
-    {in: [plus, double], test: [
+    {in: [add, double], test: [
       // neither
-      {in: [0, 0],  out: plus(0, 0) || double(0, 0)},
-      // plus
-      {in: [0, 1],  out: plus(0, 1) || double(0, 1)},
+      {in: [0, 0],  out: add(0, 0) || double(0, 0)},
+      // add
+      {in: [0, 1],  out: add(0, 1) || double(0, 1)},
       // double
-      {in: [-1, 1], out: plus(-1, 1) || double(-1, 1)}
+      {in: [-1, 1], out: add(-1, 1) || double(-1, 1)}
     ]}
   )
 }
 
 not: {
   test(id,
-    {in: [plus], test: [
+    {in: [add], test: [
       {in: [0, 1],  out: 1},
       {in: [-1, 1], out: 0}
     ]}
   )
 
   test(fpx.not,
-    {in: [plus], test: [
+    {in: [add], test: [
       {in: [0, 1],  out: false},
       {in: [-1, 1], out: true}
     ]}
@@ -111,9 +111,9 @@ not: {
 
 ifelse: {
   test(fpx.ifelse,
-    {in: [id, double, plus], test: [
+    {in: [id, double, add], test: [
       {in: [2, 3], out: double(2)},
-      {in: [0, 1], out: plus(0, 1)}
+      {in: [0, 1], out: add(0, 1)}
     ]}
   )
 }
@@ -129,9 +129,9 @@ ifthen: {
 
 ifonly: {
   test(fpx.ifonly,
-    {in: [id, plus], test: [
+    {in: [id, add], test: [
       {in: [0, 1], out: 0},
-      {in: [1, 0], out: plus(1, 0)}
+      {in: [1, 0], out: add(1, 0)}
     ]}
   )
 }
@@ -140,29 +140,29 @@ cond: {
   test(fpx.cond,
     {in: [], test: [{in: [1], out: undefined}]},
 
-    {in: [plus], test: [{in: [1, 2], out: plus(1, 2)}]},
+    {in: [add], test: [{in: [1, 2], out: add(1, 2)}]},
 
-    {in: [id, plus], test: [
+    {in: [id, add], test: [
       {in: [],     out: undefined},
-      {in: [1, 2], out: plus(1, 2)}
+      {in: [1, 2], out: add(1, 2)}
     ]},
 
-    {in: [id, plus, minus], test: [
-      {in: [0, 1], out: minus(0, 1)},
-      {in: [1, 2], out: plus(1, 2)}
+    {in: [id, add, sub], test: [
+      {in: [0, 1], out: sub(0, 1)},
+      {in: [1, 2], out: add(1, 2)}
     ]},
 
-    {in: [pos, plus, neg, minus], test: [
+    {in: [pos, add, neg, sub], test: [
       {in: [],      out: undefined},
-      {in: [1, 2],  out: plus(1, 2)},
-      {in: [-1, 1], out: minus(-1, 1)},
+      {in: [1, 2],  out: add(1, 2)},
+      {in: [-1, 1], out: sub(-1, 1)},
       {in: [0],     out: undefined}
     ]},
 
-    {in: [pos, plus, neg, minus, args], test: [
+    {in: [pos, add, neg, sub, args], test: [
       {in: [],      out: args()},
-      {in: [1, 2],  out: plus(1, 2)},
-      {in: [-1, 1], out: minus(-1, 1)},
+      {in: [1, 2],  out: add(1, 2)},
+      {in: [-1, 1], out: sub(-1, 1)},
       {in: [0, 1],  out: args(0, 1)}
     ]}
   )
@@ -170,14 +170,14 @@ cond: {
 
 defer: {
   test(fpx.defer,
-    {in: [plus], test: [
-      {in: [],     test: [{in: [1, 2], out: plus(1, 2)}]},
-      {in: [1],    test: [{in: [2],    out: plus(1, 2)}]},
-      {in: [1, 2], test: [{in: [],     out: plus(1, 2)}]}
+    {in: [add], test: [
+      {in: [],     test: [{in: [1, 2], out: add(1, 2)}]},
+      {in: [1],    test: [{in: [2],    out: add(1, 2)}]},
+      {in: [1, 2], test: [{in: [],     out: add(1, 2)}]}
     ]},
-    {in: [plus, 1], test: [
-      {in: [],  test: [{in: [2], out: plus(1, 2)}]},
-      {in: [2], test: [{in: [],  out: plus(1, 2)}]}
+    {in: [add, 1], test: [
+      {in: [],  test: [{in: [2], out: add(1, 2)}]},
+      {in: [2], test: [{in: [],  out: add(1, 2)}]}
     ]}
   )
 }
@@ -190,6 +190,6 @@ rest: {
 
 spread: {
   test(fpx.spread,
-    {in: [plus], test: [{in: [[1, 2]], out: plus(1, 2)}]}
+    {in: [add], test: [{in: [[1, 2]], out: add(1, 2)}]}
   )
 }

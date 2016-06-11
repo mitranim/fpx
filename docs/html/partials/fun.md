@@ -14,10 +14,6 @@ but with the function as the first argument and an implicit `this = undefined`.
 Sometimes useful in function composition contexts.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
 call(add, 1, 2)
 // 3
 
@@ -36,10 +32,6 @@ Like
 but with the function as the first argument and an implicit `this = undefined`.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
 apply(add, [1, 2])
 // 3
 
@@ -65,10 +57,6 @@ like splitting a function call in two, or more.
 Roughly equivalent to lodash's `_.partial`.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
 const inc = bind(add, 1)
 
 inc(2)
@@ -79,7 +67,7 @@ const incMany = bind(map, inc)
 incMany([1, 2, 3])
 // [2, 3, 4]
 
-// equivalent
+// equivalent:
 // bind(map, inc) = map.bind(null, inc)
 ```
 
@@ -90,14 +78,12 @@ incMany([1, 2, 3])
 Returns a function that passes its arguments to `fun` in reverse.
 
 ```js
-function mappend (a, b, c) {
-  return a + b + c
-}
+function add3 (a, b, c) {return a + b + c}
 
-mappend('left', '-', 'right')
+add3('left', '-', 'right')
 // 'left-right'
 
-flip(mappend)('left', '-', 'right')
+flip(add3)('left', '-', 'right')
 // 'right-left'
 ```
 
@@ -117,13 +103,7 @@ Flows values left-to-right, in the direction of reading. See
 Equivalent to lodash's `_.flow`.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
-function double (a) {
-  return a * 2
-}
+function double (a) {return a * 2}
 
 double(add(1, 2))
 // (1 + 2) * 2 = 6
@@ -144,13 +124,7 @@ Flows values right-to-left, symmetrical to normal nested function calls. See
 [`pipe`](#-pipe-funs-) for the opposite direction.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
-function double (a) {
-  return a * 2
-}
+function double (a) {return a * 2}
 
 double(add(1, 2))
 // (1 + 2) * 2 = 6
@@ -176,10 +150,6 @@ function second (a, b) {
   console.log('second:', a, b)
 }
 
-function add (a, b) {
-  return a + b
-}
-
 const x = seq(first, second, add)
 
 x(1, 2)
@@ -199,13 +169,7 @@ arguments to each.
 Like `&&`, it's lazy and aborts early when a function returns a falsy value.
 
 ```js
-function isNumber (value) {
-  return typeof value === 'number'
-}
-
-function isPositive (value) {
-  return value > 0
-}
+function isPositive (value) {return value > 0}
 
 // this:
 const isPosNum = and(isNumber, isPositive)
@@ -233,14 +197,6 @@ arguments to each.
 Like `||`, it's lazy and aborts early when a function returns a truthy value.
 
 ```js
-function isNumber (value) {
-  return typeof value === 'number'
-}
-
-function isString (value) {
-  return typeof value === 'string'
-}
-
 // this:
 const isPrintable = or(isNumber, isString)
 
@@ -264,9 +220,7 @@ Represents the `!` operation in function terms. Returns a new function that
 negates the result of the given function.
 
 ```js
-function eq (a, b) {
-  return a === b
-}
+function eq (a, b) {return a === b}
 
 // this:
 const different = not(eq)
@@ -289,17 +243,7 @@ expressions. Returns a new function that calls `left` if `test` succeeds and
 `right` otherwise, passing all arguments to each.
 
 ```js
-function isNumber (a) {
-  return typeof a === 'number'
-}
-
-function inc (a) {
-  return a + 1
-}
-
-function bang (a) {
-  return a + '!'
-}
+function bang (a) {return a + '!'}
 
 // this:
 const oneone11 = ifelse(isNumber, inc, bang)
@@ -324,14 +268,11 @@ oneone11('1')
 Like `ifelse` without the `else` clause.
 
 ```js
+// this:
 ifthen(test, fun)
 
 // is equivalent to:
 ifelse(test, fun, () => undefined)
-
-function inc (a) {
-  return a + 1
-}
 
 const x = ifthen(isNumber, inc)
 
@@ -349,14 +290,11 @@ x('1')
 Like `ifelse` but returns the first argument when `test` fails.
 
 ```js
+// this:
 ifonly(test, fun)
 
 // is equivalent to:
 ifelse(test, fun, x => x)
-
-function inc (a) {
-  return a + 1
-}
 
 const x = ifonly(isNumber, inc)
 
@@ -402,23 +340,20 @@ cond(isPositive, dec, inc)
 
 const x = cond(
   isNumber,  inc,
-  isBoolean, negate,
+  isBoolean, no,
   nil
 )
-// ifelse(isNumber, inc, ifelse(isBoolean, negate, nil))
+// ifelse(isNumber, inc, ifelse(isBoolean, no, nil))
 
 x(1)
 // inc(1) = 2
 
 x(true)
-// negate(true) = false
+// no(true) = false
 
 x([])
 // nil() = null
 
-function inc (x) {return x + 1}
-function dec (x) {return x - 1}
-function negate (x) {return !x}
 function nil () {return null}
 ```
 
@@ -427,7 +362,7 @@ function nil () {return null}
 ### `defer(fun, ...args)`
 
 Similar to
-<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">currying</a>,
+<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">curry</a>,
 but the original function is invoked after exactly two calls, regardless of
 how many arguments were passed. Extra arguments passed to `defer` are prepended
 to the rest.
@@ -436,15 +371,13 @@ Note this is completely different from lodash's `_.defer` (which is basically
 `setTimeout`).
 
 ```js
-function add (a, b, c) {
-  return a + b + c
-}
+function add3 (a, b, c) {return a + b + c}
 
-const addf = defer(add)
+const addf = defer(add3)
 
 // is equivalent to:
 function addf () {
-  return bind(add, ...arguments)
+  return bind(add3, ...arguments)
 }
 
 addf(1, 2, 3)()
@@ -486,10 +419,6 @@ Returns a function that takes arguments as one list-like value and spreads it
 over `fun` as multiple arguments. An opposite of `rest`.
 
 ```js
-function add (a, b) {
-  return a + b
-}
-
 function sum () {
   return foldl(add, 0, arguments)
 }

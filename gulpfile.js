@@ -222,7 +222,7 @@ gulp.task('docs:server', () => (
 /* -------------------------------- Default ---------------------------------*/
 
 gulp.task('build', gulp.series(
-  'lib:clear', 'lib:build',
+  'lib:clear', 'lib:build', 'lib:test',
   gulp.parallel('docs:scripts:build', 'docs:html:build', 'docs:styles:build', 'docs:fonts:build')
 ))
 

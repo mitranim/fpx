@@ -4,7 +4,7 @@ const {test} = require('./utils')
 const fpx = require('../lib/fpx')
 
 function join (a, b)           {return a.concat([b])}
-function plus (a, b)           {return a + b}
+function add (a, b)            {return a + b}
 function id (a)                {return a}
 function args ()               {return arguments}
 function pairs (acc, val, key) {return join(acc, [val, key])}
@@ -42,7 +42,7 @@ map: {
     {in: [],               out: []},
     {in: [, []],           out: []},
     {in: [id],             out: []},
-    {in: [plus, [10, 20]], out: [plus(10, 0), plus(20, 1)]},
+    {in: [add, [10, 20]],  out: [add(10, 0), add(20, 1)]},
     {in: [id, 'one'],      out: []}
   )
 }

@@ -1,6 +1,6 @@
 {
   "name": "fpx",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Functional programming extensions for JavaScript",
   "main": "dist/fpx.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "babel-plugin-transform-es2015-template-literals": "^6.8.0",
     "browser-sync": "^2.12.10",
     "del": "^2.2.0",
-    "emerge": "0.0.23",
+    "emerge": "0.0.24",
     "eslint": "^2.11.1",
     "font-awesome": "^4.6.3",
     "gulp": "github:gulpjs/gulp#4.0",

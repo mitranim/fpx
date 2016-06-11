@@ -12,7 +12,7 @@ body {
   left: 0;
 }
 
-article code, article pre {
+article code {
   background-color: aliceblue;
 }
 
@@ -37,10 +37,6 @@ article code, article pre {
 .frb {
   @extend .flex-row;
   @extend .flex-between;
-}
-
-.sidenav {
-  background-color: rgba(aquamarine, 0.2);
 }
 
 .scroll-y {
@@ -77,3 +73,7 @@ article code, article pre {
 .flex-2 {flex: 2}
 .flex-3 {flex: 3}
 .flex-4 {flex: 4}
+
+// .hljs {
+//   background-color: rgba(255, 255, 0, 0.05);
+// }

@@ -9,8 +9,8 @@ Boolean tests.
 ### `is(one, other)`
 
 Like `===` but considers `NaN` equal to itself.
-(Also known as
-<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero" target="_blank">`SameValueZero`</a>.)
+Also known as
+<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero" target="_blank">`SameValueZero`</a>.
 Used internally for primitive equality tests.
 
 ```js
@@ -240,8 +240,9 @@ A regex produces a regex test:
 test(/blah/)  =  x => /blah/.test(x)
 ```
 
-An object produces a fuzzy test. Its values become tests in their own right
-(recursively). When testing a value, its properties must match them all.
+A dictionary produces a fuzzy test. Its properties become tests in their own
+right (recursively). When testing a value, its properties must match all of
+these tests.
 
 ```js
 test({})               =  x => isObject(x)

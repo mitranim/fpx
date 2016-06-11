@@ -1,8 +1,8 @@
 ---
 
-## Object
+## Dict
 
-Utils for dealing with properties and property maps.
+Utils for dealing with properties and dictionaries ("objects").
 
 ---
 
@@ -89,13 +89,13 @@ read({one: {two: 2}})
 
 ### `mapVals(fun, value)`
 
-Similar to lodash's `_.mapValues`. Maps `value` to an object with the same
-properties, transforming their values via `fun`.
+Maps `value` to a dictionary with the same properties, transforming their values
+via `fun`.
+
+Similar to lodash's `_.mapValues`, but with an FP-friendly argument order.
 
 ```js
-function bang (a) {
-  return a + '!'
-}
+function bang (a) {return a + '!'}
 
 mapVals(bang, {ping: 'ping', pong: 'pong'})
 // {ping: 'ping!', pong: 'pong!'}
@@ -107,7 +107,7 @@ mapVals(bang, {ping: 'ping', pong: 'pong'})
 
 Like [`mapVals`](#-mapvals-fun-value-), but alters keys rather than values.
 
-Similar to lodash's `_.mapKeys`.
+Similar to lodash's `_.mapKeys`, but with an FP-friendly argument order.
 
 ```js
 mapKeys(last, {one: 'one', two: 'two'})

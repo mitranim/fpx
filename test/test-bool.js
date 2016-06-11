@@ -101,10 +101,11 @@ isArray: {
 
 isList: {
   test(fpx.isList,
-    {in: [],           out: false},
-    {in: [[]],         out: true},
-    {in: [create([])], out: true},
-    {in: [args(1, 2)], out: true}
+    {in: [],              out: false},
+    {in: [[]],            out: true},
+    {in: [create([])],    out: true},
+    {in: [args(1, 2)],    out: true},
+    {in: [{length: NaN}], out: false}
   )
 }
 
