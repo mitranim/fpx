@@ -19,8 +19,8 @@ list: {
 
 foldl: {
   test(fpx.foldl,
-    {in: [, 1, undefined],      out: 1},
-    {in: [, , []],              out: undefined},
+    {in: [join, 1, undefined],  out: 1},
+    {in: [join, , []],          out: undefined},
     {in: [join, [], [1, 2, 3]], out: join(join(join([], 1), 2), 3)},
     {in: [pairs, [], [10, 20]], out: pairs(pairs([], 10, 0), 20, 1)},
     {in: [id, [], 'one'],       out: []}
@@ -29,8 +29,8 @@ foldl: {
 
 foldr: {
   test(fpx.foldr,
-    {in: [, 1, undefined],      out: 1},
-    {in: [, , []],              out: undefined},
+    {in: [join, 1, undefined],  out: 1},
+    {in: [join, , []],          out: undefined},
     {in: [join, [], [1, 2, 3]], out: join(join(join([], 3), 2), 1)},
     {in: [pairs, [], [10, 20]], out: pairs(pairs([], 20, 1), 10, 0)},
     {in: [id, [], 'one'],       out: []}
@@ -39,8 +39,8 @@ foldr: {
 
 map: {
   test(fpx.map,
-    {in: [],               out: []},
-    {in: [, []],           out: []},
+    {in: [id],             out: []},
+    {in: [id, []],         out: []},
     {in: [id],             out: []},
     {in: [add, [10, 20]],  out: [add(10, 0), add(20, 1)]},
     {in: [id, 'one'],      out: []}
@@ -49,8 +49,8 @@ map: {
 
 filter: {
   test(fpx.filter,
-    {in: [],                  out: []},
-    {in: [, []],              out: []},
+    {in: [id],                out: []},
+    {in: [id, []],            out: []},
     {in: [id, [1, 0, 2, '']], out: [1, 2]},
     {in: [id, 'one'],         out: []}
   )
@@ -58,8 +58,8 @@ filter: {
 
 find: {
   test(fpx.find,
-    {in: [],                   out: undefined},
-    {in: [, []],               out: undefined},
+    {in: [id],                 out: undefined},
+    {in: [id, []],             out: undefined},
     {in: [isNaN, [1, NaN, 2]], out: NaN},
     {in: [Boolean, 'one'],     out: undefined}
   )
