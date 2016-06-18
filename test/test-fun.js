@@ -11,6 +11,7 @@ function double (a) {return a * 2}
 function id (a)     {return a}
 function pos (a)    {return a > 0}
 function neg (a)    {return a < 0}
+function no ()      {return false}
 
 call: {
   test(fpx.call,
@@ -41,25 +42,6 @@ flip: {
 
   test(fpx.flip,
     {in: [sub], test: [{in: [2, 1], out: sub(1, 2)}]}
-  )
-}
-
-pipe: {
-  test(fpx.pipe,
-    {in: [], test: [
-      {in: [],  out: undefined},
-      {in: [1], out: 1}
-    ]},
-    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
-    {in: [add, double], test: [{in: [1, 2], out: double(add(1, 2))}]}
-  )
-}
-
-seq: {
-  test(fpx.seq,
-    {in: [],            test: [{in: [1],    out: undefined}]},
-    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
-    {in: [add, double], test: [{in: [2, 3], out: double(2)}]}
   )
 }
 
@@ -164,6 +146,54 @@ cond: {
       {in: [1, 2],  out: add(1, 2)},
       {in: [-1, 1], out: sub(-1, 1)},
       {in: [0, 1],  out: args(0, 1)}
+    ]}
+  )
+}
+
+pipe: {
+  test(fpx.pipe,
+    {in: [], test: [
+      {in: [],  out: undefined},
+      {in: [1], out: 1}
+    ]},
+    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
+    {in: [add, double], test: [{in: [1, 2], out: double(add(1, 2))}]}
+  )
+}
+
+seq: {
+  test(fpx.seq,
+    {in: [],            test: [{in: [1],    out: undefined}]},
+    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
+    {in: [add, double], test: [{in: [2, 3], out: double(2)}]}
+  )
+}
+
+pipeAnd: {
+  test(fpx.pipeAnd,
+    {in: [], test: [
+      {in: [],  out: undefined},
+      {in: [1], out: 1}
+    ]},
+
+    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
+
+    {in: [add, double], test: [{in: [1, 2], out: double(add(1, 2))}]},
+
+    {in: [add, no, double], test: [
+      {in: [],     out: add(undefined, undefined)},
+      {in: [1, 2], out: no()}
+    ]}
+  )
+}
+
+juxt: {
+  test(fpx.juxt,
+    {in: [], test: [{in: [], out: []}]},
+
+    {in: [add, sub], test: [
+      {in: [],     out: [NaN, NaN]},
+      {in: [1, 2], out: [3, -1]}
     ]}
   )
 }

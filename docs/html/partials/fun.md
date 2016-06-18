@@ -89,77 +89,6 @@ flip(add3)('left', '-', 'right')
 
 ---
 
-### `pipe(...funs)`
-
-Returns a new function that represents
-<a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
-of the given functions, a common tool in functional programming. When called, it
-passes all arguments to the first function, and pipes the output through the
-rest.
-
-Flows values left-to-right, in the direction of reading. See
-[`comp`](#-comp-funs-) for the opposite direction.
-
-Equivalent to lodash's `_.flow`.
-
-```js
-function double (a) {return a * 2}
-
-double(add(1, 2))
-// (1 + 2) * 2 = 6
-
-pipe(add, double)(1, 2)
-// (1 + 2) * 2 = 6
-```
-
----
-
-### `comp(...funs)`
-
-Returns a new function that represents
-<a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
-of the given functions.
-
-Flows values right-to-left, symmetrical to normal nested function calls. See
-[`pipe`](#-pipe-funs-) for the opposite direction.
-
-```js
-function double (a) {return a * 2}
-
-double(add(1, 2))
-// (1 + 2) * 2 = 6
-
-comp(double, add)(1, 2)
-// (1 + 2) * 2 = 6
-```
-
----
-
-### `seq(...funs)`
-
-Returns a new function that runs the given functions independently from each
-other, passing all arguments to each and returning the result of the last one.
-Useful for combining operations that have side effects.
-
-```js
-function first (a, b) {
-  console.log('first:', a, b)
-}
-
-function second (a, b) {
-  console.log('second:', a, b)
-}
-
-const x = seq(first, second, add)
-
-x(1, 2)
-// prints 'first: 1 2'
-// prints 'second: 1 2'
-// 3
-```
-
----
-
 ### `and(...funs)`
 
 Represents the `&&` operation in terms of functions rather than expressions.
@@ -355,6 +284,137 @@ x([])
 // nil() = null
 
 function nil () {return null}
+```
+
+---
+
+### `pipe(...funs)`
+
+Returns a new function that represents
+<a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
+of the given functions, a common tool in functional programming. When called, it
+passes all arguments to the first function, and pipes the output through the
+rest.
+
+Flows values left-to-right, in the direction of reading. See
+[`comp`](#-comp-funs-) for the opposite direction.
+
+Equivalent to lodash's `_.flow`.
+
+```js
+function double (a) {return a * 2}
+
+const x = pipe(add, double)
+
+x(1, 2)
+// 6
+// Same as double(add(1, 2))
+```
+
+---
+
+### `comp(...funs)`
+
+Returns a new function that represents
+<a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
+of the given functions.
+
+Flows values right-to-left, symmetrical to normal nested function calls. See
+[`pipe`](#-pipe-funs-) for the opposite direction.
+
+```js
+function double (a) {return a * 2}
+
+const x = comp(double, add)
+
+x(1, 2)
+// 6
+// Same as double(add(1, 2))
+```
+
+---
+
+### `seq(...funs)`
+
+Returns a new function that runs the given functions independently from each
+other, passing all arguments to each and returning the result of the last one.
+Useful for combining operations that have side effects.
+
+```js
+function first (a, b) {
+  console.log('first:', a, b)
+}
+
+function second (a, b) {
+  console.log('second:', a, b)
+}
+
+const x = seq(first, second, add)
+
+x(1, 2)
+// prints 'first: 1 2'
+// prints 'second: 1 2'
+// 3
+```
+
+---
+
+### `pipeAnd(...funs)`
+
+Same as [`pipe`](#-pipe-funs-) but inserts `&&` between function calls. If one
+of the chained functions returns a falsy value, other functions are not invoked.
+Useful for composing functions that expect objects or other truthy values.
+
+```js
+function getOne (a) {return a.one}
+function getTwo (a) {return a.two}
+
+const x = pipeAnd(getOne, getTwo)
+
+x({one: {two: 2}})
+// 2
+
+x({one: NaN})
+// NaN
+```
+
+---
+
+### `compAnd(...funs)`
+
+Same as [`comp`](#-comp-funs-) but inserts `&&` between function calls. If one
+of the chained functions returns a falsy value, other functions are not invoked.
+Useful for composing functions that expect objects or other truthy values.
+
+```js
+function getOne (a) {return a.one}
+function getTwo (a) {return a.two}
+
+const x = compAnd(getTwo, getOne)
+
+x({one: {two: 2}})
+// 2
+
+x({one: NaN})
+// NaN
+```
+
+---
+
+### `juxt(...funs)`
+
+Returns a function that calls all `funs`, returning the results as a list. It
+passes the same arguments to each fun.
+
+Name taken from a similar
+<a href="https://clojuredocs.org/clojure.core/juxt" target="_blank">function</a>
+in Clojure. Short for "juxtapose". Equivalent to lodash's `_.over`.
+
+```js
+const x = juxt(add, sub)
+
+x(1, 2)
+// [3, -1]
 ```
 
 ---
