@@ -53,7 +53,7 @@ gulp.task('lib:compile', () => (
     .pipe(gulp.dest(out.lib))
 ))
 
-// Purely for minified code size evaluation.
+// Purely for evaluating minified code size.
 gulp.task('lib:minify', () => (
   gulp.src(src.dist)
     .pipe($.uglify({

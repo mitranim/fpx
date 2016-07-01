@@ -130,7 +130,7 @@ isArray([])
 True if `value` looks like a linear, ordered list. This includes `arguments`,
 `NodeList`s, and so on. Used internally for most list checks. Note that this
 _doesn't_ include strings, as JavaScript strings can't be broken down into
-non-list elements.
+non-string elements.
 
 ```js
 isList([])
@@ -224,7 +224,7 @@ A function is already a test:
 test(isNumber)  =  isNumber
 ```
 
-A primitive produces an exact equality test via [`lang/is`](api/lang/#-is-one-other-):
+A primitive produces an exact equality test via [`is`](#-is-one-other-):
 
 ```js
 test(null)    =  x => is(x, null)
