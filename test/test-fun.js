@@ -1,6 +1,6 @@
 'use strict'
 
-const {test} = require('./utils')
+const {runWith, fnTest, tests} = require('./utils')
 const fpx = require('../lib/fpx')
 
 function self ()    {return this}
@@ -13,213 +13,179 @@ function pos (a)    {return a > 0}
 function neg (a)    {return a < 0}
 function no ()      {return false}
 
-call: {
-  test(fpx.call,
-    {in: [self],      out: undefined},
-    {in: [add, 1, 2], out: add(1, 2)}
-  )
-}
+module.exports = [
+  runWith(fpx.call,
+    fnTest([self],      undefined),
+    fnTest([add, 1, 2], add(1, 2))
+  ),
 
-apply: {
-  test(fpx.apply,
-    {in: [self],        out: undefined},
-    {in: [add, [1, 2]], out: add(1, 2)}
-  )
-}
+  runWith(fpx.apply,
+    fnTest([self],        undefined),
+    fnTest([add, [1, 2]], add(1, 2))
+  ),
 
-bind: {
-  test(fpx.bind,
-    {in: [self],      test: [{in: [],  out: self()}]},
-    {in: [add, 1],    test: [{in: [2], out: add(1, 2)}]},
-    {in: [add, 1, 2], test: [{in: [],  out: add(1, 2)}]}
-  )
-}
+  runWith(fpx.bind,
+    fnTest([self],      fnTest([],  self())),
+    fnTest([add, 1],    fnTest([2], add(1, 2))),
+    fnTest([add, 1, 2], fnTest([],  add(1, 2)))
+  ),
 
-flip: {
-  test(id,
-    {in: [sub], test: [{in: [2, 1], out: sub(2, 1)}]}
-  )
+  runWith(fpx.id,
+    fnTest([sub], fnTest([2, 1], sub(2, 1)))
+  ),
 
-  test(fpx.flip,
-    {in: [sub], test: [{in: [2, 1], out: sub(1, 2)}]}
-  )
-}
+  runWith(fpx.flip,
+    fnTest([sub], fnTest([2, 1], sub(1, 2)))
+  ),
 
-and: {
-  test(fpx.and,
-    {in: [], test: [{in: [1], out: 1}]},
+  runWith(fpx.and,
+    fnTest([], fnTest([1], 1)),
 
-    {in: [add, double], test: [
+    fnTest([add, double], tests(
       // both
-      {in: [2, 3],  out: add(2, 3) && double(2, 3)},
+      fnTest([2, 3],  add(2, 3) && double(2, 3)),
       // not add
-      {in: [-1, 1], out: add(-1, 1) && double(-1, 1)},
+      fnTest([-1, 1], add(-1, 1) && double(-1, 1)),
       // not double
-      {in: [0, 1],  out: add(0, 1) && double(0, 1)}
-    ]}
-  )
-}
+      fnTest([0, 1],  add(0, 1) && double(0, 1))
+    ))
+  ),
 
-or: {
-  test(fpx.or,
-    {in: [], test: [{in: [1], out: 1}]},
+  runWith(fpx.or,
+    fnTest([], fnTest([1], 1)),
 
-    {in: [add, double], test: [
+    fnTest([add, double], tests(
       // neither
-      {in: [0, 0],  out: add(0, 0) || double(0, 0)},
+      fnTest([0, 0],  add(0, 0) || double(0, 0)),
       // add
-      {in: [0, 1],  out: add(0, 1) || double(0, 1)},
+      fnTest([0, 1],  add(0, 1) || double(0, 1)),
       // double
-      {in: [-1, 1], out: add(-1, 1) || double(-1, 1)}
-    ]}
+      fnTest([-1, 1], add(-1, 1) || double(-1, 1))
+    ))
+  ),
+
+  runWith(fpx.id,
+    fnTest([add], tests(
+      fnTest([0, 1],  1),
+      fnTest([-1, 1], 0)
+    ))
+  ),
+
+  runWith(fpx.not,
+    fnTest([add], tests(
+      fnTest([0, 1],  false),
+      fnTest([-1, 1], true)
+    ))
+  ),
+
+  runWith(fpx.ifelse,
+    fnTest([id, double, add], tests(
+      fnTest([2, 3], double(2)),
+      fnTest([0, 1], add(0, 1))
+    ))
+  ),
+
+  runWith(fpx.ifthen,
+    fnTest([id, double], tests(
+      fnTest([2, 3], double(2)),
+      fnTest([0, 1], undefined)
+    ))
+  ),
+
+  runWith(fpx.ifonly,
+    fnTest([id, add], tests(
+      fnTest([0, 1], 0),
+      fnTest([1, 0], add(1, 0))
+    ))
+  ),
+
+  runWith(fpx.cond,
+    fnTest([], fnTest([1], undefined)),
+
+    fnTest([add], fnTest([1, 2], add(1, 2))),
+
+    fnTest([id, add], tests(
+      fnTest([],     undefined),
+      fnTest([1, 2], add(1, 2))
+    )),
+
+    fnTest([id, add, sub], tests(
+      fnTest([0, 1], sub(0, 1)),
+      fnTest([1, 2], add(1, 2))
+    )),
+
+    fnTest([pos, add, neg, sub], tests(
+      fnTest([],      undefined),
+      fnTest([1, 2],  add(1, 2)),
+      fnTest([-1, 1], sub(-1, 1)),
+      fnTest([0],     undefined)
+    )),
+
+    fnTest([pos, add, neg, sub, args], tests(
+      fnTest([],      args()),
+      fnTest([1, 2],  add(1, 2)),
+      fnTest([-1, 1], sub(-1, 1)),
+      fnTest([0, 1],  args(0, 1))
+    ))
+  ),
+
+  runWith(fpx.pipe,
+    fnTest([], tests(
+      fnTest([],  undefined),
+      fnTest([1], 1)
+    )),
+    fnTest([add],         fnTest([1, 2], add(1, 2))),
+    fnTest([add, double], fnTest([1, 2], double(add(1, 2))))
+  ),
+
+  runWith(fpx.seq,
+    fnTest([],            fnTest([1],    undefined)),
+    fnTest([add],         fnTest([1, 2], add(1, 2))),
+    fnTest([add, double], fnTest([2, 3], double(2)))
+  ),
+
+  runWith(fpx.pipeAnd,
+    fnTest([], tests(
+      fnTest([],  undefined),
+      fnTest([1], 1)
+    )),
+
+    fnTest([add],         fnTest([1, 2], add(1, 2))),
+
+    fnTest([add, double], fnTest([1, 2], double(add(1, 2)))),
+
+    fnTest([add, no, double], tests(
+      fnTest([],     add(undefined, undefined)),
+      fnTest([1, 2], no())
+    ))
+  ),
+
+  runWith(fpx.juxt,
+    fnTest([], fnTest([], [])),
+
+    fnTest([add, sub], tests(
+      fnTest([],     [NaN, NaN]),
+      fnTest([1, 2], [3, -1])
+    ))
+  ),
+
+  runWith(fpx.defer,
+    fnTest([add], tests(
+      fnTest([],     fnTest([1, 2], add(1, 2))),
+      fnTest([1],    fnTest([2],    add(1, 2))),
+      fnTest([1, 2], fnTest([],     add(1, 2)))
+    )),
+    fnTest([add, 1], tests(
+      fnTest([],  fnTest([2], add(1, 2))),
+      fnTest([2], fnTest([],  add(1, 2)))
+    ))
+  ),
+
+  runWith(fpx.rest,
+    fnTest([id], fnTest([1, 2, 3], id([1, 2, 3])))
+  ),
+
+  runWith(fpx.spread,
+    fnTest([add], fnTest([[1, 2]], add(1, 2)))
   )
-}
-
-not: {
-  test(id,
-    {in: [add], test: [
-      {in: [0, 1],  out: 1},
-      {in: [-1, 1], out: 0}
-    ]}
-  )
-
-  test(fpx.not,
-    {in: [add], test: [
-      {in: [0, 1],  out: false},
-      {in: [-1, 1], out: true}
-    ]}
-  )
-}
-
-ifelse: {
-  test(fpx.ifelse,
-    {in: [id, double, add], test: [
-      {in: [2, 3], out: double(2)},
-      {in: [0, 1], out: add(0, 1)}
-    ]}
-  )
-}
-
-ifthen: {
-  test(fpx.ifthen,
-    {in: [id, double], test: [
-      {in: [2, 3], out: double(2)},
-      {in: [0, 1], out: undefined}
-    ]}
-  )
-}
-
-ifonly: {
-  test(fpx.ifonly,
-    {in: [id, add], test: [
-      {in: [0, 1], out: 0},
-      {in: [1, 0], out: add(1, 0)}
-    ]}
-  )
-}
-
-cond: {
-  test(fpx.cond,
-    {in: [], test: [{in: [1], out: undefined}]},
-
-    {in: [add], test: [{in: [1, 2], out: add(1, 2)}]},
-
-    {in: [id, add], test: [
-      {in: [],     out: undefined},
-      {in: [1, 2], out: add(1, 2)}
-    ]},
-
-    {in: [id, add, sub], test: [
-      {in: [0, 1], out: sub(0, 1)},
-      {in: [1, 2], out: add(1, 2)}
-    ]},
-
-    {in: [pos, add, neg, sub], test: [
-      {in: [],      out: undefined},
-      {in: [1, 2],  out: add(1, 2)},
-      {in: [-1, 1], out: sub(-1, 1)},
-      {in: [0],     out: undefined}
-    ]},
-
-    {in: [pos, add, neg, sub, args], test: [
-      {in: [],      out: args()},
-      {in: [1, 2],  out: add(1, 2)},
-      {in: [-1, 1], out: sub(-1, 1)},
-      {in: [0, 1],  out: args(0, 1)}
-    ]}
-  )
-}
-
-pipe: {
-  test(fpx.pipe,
-    {in: [], test: [
-      {in: [],  out: undefined},
-      {in: [1], out: 1}
-    ]},
-    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
-    {in: [add, double], test: [{in: [1, 2], out: double(add(1, 2))}]}
-  )
-}
-
-seq: {
-  test(fpx.seq,
-    {in: [],            test: [{in: [1],    out: undefined}]},
-    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
-    {in: [add, double], test: [{in: [2, 3], out: double(2)}]}
-  )
-}
-
-pipeAnd: {
-  test(fpx.pipeAnd,
-    {in: [], test: [
-      {in: [],  out: undefined},
-      {in: [1], out: 1}
-    ]},
-
-    {in: [add],         test: [{in: [1, 2], out: add(1, 2)}]},
-
-    {in: [add, double], test: [{in: [1, 2], out: double(add(1, 2))}]},
-
-    {in: [add, no, double], test: [
-      {in: [],     out: add(undefined, undefined)},
-      {in: [1, 2], out: no()}
-    ]}
-  )
-}
-
-juxt: {
-  test(fpx.juxt,
-    {in: [], test: [{in: [], out: []}]},
-
-    {in: [add, sub], test: [
-      {in: [],     out: [NaN, NaN]},
-      {in: [1, 2], out: [3, -1]}
-    ]}
-  )
-}
-
-defer: {
-  test(fpx.defer,
-    {in: [add], test: [
-      {in: [],     test: [{in: [1, 2], out: add(1, 2)}]},
-      {in: [1],    test: [{in: [2],    out: add(1, 2)}]},
-      {in: [1, 2], test: [{in: [],     out: add(1, 2)}]}
-    ]},
-    {in: [add, 1], test: [
-      {in: [],  test: [{in: [2], out: add(1, 2)}]},
-      {in: [2], test: [{in: [],  out: add(1, 2)}]}
-    ]}
-  )
-}
-
-rest: {
-  test(fpx.rest,
-    {in: [id], test: [{in: [1, 2, 3], out: id([1, 2, 3])}]}
-  )
-}
-
-spread: {
-  test(fpx.spread,
-    {in: [add], test: [{in: [[1, 2]], out: add(1, 2)}]}
-  )
-}
+]

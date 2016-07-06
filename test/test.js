@@ -1,8 +1,12 @@
 'use strict'
 
-require('./test-fun')
-require('./test-bool')
-require('./test-list')
-require('./test-dict')
-require('./test-ops')
-require('./test-misc')
+const {runReports} = require('./utils')
+
+runReports([
+  ...require('./test-bool'),
+  ...require('./test-dict'),
+  ...require('./test-fun'),
+  ...require('./test-list'),
+  ...require('./test-misc'),
+  ...require('./test-ops')
+])

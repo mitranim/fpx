@@ -2,7 +2,7 @@
 
 /* global Symbol, Promise */
 
-const {test} = require('./utils')
+const {runWith, fnTest, tests} = require('./utils')
 const fpx = require('../lib/fpx')
 
 function id (a)  {return a}
@@ -10,200 +10,170 @@ function args () {return arguments}
 
 const {create} = Object
 
-is: {
-  test(fpx.is,
-    {in: [],             out: true},
-    {in: [NaN, NaN],     out: true},
-    {in: ['one', 'one'], out: true},
-    {in: ['one', 'two'], out: false},
-    {in: [[], []],       out: false}
-  )
-}
+module.exports = [
+  runWith(fpx.is,
+    fnTest([],             true),
+    fnTest([NaN, NaN],     true),
+    fnTest(['one', 'one'], true),
+    fnTest(['one', 'two'], false),
+    fnTest([[], []],       false)
+  ),
 
-isNumber: {
-  test(fpx.isNumber,
-    {in: [],         out: false},
-    {in: [1],        out: true},
-    {in: [NaN],      out: true},
-    {in: [Infinity], out: true},
-    {in: [null],     out: false},
-    {in: ['1'],      out: false}
-  )
-}
+  runWith(fpx.isNumber,
+    fnTest([],         false),
+    fnTest([1],        true),
+    fnTest([NaN],      true),
+    fnTest([Infinity], true),
+    fnTest([null],     false),
+    fnTest(['1'],      false)
+  ),
 
-isString: {
-  test(fpx.isString,
-    {in: [],   out: false},
-    {in: [''], out: true}
-  )
-}
+  runWith(fpx.isString,
+    fnTest([],   false),
+    fnTest([''], true)
+  ),
 
-isBoolean: {
-  test(fpx.isBoolean,
-    {in: [],        out: false},
-    {in: [true],    out: true},
-    {in: [false],   out: true},
-    {in: [null],    out: false},
-    {in: [Boolean], out: false}
-  )
-}
+  runWith(fpx.isBoolean,
+    fnTest([],        false),
+    fnTest([true],    true),
+    fnTest([false],   true),
+    fnTest([null],    false),
+    fnTest([Boolean], false)
+  ),
 
-isSymbol: {
-  test(fpx.isSymbol,
-    {in: [],               out: false},
-    {in: [Symbol('blah')], out: true},
-    {in: ['Symbol(blah)'], out: false}
-  )
-}
+  runWith(fpx.isSymbol,
+    fnTest([],               false),
+    fnTest([Symbol('blah')], true),
+    fnTest(['Symbol(blah)'], false)
+  ),
 
-isFunction: {
-  test(fpx.isFunction,
-    {in: [],                  out: false},
-    {in: [id],                out: true},
-    {in: [Object.create(id)], out: false}
-  )
-}
+  runWith(fpx.isFunction,
+    fnTest([],                  false),
+    fnTest([id],                true),
+    fnTest([create(id)], false)
+  ),
 
-isObject: {
-  test(fpx.isObject,
-    {in: [],             out: false},
-    {in: [null],         out: false},
-    {in: [id],           out: false},
-    {in: [{}],           out: true},
-    {in: [[]],           out: true},
-    {in: [/!/],          out: true},
-    {in: [create(null)], out: true},
-    {in: [create({})],   out: true}
-  )
-}
+  runWith(fpx.isObject,
+    fnTest([],             false),
+    fnTest([null],         false),
+    fnTest([id],           false),
+    fnTest([{}],           true),
+    fnTest([[]],           true),
+    fnTest([/!/],          true),
+    fnTest([create(null)], true),
+    fnTest([create({})],   true)
+  ),
 
-isPlainObject: {
-  test(fpx.isPlainObject,
-    {in: [],             out: false},
-    {in: [null],         out: false},
-    {in: [id],           out: false},
-    {in: [{}],           out: true},
-    {in: [[]],           out: false},
-    {in: [/!/],          out: false},
-    {in: [create(null)], out: true},
-    {in: [create({})],   out: false}
-  )
-}
+  runWith(fpx.isPlainObject,
+    fnTest([],             false),
+    fnTest([null],         false),
+    fnTest([id],           false),
+    fnTest([{}],           true),
+    fnTest([[]],           false),
+    fnTest([/!/],          false),
+    fnTest([create(null)], true),
+    fnTest([create({})],   false)
+  ),
 
-isArray: {
-  test(fpx.isArray,
-    {in: [],           out: false},
-    {in: [[]],         out: true},
-    {in: [create([])], out: true},
-    {in: [args(1, 2)], out: false}
-  )
-}
+  runWith(fpx.isArray,
+    fnTest([],           false),
+    fnTest([[]],         true),
+    fnTest([create([])], true),
+    fnTest([args(1, 2)], false)
+  ),
 
-isList: {
-  test(fpx.isList,
-    {in: [],              out: false},
-    {in: [[]],            out: true},
-    {in: [create([])],    out: true},
-    {in: [args(1, 2)],    out: true},
-    {in: [{length: NaN}], out: false}
-  )
-}
+  runWith(fpx.isList,
+    fnTest([],              false),
+    fnTest([[]],            true),
+    fnTest([create([])],    true),
+    fnTest([args(1, 2)],    true),
+    fnTest([{length: NaN}], false)
+  ),
 
-isRegExp: {
-  test(fpx.isRegExp,
-    {in: [],            out: false},
-    {in: [/!/],         out: true},
-    {in: [create(/!/)], out: true},
-    {in: [{}],          out: false}
-  )
-}
+  runWith(fpx.isRegExp,
+    fnTest([],            false),
+    fnTest([/!/],         true),
+    fnTest([create(/!/)], true),
+    fnTest([{}],          false)
+  ),
 
-isPromise: {
-  test(fpx.isPromise,
-    {in: [],                          out: false},
-    {in: [{}],                        out: false},
-    {in: [{then () {}}],              out: false},
-    {in: [Promise.resolve()],         out: true},
-    {in: [{then () {}, catch () {}}], out: true}
-  )
-}
+  runWith(fpx.isPromise,
+    fnTest([],                          false),
+    fnTest([{}],                        false),
+    fnTest([{then () {}}],              false),
+    fnTest([Promise.resolve()],         true),
+    fnTest([{then () {}, catch () {}}], true)
+  ),
 
-isPrimitive: {
-  test(fpx.isPrimitive,
-    {in: [],         out: true},
-    {in: [null],     out: true},
-    {in: [1],        out: true},
-    {in: [''],       out: true},
-    {in: [Symbol()], out: true},
-    {in: [true],     out: true},
-    {in: [{}],       out: false},
-    {in: [[]],       out: false},
-    {in: [id],       out: false},
-    {in: [/!/],      out: false}
-  )
-}
+  runWith(fpx.isPrimitive,
+    fnTest([],         true),
+    fnTest([null],     true),
+    fnTest([1],        true),
+    fnTest([''],       true),
+    fnTest([Symbol()], true),
+    fnTest([true],     true),
+    fnTest([{}],       false),
+    fnTest([[]],       false),
+    fnTest([id],       false),
+    fnTest([/!/],      false)
+  ),
 
-isNil: {
-  test(fpx.isNil,
-    {in: [],      out: true},
-    {in: [null],  out: true},
-    {in: [false], out: false}
-  )
-}
+  runWith(fpx.isNil,
+    fnTest([],      true),
+    fnTest([null],  true),
+    fnTest([false], false)
+  ),
 
-test: {
-  test(fpx.test,
-    {in: [id], test: [
-      {in: [1], out: 1}
-    ]},
+  runWith(fpx.test,
+    fnTest([id], fnTest([1], 1)),
 
-    {in: [], test: [
-      {in: [],     out: true},
-      {in: [null], out: false}
-    ]},
+    fnTest([], tests(
+      fnTest([],     true),
+      fnTest([null], false)
+    )),
 
-    {in: ['one'], test: [
-      {in: ['one'], out: true},
-      {in: ['two'], out: false}
-    ]},
+    fnTest(['one'], tests(
+      fnTest(['one'], true),
+      fnTest(['two'], false)
+    )),
 
-    {in: [/one/], test: [
-      {in: ['one'], out: true},
-      {in: ['two'], out: false}
-    ]},
+    fnTest([/one/], tests(
+      fnTest(['one'], true),
+      fnTest(['two'], false)
+    )),
 
-    {in: [NaN], test: [
-      {in: [NaN], out: true},
-      {in: [],    out: false}
-    ]},
+    fnTest([NaN], tests(
+      fnTest([NaN], true),
+      fnTest([],    false)
+    )),
 
-    {in: [{}], test: [
-      {in: [{}],  out: true},
-      {in: [[1]], out: true},
-      {in: [],    out: false}
-    ]},
+    fnTest([{}], tests(
+      fnTest([{}],  true),
+      fnTest([[1]], true),
+      fnTest([],    false)
+    )),
 
-    {in: [{nan: isNaN}], test: [
-      {in: [{}],                 out: true},
-      {in: [{nan: NaN, one: 1}], out: true},
-      {in: [{nan: 1}],           out: false}
-    ]},
+    fnTest([{nan: isNaN}], tests(
+      fnTest([{}],                 true),
+      fnTest([{nan: NaN, one: 1}], true),
+      fnTest([{nan: 1}],           false)
+    )),
 
     // Must not accidentally use second argument.
 
-    {in: [id, 1], test: [
-      {in: [],  out: undefined},
-      {in: [1], out: 1}
-    ]},
+    fnTest([id, 1], tests(
+      fnTest([],  undefined),
+      fnTest([1], 1)
+    )),
 
-    {in: [1, 1], test: [
-      {in: [],  out: false},
-      {in: [1], out: true}
-    ]},
+    fnTest([1, 1], tests(
+      fnTest([],  false),
+      fnTest([1], true)
+    )),
 
-    {in: [/one/, 'one'], test: [
-      {in: [],      out: false},
-      {in: ['one'], out: true}
-    ]}
+    fnTest([/one/, 'one'], tests(
+      fnTest([],      false),
+      fnTest(['one'], true)
+    ))
   )
-}
+]

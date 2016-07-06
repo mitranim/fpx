@@ -68,7 +68,7 @@ gulp.task('lib:minify', () => (
 ))
 
 gulp.task('lib:test', done => {
-  $.util.log('Test started.')
+  $.util.log('Test started')
 
   exec(testCommand, (err, stdout, stderr) => {
     process.stdout.write(stdout)
@@ -77,7 +77,7 @@ gulp.task('lib:test', done => {
     if (err) {
       throw new $.util.PluginError('lib:test', 'Test failed', {showProperties: false})
     } else {
-      $.util.log('Test finished.')
+      $.util.log('Test finished')
       done()
     }
   })

@@ -1,66 +1,56 @@
 'use strict'
 
-const {test} = require('./utils')
+const {runWith, fnTest} = require('./utils')
 const fpx = require('../lib/fpx')
 
-yes: {
-  test(fpx.yes,
-    {in: [],   out: !!undefined},
-    {in: [],   out: false},
-    {in: [0],  out: !!0},
-    {in: [0],  out: false},
-    {in: [''], out: !!''},
-    {in: [''], out: false},
-    {in: [1],  out: !!1},
-    {in: [1],  out: true}
-  )
-}
+module.exports = [
+  runWith(fpx.yes,
+    fnTest([],   !!undefined),
+    fnTest([],   false),
+    fnTest([0],  !!0),
+    fnTest([0],  false),
+    fnTest([''], !!''),
+    fnTest([''], false),
+    fnTest([1],  !!1),
+    fnTest([1],  true)
+  ),
 
-no: {
-  test(fpx.no,
-    {in: [],   out: !undefined},
-    {in: [],   out: true},
-    {in: [0],  out: !0},
-    {in: [0],  out: true},
-    {in: [''], out: !''},
-    {in: [''], out: true},
-    {in: [1],  out: !1},
-    {in: [1],  out: false}
-  )
-}
+  runWith(fpx.no,
+    fnTest([],   !undefined),
+    fnTest([],   true),
+    fnTest([0],  !0),
+    fnTest([0],  true),
+    fnTest([''], !''),
+    fnTest([''], true),
+    fnTest([1],  !1),
+    fnTest([1],  false)
+  ),
 
-add: {
-  test(fpx.add,
-    {in: [],       out: undefined + undefined},
-    {in: ['7', 3], out: '7' + 3},
-    {in: [7, 3],   out: 7 + 3}
-  )
-}
+  runWith(fpx.add,
+    fnTest([],       undefined + undefined),
+    fnTest(['7', 3], '7' + 3),
+    fnTest([7, 3],   7 + 3)
+  ),
 
-sub: {
-  test(fpx.sub,
-    {in: [],       out: undefined - undefined},
-    {in: ['7', 3], out: '7' - 3},
-    {in: [7, 3],   out: 7 - 3}
-  )
-}
+  runWith(fpx.sub,
+    fnTest([],       undefined - undefined),
+    fnTest(['7', 3], '7' - 3),
+    fnTest([7, 3],   7 - 3)
+  ),
 
-inc: {
-  test(fpx.inc,
-    {in: [],      out: undefined + 1},
-    {in: ['one'], out: 'one' + 1},
-    {in: [NaN],   out: NaN + 1},
-    {in: [-2],    out: -2 + 1},
-    {in: [1],     out: 1 + 1}
-  )
-}
+  runWith(fpx.inc,
+    fnTest([],      undefined + 1),
+    fnTest(['one'], 'one' + 1),
+    fnTest([NaN],   NaN + 1),
+    fnTest([-2],    -2 + 1),
+    fnTest([1],     1 + 1)
+  ),
 
-dec: {
-  test(fpx.dec,
-    {in: [],      out: undefined - 1},
-    {in: ['one'], out: 'one' - 1},
-    {in: [NaN],   out: NaN - 1},
-    {in: [-2],    out: -2 - 1},
-    {in: [2],     out: 2 - 1}
+  runWith(fpx.dec,
+    fnTest([],      undefined - 1),
+    fnTest(['one'], 'one' - 1),
+    fnTest([NaN],   NaN - 1),
+    fnTest([-2],    -2 - 1),
+    fnTest([2],     2 - 1)
   )
-}
+]
