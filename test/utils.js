@@ -7,7 +7,7 @@
 const {isFunction, inspect} = require('util')
 const {deepEqual} = require('emerge')
 
-// type Details = {args, predicate, meta, fun, error}
+// type Details = {error}
 // type Context = [Details]
 // type Report  = [[Context], Bool]
 // type Test a  = a -> Report
@@ -36,7 +36,7 @@ function fnTest (args, predicate) {
 Arguments: ${blue(show(args))}
 File:      ${formatMeta(meta)}`})
 
-    return join(sup, sub)
+    return mplus(sup, sub)
   }
 }
 
@@ -48,12 +48,12 @@ function tests (...tests) {
 
 exports.runWith = runWith
 function runWith (val, ...tests) {
-  return tests.map(test => test(val)).reduce(join)
+  return tests.map(test => test(val)).reduce(mplus)
 }
 
 exports.runReports = runReports
 function runReports (reports) {
-  const [contexts, ok] = reports.reduce(join)
+  const [contexts, ok] = reports.reduce(mplus)
   if (!ok) {
     process.stderr.write(format(contexts))
     process.exitCode = 1
@@ -73,15 +73,15 @@ Got:      ${red(show(value))}`}
   )
 }
 
-function join ([c0, v0], [c1, v1]) {
-  return [appendC(c0, c1), appendV(v0, v1)]
+function mplus ([c0, v0], [c1, v1]) {
+  return [mappendC(c0, c1), mappendV(v0, v1)]
 }
 
-function appendC (a, b) {
+function mappendC (a, b) {
   return a.concat(b)
 }
 
-function appendV (a, b) {
+function mappendV (a, b) {
   return a && b
 }
 
