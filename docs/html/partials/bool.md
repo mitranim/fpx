@@ -245,11 +245,21 @@ right (recursively). When testing a value, its properties must match all of
 these tests.
 
 ```js
-test({})               =  x => isObject(x)
-test({one: /oen!11/})  =  x => isObject(x) && /oen!11/.test(x.one)
-test({two: isArray})   =  x => isObject(x) && isArray(x.two)
-test({a: {b: 'c'}})    =  x => isObject(x) && isObject(x.a) && is(x.a.b, 'c')
+test({})              =  x => isObject(x)
+test({one: /blah/})   =  x => isObject(x) && /blah/.test(x.one)
+test({two: isArray})  =  x => isObject(x) && isArray(x.two)
+test({a: {b: 'c'}})   =  x => isObject(x) && isObject(x.a) && is(x.a.b, 'c')
 ```
+
+A list produces a dictionary test, but the input value must also be a list.
+
+```js
+test([])             =  x => isList(x)
+test([/blah/])       =  x => isList(x) && /blah/.test(x[0])
+test([/blah/, 'c'])  =  x => isList(x) && /blah/.test(x[0]) && is(x[1], 'c')
+```
+
+#### Example
 
 Using `test` and ES2015 destructuring to approximate pattern matching:
 

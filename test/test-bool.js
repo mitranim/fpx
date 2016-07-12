@@ -147,6 +147,20 @@ module.exports = [
       fnTest([],    false)
     )),
 
+    fnTest([[]], tests(
+      fnTest([[]],      true),
+      fnTest([[1]],     true),
+      fnTest([args(1)], true),
+      fnTest([{}],      false)
+    )),
+
+    fnTest([[1]], tests(
+      fnTest([[]],      false),
+      fnTest([[1]],     true),
+      fnTest([args(1)], true),
+      fnTest([{0: 1}],  false)
+    )),
+
     fnTest([{}], tests(
       fnTest([{}],  true),
       fnTest([[1]], true),

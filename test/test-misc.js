@@ -4,6 +4,7 @@ const {runWith, fnTest, tests} = require('./utils')
 const fpx = require('../lib/fpx')
 
 function double (a) {return a * 2}
+function args () {return arguments}
 
 module.exports = [
   runWith(fpx.id,
@@ -27,6 +28,12 @@ module.exports = [
     fnTest([double], tests(
       fnTest([1],  2),
       fnTest([{}], NaN)
+    )),
+
+    fnTest([[/text/, 1]], tests(
+      fnTest([],                [false, 1]),
+      fnTest([['text', 2]],     [true, 1]),
+      fnTest([args('text', 2)], [true, 1])
     )),
 
     fnTest([{text: /text/, one: 1}], tests(

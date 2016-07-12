@@ -67,10 +67,18 @@ A dictionary produces a mask that treats properties as masks in their own right
 (recursively), overlaying them and hiding other properties.
 
 ```js
-mask({})               =  _ => ({})
-mask({one: /one!11/})  ≈  x => ({one: /one!11/.test(get(x, 'one'))})
-mask({two: isArray})   ≈  x => ({two: isArray(get(x, 'two'))})
-mask({a: {b: 'c'}})    ≈  x => ({a: {b: 'c'}})
+mask({})              =  _ => ({})
+mask({one: /blah/})   =  x => ({one: /blah/.test(get(x, 'one'))})
+mask({two: isArray})  =  x => ({two: isArray(get(x, 'two'))})
+mask({a: {b: 'c'}})   =  x => ({a: {b: 'c'}})
+```
+
+A list mask is similar to a dictionary mask, but input and output are lists.
+
+```js
+mask([])             =  _ => []
+mask([/blah/])       =  x => [/blah/.test(get(x, 0))]
+mask([/blah/, 'c'])  =  x => [/blah/.test(get(x, 0)), 'c']
 ```
 
 ---
