@@ -58,7 +58,7 @@ gulp.task('lib:minify', () => (
   gulp.src(src.dist)
     .pipe($.uglify({
       mangle: true,
-      compress: {screw_ie8: true},
+      compress: {warnings: false, screw_ie8: true},
       wrap: true
     }))
     .pipe($.rename(path => {
