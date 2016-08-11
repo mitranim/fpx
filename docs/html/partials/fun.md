@@ -270,9 +270,9 @@ cond(isPositive, dec, inc)
 const x = cond(
   isNumber,  inc,
   isBoolean, no,
-  nil
+  noop
 )
-// ifelse(isNumber, inc, ifelse(isBoolean, no, nil))
+// ifelse(isNumber, inc, ifelse(isBoolean, no, noop))
 
 x(1)
 // inc(1) = 2
@@ -281,9 +281,7 @@ x(true)
 // no(true) = false
 
 x([])
-// nil() = null
-
-function nil () {return null}
+// noop() = undefined
 ```
 
 ---
@@ -363,7 +361,7 @@ x(1, 2)
 
 Same as [`pipe`](#-pipe-funs-) but inserts `&&` between function calls. If one
 of the chained functions returns a falsy value, other functions are not invoked.
-Useful for composing functions that expect objects or other truthy values.
+Useful for composing functions that expect truthy values.
 
 ```js
 function getOne (a) {return a.one}
@@ -384,7 +382,7 @@ x({one: NaN})
 
 Same as [`comp`](#-comp-funs-) but inserts `&&` between function calls. If one
 of the chained functions returns a falsy value, other functions are not invoked.
-Useful for composing functions that expect objects or other truthy values.
+Useful for composing functions that expect truthy values.
 
 ```js
 function getOne (a) {return a.one}

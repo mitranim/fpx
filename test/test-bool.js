@@ -16,7 +16,7 @@ module.exports = [
     fnTest([NaN, NaN],     true),
     fnTest(['one', 'one'], true),
     fnTest(['one', 'two'], false),
-    fnTest([[], []],       false)
+    fnTest([{}, {}],       false)
   ),
 
   runWith(fpx.isNumber,
@@ -26,6 +26,25 @@ module.exports = [
     fnTest([Infinity], true),
     fnTest([null],     false),
     fnTest(['1'],      false)
+  ),
+
+  runWith(fpx.isFinite,
+    fnTest([],          false),
+    fnTest([1],         true),
+    fnTest([1.1],       true),
+    fnTest([-1.1],      true),
+    fnTest([NaN],       false),
+    fnTest([Infinity],  false),
+    fnTest([-Infinity], false),
+    fnTest([null],      false),
+    fnTest(['1'],       false)
+  ),
+
+  runWith(fpx.isNaN,
+    fnTest([],          false),
+    fnTest([NaN],       true),
+    fnTest([Infinity],  false),
+    fnTest([undefined], false)
   ),
 
   runWith(fpx.isString,
@@ -124,6 +143,41 @@ module.exports = [
     fnTest([false], false)
   ),
 
+  runWith(fpx.testBy,
+    fnTest([id, 1], 1),
+
+    fnTest([],     true),
+    fnTest([null], false),
+
+    fnTest(['one', 'one'], true),
+    fnTest(['one', 'two'], false),
+
+    fnTest([/one/, 'one'], true),
+    fnTest([/one/, 'two'], false),
+
+    fnTest([NaN, NaN], true),
+    fnTest([NaN],    false),
+
+    fnTest([[], []],      true),
+    fnTest([[], [1]],     true),
+    fnTest([[], args(1)], true),
+    fnTest([[], {}],      false),
+
+    fnTest([[1], []],      false),
+    fnTest([[1], [1]],     true),
+    fnTest([[1], args(1)], true),
+    fnTest([[1], {0: 1}],  false),
+
+    fnTest([{}, {}],  true),
+    fnTest([{}, [1]], true),
+    fnTest([{}, ],    false),
+
+    fnTest([{nan: isNaN}, {}],                 true),
+    fnTest([{nan: isNaN}, {nan: NaN, one: 1}], true),
+    fnTest([{nan: isNaN}, {nan: 1}],           false)
+  ),
+
+  // This array of tests is now redundant, should probably remove.
   runWith(fpx.test,
     fnTest([id], fnTest([1], 1)),
 

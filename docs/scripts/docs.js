@@ -1,5 +1,5 @@
 const {
-  and, bind, apply, defer, rest, getAt, seq, pipe, id: exists, ifelse, ifthen,
+  and, bind, defer, rest, getAt, seq, pipe, id: exists, ifelse, ifthen,
   slice, find
 } = window.fpx
 
@@ -32,6 +32,29 @@ function linksOff () {links.forEach(deactivate)}
 const reactivate = ifexists(seq(activate, scrollIntoViewIfNeeded))
 
 const update = pipe(findId, seq(updateHash, linksOff, pipe(getLink, reactivate)))
+
+const reachedScrollEdge = ifexists((elem, {deltaY}) => (
+  deltaY < 0 && reachedTop(elem) ||
+  deltaY > 0 && reachedBottom(elem)
+))
+
+const reachedTop = ifexists(({scrollTop}) => scrollTop < 3)
+
+const reachedBottom = ifexists(elem => (
+  Math.abs(elem.scrollHeight - absBottom(elem)) < 3
+))
+
+function absBottom (elem) {
+  return elem.getBoundingClientRect().height + elem.scrollTop
+}
+
+function findParent (test, node) {
+  return !node ? null : (test(node) ? node : findParent(test, node.parentNode))
+}
+
+function hasAttr (name, elem) {
+  return elem && elem.hasAttribute && elem.hasAttribute(name)
+}
 
 function tangible (elem) {
   const {height, width} = elem.getBoundingClientRect()
@@ -81,16 +104,24 @@ function throttle (fun, delay) {
         id = null
       }
       tail = false
-      apply(fun, arguments)
+      fun(...arguments)
     }, delay)
   }
 
   return function throttled () {
-    if (!id) id = apply(start, arguments)
+    if (!id) id = start(...arguments)
     else if (!tail) tail = true
   }
 }
 
 // Setup
 
-main.addEventListener('scroll', throttle(update, 250))
+window.addEventListener('scroll', throttle(update, 250))
+
+const hasNoSpill = bind(hasAttr, 'data-nospill')
+
+window.addEventListener('wheel', event => {
+  if (reachedScrollEdge(findParent(hasNoSpill, event.target), event)) {
+    event.preventDefault()
+  }
+})

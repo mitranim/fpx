@@ -36,49 +36,62 @@ one(100)
 
 ---
 
+### `maskBy(pattern, value)`
+
+Overlays `pattern` on `value`. The nature of the result depends on the provided
+pattern.
+
+```js
+// function -> apply as-is
+
+maskBy(isNumber, x)        =  isNumber(x)
+
+// primitive -> replace value
+
+maskBy(null, x)            =  null
+maskBy(1, x)               =  1
+maskBy(NaN, x)             =  NaN
+
+// regex -> call `RegExp.prototype.test`
+
+maskBy(/blah/, x)          =  /blah/.test(x)
+
+// list -> map to corresponding input properties, masking them
+
+maskBy([], x)              =  []
+maskBy([/blah/], x)        =  [/blah/.test(get(x, 0))]
+maskBy([/blah/, 'c'], x)   =  [/blah/.test(get(x, 0)), 'c']
+
+// dict -> map to corresponding input properties, masking them
+
+maskBy({}, x)              =  {}
+maskBy({one: /blah/}, x)   =  {one: /blah/.test(get(x, 'one'))}
+maskBy({two: isArray}, x)  =  {two: isArray(get(x, 'two'))}
+maskBy({a: {b: 'c'}}, x)   =  {a: {b: 'c'}}
+```
+
 ### `mask(pattern)`
 
-Returns a function that overlays `pattern` on any value. The nature of the
-result depends on the provided pattern.
-
-A function is already a mask:
+`curry1`-version of `maskBy`. Takes a pattern and returns a function that
+overlays that pattern on any value.
 
 ```js
-mask(isNumber)  =  isNumber
-```
+mask(isNumber)        =  isNumber
 
-A primitive becomes a function that always returns that primitive:
+mask(null)            =  val(null)
+mask(1)               =  val(1)
+mask(NaN)             =  val(NaN)
 
-```js
-mask(null)    =  val(null)
-mask(1)       =  val(1)
-mask(NaN)     =  val(NaN)
-mask(false)   =  val(false)
-mask('mask')  =  val('mask')
-```
+mask(/blah/)          =  x => /blah/.test(x)
 
-A regex produces a regex test:
+mask([])              =  _ => []
+mask([/blah/])        =  x => [/blah/.test(get(x, 0))]
+mask([/blah/, 'c'])   =  x => [/blah/.test(get(x, 0)), 'c']
 
-```js
-mask(/blah/)  =  x => /blah/.test(x)
-```
-
-A dictionary produces a mask that treats properties as masks in their own right
-(recursively), overlaying them and hiding other properties.
-
-```js
 mask({})              =  _ => ({})
 mask({one: /blah/})   =  x => ({one: /blah/.test(get(x, 'one'))})
 mask({two: isArray})  =  x => ({two: isArray(get(x, 'two'))})
 mask({a: {b: 'c'}})   =  x => ({a: {b: 'c'}})
-```
-
-A list mask is similar to a dictionary mask, but input and output are lists.
-
-```js
-mask([])             =  _ => []
-mask([/blah/])       =  x => [/blah/.test(get(x, 0))]
-mask([/blah/, 'c'])  =  x => [/blah/.test(get(x, 0)), 'c']
 ```
 
 ---

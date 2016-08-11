@@ -139,7 +139,10 @@ module.exports = [
   ),
 
   runWith(fpx.seq,
-    fnTest([],            fnTest([1],    undefined)),
+    fnTest([], tests(
+      fnTest([],  undefined),
+      fnTest([1], 1)
+    )),
     fnTest([add],         fnTest([1, 2], add(1, 2))),
     fnTest([add, double], fnTest([2, 3], double(2)))
   ),

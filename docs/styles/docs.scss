@@ -1,3 +1,22 @@
+/**
+ * Vars
+ */
+
+$fa-font-path: '/fonts';
+
+// http://brandcolors.net
+$color-github:  #4183c4;  // unverified
+$color-twitter: #55acee;  // verified
+
+$sf-font-weight: 300;
+$sf-body-max-width: none;
+
+$sf-rem: 12pt;
+
+/**
+ * Code Theme
+ */
+
 // Dark
 
 // @import './node_modules/highlight.js/styles/agate';
@@ -13,10 +32,138 @@
 // @import './node_modules/highlight.js/styles/github';
 // @import './node_modules/highlight.js/styles/idea';
 
-@import './_variables';
+/**
+ * Libs
+ */
 
 @import './node_modules/stylific-lite/scss/stylific-lite';
 @import './node_modules/stylific-lite/scss/classes';
 
-@import './fa';
-@import './misc';
+/**
+ * Icons
+ */
+
+@import './node_modules/font-awesome/scss/variables';
+@import './node_modules/font-awesome/scss/path';
+@import './node_modules/font-awesome/scss/core';
+
+.fa::before {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+}
+
+.fa.inline {
+  margin-right: $sf-space / 2;
+  &:last-child {margin-right: 0}
+}
+
+// wtf
+:not(:empty) .fa.inline:not(:first-child) {
+  margin-left: $sf-space / 2;
+}
+
+a.fa {
+  border: none;
+}
+
+.fa-arrow-up::before      {content: $fa-var-arrow-up}
+.fa-code::before          {content: $fa-var-code}
+.fa-github::before        {content: $fa-var-github}
+.fa-link::before          {content: $fa-var-link}
+.fa-twitter::before       {content: $fa-var-twitter}
+
+.fa-github, a.fa-github   {color: $color-github}
+.fa-twitter, a.fa-twitter {color: $color-twitter}
+
+/**
+ * Misc
+ */
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body > :not(#main):not(#sidenav) {
+  display: none;
+}
+
+body > #sidenav {
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  right: 80vw;
+  bottom: 0;
+  left: 0;
+  // Enables scroll
+  overflow: auto;
+}
+
+body > #main {
+  display: inline-block;
+  position: relative;
+  left: 20vw;
+  width: 80vw;
+}
+
+article code {
+  background-color: aliceblue;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-between {
+  justify-content: space-between;
+}
+
+.flex-stretch {
+  align-items: stretch;
+}
+
+.frb {
+  @extend .flex-row;
+  @extend .flex-between;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.list .list {
+  margin-left: $sf-space / 2;
+}
+
+.list a {
+  line-height: 1.6em;
+}
+
+.list a > * {
+  border-bottom: 1px dotted;
+}
+
+.list a:hover > *, .list a:focus > * {
+  border-bottom: 1px solid;
+}
+
+.list .active::after, .list a:hover::after {
+  content: '→';
+}
+
+.flex-1 {flex: 1}
+.flex-2 {flex: 2}
+.flex-3 {flex: 3}
+.flex-4 {flex: 4}
+
+// .hljs {
+//   background-color: rgba(255, 255, 0, 0.05);
+// }

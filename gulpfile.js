@@ -35,6 +35,8 @@ const testCommand = require('./package').scripts.test
 
 function noop () {}
 
+let testProc
+
 /* ********************************* Tasks ***********************************/
 
 /* ---------------------------------- Lib -----------------------------------*/
@@ -68,9 +70,15 @@ gulp.task('lib:minify', () => (
 ))
 
 gulp.task('lib:test', done => {
+  if (testProc) {
+    // Just started, let it finish
+    if (testProc.exitCode == null) return
+    testProc.kill()
+  }
+
   $.util.log('Test started')
 
-  exec(testCommand, (err, stdout, stderr) => {
+  testProc = exec(testCommand, (err, stdout, stderr) => {
     process.stdout.write(stdout)
     process.stderr.write(stderr)
 

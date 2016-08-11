@@ -6,12 +6,12 @@
 <link rel="stylesheet" href="styles/docs.css">
 <link rel="icon" href="data:;base64,=">
 
-<body class="fix-full flex-row flex-between flex-stretch">
-  <div id="sidenav" class="sidenav pad scroll-y flex-1">
+<body>
+  <div id="sidenav" class="pad" data-nospill>
     {{include('partials/sidenav.html')}}
   </div>
 
-  <article id="main" class="pad scroll-y flex-4">
+  <article id="main" class="pad">
     {{include('partials/overview.md')}}
     {{include('partials/fun.md')}}
     {{include('partials/bool.md')}}

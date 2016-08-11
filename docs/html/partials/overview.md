@@ -7,9 +7,9 @@
 
 Similar to `lodash`, but more lightweight and specialised. Differences:
 
-* One small file (5 KB minified, compare with 67 KB in lodash 4.0)
+* One small file (6 KB minified, compare with 67 KB in lodash 4.0)
 * Richer functional programming utils
-* Poorer data manipulation utils (complement this with <a href="https://github.com/Mitranim/emerge" target="_blank">Emerge <span class="fa fa-github"></span></a>)
+* Fewer data manipulation utils (relegated to <a href="https://github.com/Mitranim/emerge" target="_blank">Emerge <span class="fa fa-github"></span></a>)
 * Emphasis on simplicity of source code
 * Not a kitchen sink for everything
 

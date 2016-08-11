@@ -27,7 +27,7 @@ list(1, [2])
 Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank">`Array#reduce`</a>,
 but with an FP-friendly argument order, more suitable for currying and partial
-application.
+application. The accumulator argument is mandatory.
 
 ```js
 foldl(add, 10, [1, 2, 3])
@@ -40,7 +40,7 @@ foldl(add, 10, [1, 2, 3])
 
 Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight" target="_blank">`Array#reduceRight`</a>,
-but with an FP-friendly argument order.
+but with an FP-friendly argument order. The accumulator argument is mandatory.
 
 ```js
 foldr(sub, 100, [1, 5, 20])
@@ -98,7 +98,7 @@ find(test({val: id}), [{val: 0}, null, {val: 1}])
 
 ### `includes(list, value)`
 
-Similar to
+Similar to ES2015's
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes" target="_blank">`Array#includes`</a>.
 
 ```js

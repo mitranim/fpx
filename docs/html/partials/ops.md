@@ -58,7 +58,7 @@ sub(2, 1)
 
 ### `inc(num)`
 
-Increments `num` by `1`.
+Increments by `1`.
 
 ```js
 inc(1)
@@ -69,7 +69,7 @@ inc(1)
 
 ### `dec(num)`
 
-Decrements `num` by `1`.
+Decrements by `1`.
 
 ```js
 dec(2)
