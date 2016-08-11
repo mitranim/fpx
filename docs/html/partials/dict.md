@@ -2,7 +2,7 @@
 
 ## Dict
 
-Utils for dealing with properties and dictionaries ("objects").
+Utils for dealing with dictionaries ("objects") and properties in general.
 
 ---
 

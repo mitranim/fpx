@@ -129,8 +129,7 @@ Promise.reject(Error('fail')).catch(pipe(log, rethrow))
 If `value` doesn't satisfy the provided `test` function, raises an exception
 with a message including `test`'s name and the failing value.
 
-Convenient and minification-friendly way to assert values. Used internally for
-most assertions. Exported because why not.
+Convenient and minification-friendly way to assert values.
 
 ```js
 validate(isFunction, x => x)
@@ -144,8 +143,7 @@ validate(isFunction, 1)
 
 ### `validateEach(test, list)`
 
-Same as `validate` but asserts each value in the provided `list`. Used
-internally for multi-argument assertions.
+Same as `validate` but asserts each value in the provided `list`.
 
 ```js
 validateEach(isFunction, [x => x])

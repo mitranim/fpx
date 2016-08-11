@@ -11,8 +11,8 @@ Boolean tests.
 Same as ES2015's
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is" target="_blank">`Object.is`</a>. Like `===` but considers `NaN` equal to itself.
 
-Used internally for primitive equality tests. Recommended over `===` in most
-practical scenarios.
+Used internally for identity tests. Recommended over `===` in most practical
+scenarios.
 
 ```js
 is(1, '1')
@@ -254,7 +254,7 @@ pattern.
 
 testBy(inc, 10)       =  11
 
-// primitive -> exact equality via `is`
+// primitive -> test for identity via `is`
 
 testBy(null, x)       =  is(null, x)
 testBy(1, x)          =  is(1, x)

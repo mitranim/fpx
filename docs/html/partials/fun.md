@@ -219,11 +219,8 @@ x('1')
 Like `ifelse` but returns the first argument when `test` fails.
 
 ```js
-// this:
 ifonly(test, fun)
-
-// is equivalent to:
-ifelse(test, fun, x => x)
+// = ifelse(test, fun, x => x)
 
 const x = ifonly(isNumber, inc)
 
@@ -251,28 +248,27 @@ clause. When given an even number of args, "else" is a no-op that returns
 The resulting function finds an operator by testing arguments against
 predicates, and returns the operator's result.
 
-In these examples, all arguments to `cond` are functions. See the equivalent
-versions expressed with `ifelse/ifthen`.
+In these examples, all arguments to `cond` are functions. Comments show
+equivalent versions expressed with `ifelse/ifthen`.
 
 ```js
 cond()
-// () => undefined
+// = noop
 
-cond(isPositive)
-// isPositive
+cond(isNumber)
+// = isNumber
 
-cond(isPositive, dec)
-// ifthen(isPositive, dec)
+cond(isNumber, dec)
+// = ifthen(isNumber, dec)
 
-cond(isPositive, dec, inc)
-// ifelse(isPositive, dec, inc)
+cond(isNumber, dec, inc)
+// = ifelse(isNumber, dec, inc)
 
 const x = cond(
   isNumber,  inc,
-  isBoolean, no,
-  noop
+  isBoolean, no
 )
-// ifelse(isNumber, inc, ifelse(isBoolean, no, noop))
+// = ifelse(isNumber, inc, ifelse(isBoolean, no, noop))
 
 x(1)
 // inc(1) = 2
@@ -291,8 +287,7 @@ x([])
 Returns a new function that represents
 <a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
 of the given functions, a common tool in functional programming. When called, it
-passes all arguments to the first function, and pipes the output through the
-rest.
+passes all arguments to the first function and pipes the output through the rest.
 
 Flows values left-to-right, in the direction of reading. See
 [`comp`](#-comp-funs-) for the opposite direction.
@@ -306,7 +301,7 @@ const x = pipe(add, double)
 
 x(1, 2)
 // 6
-// Same as double(add(1, 2))
+// = double(add(1, 2))
 ```
 
 ---
@@ -317,7 +312,7 @@ Returns a new function that represents
 <a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
 of the given functions.
 
-Flows values right-to-left, symmetrical to normal nested function calls. See
+Flows values right-to-left, similarly to direct nested function calls. See
 [`pipe`](#-pipe-funs-) for the opposite direction.
 
 ```js
@@ -327,7 +322,7 @@ const x = comp(double, add)
 
 x(1, 2)
 // 6
-// Same as double(add(1, 2))
+// = double(add(1, 2))
 ```
 
 ---
