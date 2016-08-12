@@ -72,8 +72,8 @@ maskBy({a: {b: 'c'}}, x)   =  {a: {b: 'c'}}
 
 ### `mask(pattern)`
 
-`curry1`-version of `maskBy`. Takes a pattern and returns a function that
-overlays that pattern on any value.
+`curry1`-version of [`maskBy`](#-maskby-pattern-value-). Takes a pattern and
+returns a function that overlays that pattern on any value.
 
 ```js
 mask(isNumber)        =  isNumber

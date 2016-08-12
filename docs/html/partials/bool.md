@@ -284,8 +284,8 @@ test({a: {b: 'c'}})   =  isObject(x) && isObject(x.a) && is(x.a.b, 'c')
 
 ### `test(pattern)`
 
-`curry1`-version of `testBy`. Takes a pattern and returns a function that tests
-any value against that pattern.
+`curry1`-version of [`testBy`](#-testby-pattern-value-). Takes a pattern and
+returns a function that tests any value against that pattern.
 
 ```js
 test(isNumber)        =  isNumber
