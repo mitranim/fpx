@@ -23,7 +23,9 @@ const findId = pipe(bind(find, hasVisibleId, targets), getf('id'))
 
 const ifexists = bind(ifthen, exists)
 
-const getLink = ifexists(id => find(bind(matchHref, id), links))
+const getLink = ifexists(function getLink (id) {
+  return find(bind(matchHref, id), links)
+})
 
 const updateHash = ifelse(exists, setHash, unsetHash)
 
@@ -33,16 +35,18 @@ const reactivate = ifexists(seq(activate, scrollIntoViewIfNeeded))
 
 const update = pipe(findId, seq(updateHash, linksOff, pipe(getLink, reactivate)))
 
-const reachedScrollEdge = ifexists((elem, {deltaY}) => (
-  deltaY < 0 && reachedTop(elem) ||
-  deltaY > 0 && reachedBottom(elem)
-))
+const reachedScrollEdge = ifexists(function reachedScrollEdge (elem, {deltaY}) {
+  return (
+    deltaY < 0 && reachedTop(elem) ||
+    deltaY > 0 && reachedBottom(elem)
+  )
+})
 
-const reachedTop = ifexists(({scrollTop}) => scrollTop < 3)
+const reachedTop = ifexists(function reachedTop ({scrollTop}) {return scrollTop < 3})
 
-const reachedBottom = ifexists(elem => (
-  Math.abs(elem.scrollHeight - absBottom(elem)) < 3
-))
+const reachedBottom = ifexists(function reachedBottom (elem) {
+  return Math.abs(elem.scrollHeight - absBottom(elem)) < 3
+})
 
 function absBottom (elem) {
   return elem.getBoundingClientRect().height + elem.scrollTop
@@ -98,7 +102,7 @@ function throttle (fun, delay) {
   let tail = false
 
   function start () {
-    return setInterval(() => {
+    return setInterval(function runThrottled () {
       if (!tail) {
         clearInterval(id)
         id = null
@@ -120,7 +124,7 @@ window.addEventListener('scroll', throttle(update, 250))
 
 const hasNoSpill = bind(hasAttr, 'data-nospill')
 
-window.addEventListener('wheel', event => {
+window.addEventListener('wheel', function preventSpill (event) {
   if (reachedScrollEdge(findParent(hasNoSpill, event.target), event)) {
     event.preventDefault()
   }
