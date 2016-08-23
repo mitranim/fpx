@@ -31,7 +31,7 @@ module.exports = [
     fnTest([[/text/, 1], args('text', 2)], [true, 1]),
 
     fnTest([{text: /text/, one: 1}],                         {text: false, one: 1}),
-    fnTest([{text: /text/, one: 1}, {text: 'text', one: 2}], {text: true, one: 1})
+    fnTest([{text: /text/, one: 1}, {text: 'text', one: 2}], {text: true,  one: 1})
   ),
 
   // This array of tests is now redundant, should probably remove.
