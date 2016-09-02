@@ -193,8 +193,9 @@ isRegExp(/blah/)
 
 True if the value
 <a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank">quacks</a>
-like an ES2015 promise. The value doesn't have to belong to any specific
-`Promise` implementation, native or otherwise.
+like an ES2015
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">`Promise`</a>.
+The value doesn't have to belong to any specific promise implementation, native or otherwise.
 
 ```js
 isPromise(Promise.resolve('test'))

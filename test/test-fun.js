@@ -41,6 +41,9 @@ module.exports = [
   runWith(fpx.and,
     fnTest([], fnTest([1], 1)),
 
+    // Must always call first fun
+    fnTest([Boolean], fnTest([null], false)),
+
     fnTest([add, double], tests(
       // both
       fnTest([2, 3],  add(2, 3) && double(2, 3)),
@@ -53,6 +56,9 @@ module.exports = [
 
   runWith(fpx.or,
     fnTest([], fnTest([1], 1)),
+
+    // Must always call first fun
+    fnTest([double], fnTest([1], 2)),
 
     fnTest([add, double], tests(
       // neither

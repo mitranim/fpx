@@ -168,9 +168,9 @@ module.exports = [
     fnTest([[1], args(1)], true),
     fnTest([[1], {0: 1}],  false),
 
-    fnTest([{}, {}],  true),
-    fnTest([{}, [1]], true),
-    fnTest([{}, ],    false),
+    fnTest([{}, {}],        true),
+    fnTest([{}, [1]],       true),
+    fnTest([{}, undefined], false),
 
     fnTest([{nan: isNaN}, {}],                 true),
     fnTest([{nan: isNaN}, {nan: NaN, one: 1}], true),

@@ -329,9 +329,13 @@ x(1, 2)
 
 ### `seq(...funs)`
 
-Returns a new function that runs the given functions independently from each
-other, passing all arguments to each and returning the result of the last one.
-Useful for combining operations that have side effects.
+Represents the
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator" target="_blank">`,`</a>
+operator in terms of functions rather than expressions.
+
+Returns a new function that runs the given functions in order, passing the same
+arguments to each, returning the result of the last one. Useful for combining
+operations that have side effects.
 
 ```js
 function first (a, b) {
@@ -355,8 +359,8 @@ x(1, 2)
 ### `pipeAnd(...funs)`
 
 Same as [`pipe`](#-pipe-funs-) but inserts `&&` between function calls. If one
-of the chained functions returns a falsy value, other functions are not invoked.
-Useful for composing functions that expect truthy values.
+of the chained functions returns a falsy value, others are not invoked. Useful
+for composing functions that expect truthy values.
 
 ```js
 function getOne (a) {return a.one}
@@ -376,8 +380,8 @@ x({one: NaN})
 ### `compAnd(...funs)`
 
 Same as [`comp`](#-comp-funs-) but inserts `&&` between function calls. If one
-of the chained functions returns a falsy value, other functions are not invoked.
-Useful for composing functions that expect truthy values.
+of the chained functions returns a falsy value, others are not invoked. Useful
+for composing functions that expect truthy values.
 
 ```js
 function getOne (a) {return a.one}

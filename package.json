@@ -1,12 +1,12 @@
 {
   "name": "fpx",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Functional programming extensions for JavaScript",
   "main": "dist/fpx.js",
   "scripts": {
     "start": "gulp",
     "test": "node test/test",
-    "prepublish": "gulp build && node test/test",
+    "prepublish": "gulp build",
     "push-docs": "gulp build && (cd gh-pages && git add -A . && git commit -a -m autocommit && git push origin gh-pages)"
   },
   "keywords": [
@@ -14,7 +14,8 @@
     "fp"
   ],
   "authors": [
-    "Mitranim <me@mitranim.com>"
+    "Mitranim <me@mitranim.com>",
+    "Yury Egorenkov <yury.egorenkov@gmail.com>"
   ],
   "license": "MIT",
   "repository": {
