@@ -6,6 +6,38 @@ Boolean tests.
 
 ---
 
+### `truthy(value)`
+
+Aliases: `truthy`, `bool`.
+
+Same as `!!`.
+
+```js
+truthy(null)
+// false
+
+truthy(1)
+// true
+```
+
+---
+
+### `falsy(value)`
+
+Aliases: `falsy`, `negate`.
+
+Same as `!`.
+
+```js
+falsy(null)
+// true
+
+falsy(1)
+// false
+```
+
+---
+
 ### `is(one, other)`
 
 Same as ES2015's
@@ -102,9 +134,12 @@ isFunction(isFunction)
 
 ### `isObject(value)`
 
-True if `value` has the type `'object'` and isn't `null`. This covers arrays,
-regexes, user-defined classes, DOM nodes, and so on. Doesn't consider functions
-to be objects, even though technically they are.
+True if `value` has the type `'object'` and isn't `null`. This includes plain
+dicts, arrays, regexes, user-defined "classes", built-in classes, and so on.
+Doesn't count functions as objects, even though _technically_ they are.
+
+Note: this is _not_ equivalent to lodash's `_.isObject`, which counts functions
+as objects.
 
 ```js
 isObject('blah')
@@ -125,22 +160,24 @@ isObject(() => {})
 
 ---
 
-### `isPlainObject(value)`
+### `isDict(value)`
+
+Aliases: `isDict`, `isPlainObject`.
 
 True if `value` is a normal, honest-to-goodness dictionary and not something
 fancy-shmancy.
 
 ```js
-isPlainObject({})
+isDict({})
 // true
 
-isPlainObject(Object.create(null))
+isDict(Object.create(null))
 // true
 
-isPlainObject(Object.create({}))
+isDict(Object.create({}))
 // false
 
-isPlainObject([])
+isDict([])
 // false
 ```
 
@@ -329,4 +366,87 @@ x('test')
 
 x({type: 'double', value: 10})
 // 20
+```
+
+---
+
+### `testAnd(...patterns)`
+
+Converts each pattern to a [`test`](#-test-pattern-) and composes them with
+[`and`](#-and-funs-). The resulting function will test its argument against
+each pattern and decide if it matches all of them.
+
+```js
+const x = testAnd(isString, /10/)
+
+/10/.test(1001)
+// true
+
+x(1001)
+// testBy(isString, 1001)  =  false
+
+x('1001')
+// testBy(isString, '1001') && testBy(/10/, '1001')  =  true
+```
+
+---
+
+### `testOr(...patterns)`
+
+Converts each pattern to a [`test`](#-test-pattern-) and composes them with
+[`or`](#-or-funs-). The resulting function will test its argument against
+each pattern and decide if it matches some of them.
+
+```js
+const x = testOr(truthy, 0)
+
+x(null)
+// testBy(truthy, null) || testBy(0, null)  =  false
+
+x(1)
+// testBy(truthy, 1)  =  false
+
+x(0)
+// testBy(truthy, 0) || testBy(0, 0)  =  true
+```
+
+---
+
+### `testArgsAnd(...patterns)`
+
+Similar to [`testAnd`](#-testand-patterns-) but applies tests _positionally_:
+first pattern to first argument, second pattern to second argument, and so on.
+The resulting function returns `true` if every pattern matches its argument, and
+`false` otherwise.
+
+```js
+const x = testArgsAnd(isFinite, isFinite)
+
+x(10, Infinity)
+// testBy(isFinite, 10) && testBy(isFinite, Infinity)  =  false
+
+x(10, 20)
+// testBy(isFinite, 10) && testBy(isFinite, 20)  =  true
+```
+
+---
+
+### `testArgsOr(...patterns)`
+
+Similar to [`testOr`](#-testor-patterns-) but applies tests _positionally_:
+first pattern to first argument, second pattern to second argument, and so on.
+The resulting function returns `true` if at least one pattern matches its
+argument, and `false` otherwise.
+
+```js
+const x = testArgsOr(isFinite, /test/)
+
+x(null, 100)
+// testBy(isFinite, null) || testBy(/test/, 100)  =  false
+
+x(10, 100)
+// testBy(isFinite, 10)  =  true
+
+x(null, 'test')
+// testBy(isFinite, null) || testBy(/test/, 'test')  =  true
 ```

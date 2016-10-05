@@ -3,11 +3,11 @@
 /**
  * Testing Microframework
  *
- * TODO move to `https://github.com/Mitranim/test`
+ * TODO move this to `https://github.com/Mitranim/test`
  */
 
 const {isFunction, inspect} = require('util')
-const {deepEqual} = require('emerge')
+const {equal} = require('emerge')
 
 // type Details = {error}
 // type Context = [Details]
@@ -68,7 +68,7 @@ function runPredicate (predicate, value) {
   if (isFunction(predicate)) return predicate(value)
 
   return report(
-    deepEqual(predicate, value),
+    equal(predicate, value),
     {error:
 `Expected: ${blue(show(predicate))}
 Got:      ${red(show(value))}`}

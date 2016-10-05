@@ -4,28 +4,6 @@ const {runWith, fnTest} = require('./utils')
 const fpx = require('../lib/fpx')
 
 module.exports = [
-  runWith(fpx.yes,
-    fnTest([],   !!undefined),
-    fnTest([],   false),
-    fnTest([0],  !!0),
-    fnTest([0],  false),
-    fnTest([''], !!''),
-    fnTest([''], false),
-    fnTest([1],  !!1),
-    fnTest([1],  true)
-  ),
-
-  runWith(fpx.no,
-    fnTest([],   !undefined),
-    fnTest([],   true),
-    fnTest([0],  !0),
-    fnTest([0],  true),
-    fnTest([''], !''),
-    fnTest([''], true),
-    fnTest([1],  !1),
-    fnTest([1],  false)
-  ),
-
   runWith(fpx.add,
     fnTest([],       undefined + undefined),
     fnTest(['7', 3], '7' + 3),
@@ -36,6 +14,18 @@ module.exports = [
     fnTest([],       undefined - undefined),
     fnTest(['7', 3], '7' - 3),
     fnTest([7, 3],   7 - 3)
+  ),
+
+  runWith(fpx.mul,
+    fnTest([],       undefined * undefined),
+    fnTest(['7', 3], '7' * 3),
+    fnTest([7, 3],   7 * 3)
+  ),
+
+  runWith(fpx.div,
+    fnTest([],       undefined / undefined),
+    fnTest(['7', 3], '7' / 3),
+    fnTest([7, 3],   7 / 3)
   ),
 
   runWith(fpx.inc,

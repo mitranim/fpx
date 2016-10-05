@@ -73,6 +73,44 @@ incMany([1, 2, 3])
 
 ---
 
+### `defer(fun, ...args)`
+
+Similar to
+<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">curry</a>,
+but the original function is invoked after exactly two calls, regardless of
+how many arguments were passed. Extra arguments passed to `defer` are prepended
+to the rest.
+
+Note this is completely different from lodash's `_.defer` (which is basically
+`setTimeout`).
+
+```js
+function add3 (a, b, c) {return a + b + c}
+
+const addf = defer(add3)
+
+// is equivalent to:
+function addf () {
+  return bind(add3, ...arguments)
+}
+
+addf(1, 2, 3)()
+// 6
+
+addf(1, 2)(3)
+// 6
+
+addf(1)(2, 3)
+// 6
+
+// with curry, this would have returned an intermediary function
+// with defer, two calls always reach the original
+addf(1)(2)
+// NaN
+```
+
+---
+
 ### `flip(fun)`
 
 Returns a function that passes its arguments to `fun` in reverse.
@@ -295,7 +333,7 @@ Flows values left-to-right, in the direction of reading. See
 Equivalent to lodash's `_.flow`.
 
 ```js
-function double (a) {return a * 2}
+const double = bind(mul, 2)
 
 const x = pipe(add, double)
 
@@ -316,7 +354,7 @@ Flows values right-to-left, similarly to direct nested function calls. See
 [`pipe`](#-pipe-funs-) for the opposite direction.
 
 ```js
-function double (a) {return a * 2}
+const double = bind(mul, 2)
 
 const x = comp(double, add)
 
@@ -416,44 +454,6 @@ x(1, 2)
 
 ---
 
-### `defer(fun, ...args)`
-
-Similar to
-<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">curry</a>,
-but the original function is invoked after exactly two calls, regardless of
-how many arguments were passed. Extra arguments passed to `defer` are prepended
-to the rest.
-
-Note this is completely different from lodash's `_.defer` (which is basically
-`setTimeout`).
-
-```js
-function add3 (a, b, c) {return a + b + c}
-
-const addf = defer(add3)
-
-// is equivalent to:
-function addf () {
-  return bind(add3, ...arguments)
-}
-
-addf(1, 2, 3)()
-// 6
-
-addf(1, 2)(3)
-// 6
-
-addf(1)(2, 3)
-// 6
-
-// with curry, this would have returned an intermediary function
-// with defer, two calls always reach the original
-addf(1)(2)
-// NaN
-```
-
----
-
 ### `rest(fun)`
 
 Returns a function that collects its arguments and passes them to `fun` as the
@@ -486,4 +486,70 @@ spread(sum)([1, 2, 3])
 // same without spread:
 sum(1, 2, 3)
 // 6
+```
+
+---
+
+### `alter(fun, ...args)`
+
+Spiritual complement of [`bind`](#-bind-fun-args-). Creates a function that
+takes one value and calls `fun` with that value and `...args`. Useful for
+transforms where arguments `1..N` are known in advance. The resulting function
+ignores all arguments after the first.
+
+```js
+const sum = bind(foldl, 0, add)
+
+const x = alter(sum, 10, 20)
+
+x(1)
+// sum(1, 10, 20) = 31
+
+x(1, 'ignored arg')
+// sum(1, 10, 20) = 31
+```
+
+---
+
+### `revise(transforms, fun)`
+
+Creates a function that will revise its arguments before calling `fun`.
+`transforms` is a list of functions that are used to rewrite the corresponding
+arguments, positionally. The resulting function ignores arguments beyond the
+available transforms.
+
+```js
+const double = bind(mul, 2)
+
+const x = revise([inc, double], add)
+
+x(10, 20)
+// add(inc(10), double(20)) = add(11, 40) = 51
+
+x(10, 20, 'ignored arg')
+// add(inc(10), double(20)) = add(11, 40) = 51
+```
+
+---
+
+### `fanout(transforms, fun)`
+
+Creates a function that will magnify its inputs before calling `fun`.
+`transforms` is a list of functions that are called with _all_ available
+arguments; the list of their results is then spread over `fun`.
+
+```js
+const sum = bind(foldl, 0, add)
+
+const a = fanout([add, sub], sum)
+
+a(10, 20)
+// sum(add(10, 20), sub(10, 20)) = sum(30, -10) = 20
+
+const double = bind(mul, 2)
+
+const b = fanout([double, double], sum)
+
+b(10)
+// sum(double(10), double(10)) = sum(20, 20) = 40
 ```

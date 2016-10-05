@@ -11,8 +11,19 @@ Uncategorised utils.
 Identity function: returns its argument unchanged. Useful in boolean contexts.
 
 ```js
-id(1)
-// 1
+id('first', 'second', 'third')
+// 'first'
+```
+
+---
+
+### `di(_, value)`
+
+Returns its _second_ argument unchanged. Useful in function composition contexts.
+
+```js
+di('first', 'second', 'third')
+// 'second'
 ```
 
 ---

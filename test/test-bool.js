@@ -5,12 +5,42 @@
 const {runWith, fnTest, tests} = require('./utils')
 const fpx = require('../lib/fpx')
 
+/**
+ * TODO
+ *   testAnd
+ *   testOr
+ *   testArgsAnd
+ *   testArgsOr
+ */
+
 function id (a)  {return a}
 function args () {return arguments}
 
 const {create} = Object
 
 module.exports = [
+  runWith(fpx.truthy,
+    fnTest([],   !!undefined),
+    fnTest([],   false),
+    fnTest([0],  !!0),
+    fnTest([0],  false),
+    fnTest([''], !!''),
+    fnTest([''], false),
+    fnTest([1],  !!1),
+    fnTest([1],  true)
+  ),
+
+  runWith(fpx.falsy,
+    fnTest([],   !undefined),
+    fnTest([],   true),
+    fnTest([0],  !0),
+    fnTest([0],  true),
+    fnTest([''], !''),
+    fnTest([''], true),
+    fnTest([1],  !1),
+    fnTest([1],  false)
+  ),
+
   runWith(fpx.is,
     fnTest([],             true),
     fnTest([NaN, NaN],     true),
@@ -83,7 +113,7 @@ module.exports = [
     fnTest([create({})],   true)
   ),
 
-  runWith(fpx.isPlainObject,
+  runWith(fpx.isDict,
     fnTest([],             false),
     fnTest([null],         false),
     fnTest([id],           false),

@@ -6,41 +6,13 @@ Operator-style functions.
 
 ---
 
-### `yes(value)`
-
-Same as `!!`.
-
-```js
-yes(null)
-// false
-
-yes(1)
-// true
-```
-
----
-
-### `no(value)`
-
-Same as `!`.
-
-```js
-no(null)
-// true
-
-no(1)
-// false
-```
-
----
-
 ### `add(a, b)`
 
 Same as `+`.
 
 ```js
 add(1, 2)
-// 3
+// 1 + 2 = 3
 ```
 
 ---
@@ -51,7 +23,29 @@ Same as `-`.
 
 ```js
 sub(2, 1)
-// 1
+// 2 - 1 = 1
+```
+
+---
+
+### `mul(a, b)`
+
+Same as `*`.
+
+```js
+mul(10, 20)
+// 10 * 20 = 200
+```
+
+---
+
+### `div(a, b)`
+
+Same as `/`.
+
+```js
+div(10, 20)
+// 10 / 20 = 0.5
 ```
 
 ---
@@ -62,7 +56,7 @@ Increments by `1`.
 
 ```js
 inc(1)
-// 2
+// 1 + 1 = 2
 ```
 
 ---
@@ -73,5 +67,5 @@ Decrements by `1`.
 
 ```js
 dec(2)
-// 1
+// 2 - 1 = 1
 ```

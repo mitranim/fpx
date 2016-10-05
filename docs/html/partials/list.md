@@ -56,7 +56,7 @@ Like
 but with an FP-friendly argument order.
 
 ```js
-function double (a) {return a * 2}
+const double = bind(mul, 2)
 
 map(double, [1, 2, 3])
 // [2, 4, 6]
@@ -95,6 +95,56 @@ find(test({val: id}), [{val: 0}, null, {val: 1}])
 ```
 
 ---
+
+### `every(test, list)`
+
+Like
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every" target="_blank">`Array#every`</a>,
+but with an FP-friendly argument order.
+
+```js
+every(isBoolean, [])
+// true
+
+every(isBoolean, [true, false])
+// true
+
+every(isBoolean, [true, false, 10, 20])
+// false
+```
+
+---
+
+### `some(test, list)`
+
+Like
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some" target="_blank">`Array#some`</a>,
+but with an FP-friendly argument order.
+
+```js
+some(isBoolean, [])
+// false
+
+some(isBoolean, [10, 20])
+// false
+
+some(isBoolean, [true, false, 10, 20])
+// true
+```
+
+---
+
+### `procure(fun, list)`
+
+Similar to [`find`](#-find-test-list-), but returns the result of `fun` rather
+than the element it was called on.
+
+```js
+const double = bind(mul, 2)
+
+procure(double, [0, 0, 10, 100])
+// double(10) = 20
+```
 
 ### `includes(list, value)`
 
@@ -172,6 +222,35 @@ original list.
 ```js
 remove(['one', 'two', 'three'], 'two')
 // ['one', 'three']
+```
+
+---
+
+### `adjoin(list, value)`
+
+Appends `value` to `list`, duplicate-free. Returns the same `list` if it already
+[`includes`](#-includes-list-value-) `value`.
+
+```js
+adjoin([10, 20], 30)
+// [10, 20, 30]
+
+adjoin([10, 20, 30], 20)
+// [10, 20, 30]
+```
+
+---
+
+### `toggle(list, value)`
+
+Appends or removes `value`, depending on whether it's already included.
+
+```js
+toggle([10, 20], 30)
+// [10, 20, 30]
+
+toggle([10, 20, 30], 30)
+// [10, 20]
 ```
 
 ---

@@ -14,6 +14,7 @@
     <a href="#-call-fun-args-" class="frb"><code>call</code></a>
     <a href="#-apply-fun-args-" class="frb"><code>apply</code></a>
     <a href="#-bind-fun-args-" class="frb"><code>bind</code></a>
+    <a href="#-defer-fun-args-" class="frb"><code>defer</code></a>
     <a href="#-flip-fun-" class="frb"><code>flip</code></a>
     <a href="#-and-funs-" class="frb"><code>and</code></a>
     <a href="#-or-funs-" class="frb"><code>or</code></a>
@@ -28,13 +29,19 @@
     <a href="#-pipeand-funs-" class="frb"><code>pipeAnd</code></a>
     <a href="#-compand-funs-" class="frb"><code>compAnd</code></a>
     <a href="#-juxt-funs-" class="frb"><code>juxt</code></a>
-    <a href="#-defer-fun-args-" class="frb"><code>defer</code></a>
     <a href="#-rest-fun-" class="frb"><code>rest</code></a>
     <a href="#-spread-fun-" class="frb"><code>spread</code></a>
+    <a href="#-alter-fun-args-" class="frb"><code>alter</code></a>
+    <a href="#-revise-transforms-fun-" class="frb"><code>revise</code></a>
+    <a href="#-fanout-transforms-fun-" class="frb"><code>fanout</code></a>
   </div>
 
   <a href="#bool" class="frb"><span>Bool</span></a>
   <div class="list flex-col flex-stretch">
+    <a href="#-truthy-value-" class="frb"><code>truthy</code></a>
+    <a href="#-truthy-value-" class="frb opacity-40 margin-left"><code>bool</code></a>
+    <a href="#-falsy-value-" class="frb"><code>falsy</code></a>
+    <a href="#-falsy-value-" class="frb opacity-40 margin-left"><code>negate</code></a>
     <a href="#-is-one-other-" class="frb"><code>is</code></a>
     <a href="#-isnumber-value-" class="frb"><code>isNumber</code></a>
     <a href="#-isfinite-value-" class="frb"><code>isFinite</code></a>
@@ -44,7 +51,8 @@
     <a href="#-issymbol-value-" class="frb"><code>isSymbol</code></a>
     <a href="#-isfunction-value-" class="frb"><code>isFunction</code></a>
     <a href="#-isobject-value-" class="frb"><code>isObject</code></a>
-    <a href="#-isplainobject-value-" class="frb"><code>isPlainObject</code></a>
+    <a href="#-isdict-value-" class="frb"><code>isDict</code></a>
+    <a href="#-isdict-value-" class="frb opacity-40 margin-left"><code>isPlainObject</code></a>
     <a href="#-isarray-value-" class="frb"><code>isArray</code></a>
     <a href="#-islist-value-" class="frb"><code>isList</code></a>
     <a href="#-isregexp-value-" class="frb"><code>isRegExp</code></a>
@@ -53,6 +61,10 @@
     <a href="#-isnil-value-" class="frb"><code>isNil</code></a>
     <a href="#-testby-pattern-value-" class="frb"><code>testBy</code></a>
     <a href="#-test-pattern-" class="frb"><code>test</code></a>
+    <a href="#-testand-patterns-" class="frb"><code>testAnd</code></a>
+    <a href="#-testor-patterns-" class="frb"><code>testOr</code></a>
+    <a href="#-testargsand-patterns-" class="frb"><code>testArgsAnd</code></a>
+    <a href="#-testargsor-patterns-" class="frb"><code>testArgsOr</code></a>
   </div>
 
   <a href="#list" class="frb"><span>List</span></a>
@@ -63,12 +75,17 @@
     <a href="#-map-fun-list-" class="frb"><code>map</code></a>
     <a href="#-filter-test-list-" class="frb"><code>filter</code></a>
     <a href="#-find-test-list-" class="frb"><code>find</code></a>
+    <a href="#-every-test-list-" class="frb"><code>every</code></a>
+    <a href="#-some-test-list-" class="frb"><code>some</code></a>
+    <a href="#-procure-fun-list-" class="frb"><code>procure</code></a>
     <a href="#-includes-list-value-" class="frb"><code>includes</code></a>
     <a href="#-indexof-list-value-" class="frb"><code>indexOf</code></a>
     <a href="#-slice-value-start-end-" class="frb"><code>slice</code></a>
     <a href="#-append-list-value-" class="frb"><code>append</code></a>
     <a href="#-prepend-list-value-" class="frb"><code>prepend</code></a>
     <a href="#-remove-list-value-" class="frb"><code>remove</code></a>
+    <a href="#-adjoin-list-value-" class="frb"><code>adjoin</code></a>
+    <a href="#-toggle-list-value-" class="frb"><code>toggle</code></a>
     <a href="#-flat-list-" class="frb"><code>flat</code></a>
     <a href="#-head-list-" class="frb"><code>head</code></a>
     <a href="#-tail-list-" class="frb"><code>tail</code></a>
@@ -86,12 +103,18 @@
     <a href="#-mapkeys-fun-value-" class="frb"><code>mapKeys</code></a>
   </div>
 
+  <a href="#coll" class="frb"><span>Coll</span></a>
+  <div class="list flex-col flex-stretch">
+    <a href="#-keys-value-" class="frb"><code>keys</code></a>
+    <a href="#-size-value-" class="frb"><code>size</code></a>
+  </div>
+
   <a href="#ops" class="frb"><span>Ops</span></a>
   <div class="list flex-col flex-stretch">
-    <a href="#-yes-value-" class="frb"><code>yes</code></a>
-    <a href="#-no-value-" class="frb"><code>no</code></a>
     <a href="#-add-a-b-" class="frb"><code>add</code></a>
     <a href="#-sub-a-b-" class="frb"><code>sub</code></a>
+    <a href="#-mul-a-b-" class="frb"><code>mul</code></a>
+    <a href="#-div-a-b-" class="frb"><code>div</code></a>
     <a href="#-inc-num-" class="frb"><code>inc</code></a>
     <a href="#-dec-num-" class="frb"><code>dec</code></a>
   </div>
@@ -99,6 +122,7 @@
   <a href="#misc" class="frb"><span>Misc</span></a>
   <div class="list flex-col flex-stretch">
   <a href="#-id-value-" class="frb"><code>id</code></a>
+  <a href="#-di-_-value-" class="frb"><code>di</code></a>
     <a href="#-val-value-" class="frb"><code>val</code></a>
     <a href="#-maskby-pattern-value-" class="frb"><code>maskBy</code></a>
     <a href="#-mask-pattern-" class="frb"><code>mask</code></a>

@@ -3,15 +3,17 @@
 const {runWith, fnTest, tests} = require('./utils')
 const fpx = require('../lib/fpx')
 
-function self ()    {return this}
-function args ()    {return arguments}
-function add (a, b) {return a + b}
-function sub (a, b) {return a - b}
-function double (a) {return a * 2}
-function id (a)     {return a}
-function pos (a)    {return a > 0}
-function neg (a)    {return a < 0}
-function no ()      {return false}
+function self    ()        {return this}
+function args    ()        {return arguments}
+function arglist (...args) {return args}
+function add     (a, b)    {return a + b}
+function sub     (a, b)    {return a - b}
+function double  (a)       {return a * 2}
+function id      (a)       {return a}
+function pos     (a)       {return a > 0}
+function neg     (a)       {return a < 0}
+function no      ()        {return false}
+function inc     (a)       {return a + 1}
 
 module.exports = [
   runWith(fpx.call,
@@ -30,8 +32,16 @@ module.exports = [
     fnTest([add, 1, 2], fnTest([],  add(1, 2)))
   ),
 
-  runWith(fpx.id,
-    fnTest([sub], fnTest([2, 1], sub(2, 1)))
+  runWith(fpx.defer,
+    fnTest([add], tests(
+      fnTest([],     fnTest([1, 2], add(1, 2))),
+      fnTest([1],    fnTest([2],    add(1, 2))),
+      fnTest([1, 2], fnTest([],     add(1, 2)))
+    )),
+    fnTest([add, 1], tests(
+      fnTest([],  fnTest([2], add(1, 2))),
+      fnTest([2], fnTest([],  add(1, 2)))
+    ))
   ),
 
   runWith(fpx.flip,
@@ -178,23 +188,55 @@ module.exports = [
     ))
   ),
 
-  runWith(fpx.defer,
-    fnTest([add], tests(
-      fnTest([],     fnTest([1, 2], add(1, 2))),
-      fnTest([1],    fnTest([2],    add(1, 2))),
-      fnTest([1, 2], fnTest([],     add(1, 2)))
-    )),
-    fnTest([add, 1], tests(
-      fnTest([],  fnTest([2], add(1, 2))),
-      fnTest([2], fnTest([],  add(1, 2)))
-    ))
-  ),
-
   runWith(fpx.rest,
     fnTest([id], fnTest([1, 2, 3], id([1, 2, 3])))
   ),
 
   runWith(fpx.spread,
     fnTest([add], fnTest([[1, 2]], add(1, 2)))
+  ),
+
+  runWith(fpx.alter,
+    fnTest([arglist], tests(
+      fnTest([], [undefined]),
+      fnTest([20], [20])
+    )),
+    fnTest([arglist, 10, 20], tests(
+      fnTest([], [undefined, 10, 20]),
+      fnTest([30], [30, 10, 20])
+    ))
+  ),
+
+  runWith(fpx.revise,
+    fnTest([[], arglist], tests(
+      fnTest([], []),
+      fnTest([1, 2, 3], [])
+    )),
+
+    fnTest([[double], arglist], tests(
+      fnTest([], [NaN]),
+      fnTest([10, 100], [20])
+    )),
+
+    fnTest([[inc, double], arglist], tests(
+      fnTest([2, 10, 100], [3, 20])
+    ))
+  ),
+
+  runWith(fpx.fanout,
+    fnTest([[], arglist], tests(
+      fnTest([], []),
+      fnTest([1, 2, 3], [])
+    )),
+
+    fnTest([[double], arglist], tests(
+      fnTest([], [NaN]),
+      fnTest([10, 100], [20])
+    )),
+
+    fnTest([[add, sub], arglist], tests(
+      fnTest([], [NaN, NaN]),
+      fnTest([10, 100, 1000], [110, -90])
+    ))
   )
 ]

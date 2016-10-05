@@ -8,8 +8,15 @@ function args () {return arguments}
 
 module.exports = [
   runWith(fpx.id,
-    fnTest([],  undefined),
-    fnTest([1], 1)
+    fnTest([],       undefined),
+    fnTest([10],     10),
+    fnTest([10, 20], 10)
+  ),
+
+  runWith(fpx.di,
+    fnTest([],           undefined),
+    fnTest([10, 20],     20),
+    fnTest([10, 20, 30], 20)
   ),
 
   runWith(fpx.val,

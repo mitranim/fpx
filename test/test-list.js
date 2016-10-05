@@ -3,11 +3,14 @@
 const {runWith, fnTest} = require('./utils')
 const fpx = require('../lib/fpx')
 
-function join (a, b)           {return a.concat([b])}
-function add (a, b)            {return a + b}
-function id (a)                {return a}
-function args ()               {return arguments}
-function pairs (acc, val, key) {return join(acc, [val, key])}
+function join    (a, b)          {return a.concat([b])}
+function add     (a, b)          {return a + b}
+function mul     (a, b)          {return a * b}
+function id      (a)             {return a}
+function args    ()              {return arguments}
+function pairs   (acc, val, key) {return join(acc, [val, key])}
+function arglist (...args)       {return args}
+function double  (a)             {return a * 2}
 
 module.exports = [
   runWith(fpx.list,
@@ -54,6 +57,30 @@ module.exports = [
     fnTest([Boolean, 'one'],     undefined)
   ),
 
+  runWith(fpx.every,
+    fnTest([id], true),
+    fnTest([id, []], true),
+    fnTest([id, [10, NaN]], false),
+    fnTest([id, [10, 20]], true),
+    fnTest([id, 'blah'], true)
+  ),
+
+  runWith(fpx.some,
+    fnTest([id], false),
+    fnTest([id, []], false),
+    fnTest([id, [0, NaN]], false),
+    fnTest([id, [10, NaN]], true),
+    fnTest([id, 'blah'], false)
+  ),
+
+  runWith(fpx.procure,
+    fnTest([id], undefined),
+    fnTest([id, [0, 10, 20]], 10),
+    fnTest([arglist, [10, 20]], [10, 0]),
+    fnTest([double, [0, 0, 10, 100]], 20),
+    fnTest([mul, [0, 0, 10, 100]], 20)
+  ),
+
   runWith(fpx.includes,
     fnTest([],                   false),
     fnTest([[]],                 false),
@@ -96,6 +123,20 @@ module.exports = [
     fnTest([[10, NaN]],      [10, NaN]),
     fnTest([[10, NaN], NaN], [10]),
     fnTest(['one', '!'],     [])
+  ),
+
+  runWith(fpx.adjoin,
+    fnTest([, 10],           [10]),
+    fnTest([[10], NaN],      [10, NaN]),
+    fnTest([[10, NaN], NaN], [10, NaN]),
+    fnTest(['blah', 10],     [10])
+  ),
+
+  runWith(fpx.toggle,
+    fnTest([],               [undefined]),
+    fnTest([[10], NaN],      [10, NaN]),
+    fnTest([[10, NaN], NaN], [10]),
+    fnTest(['blah', 10],     [10])
   ),
 
   runWith(fpx.flat,
