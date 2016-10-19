@@ -55,7 +55,8 @@ module.exports = [
     fnTest([NaN],      true),
     fnTest([Infinity], true),
     fnTest([null],     false),
-    fnTest(['1'],      false)
+    fnTest(['1'],      false),
+    fnTest([[]],       false)
   ),
 
   runWith(fpx.isFinite,
@@ -67,7 +68,25 @@ module.exports = [
     fnTest([Infinity],  false),
     fnTest([-Infinity], false),
     fnTest([null],      false),
-    fnTest(['1'],       false)
+    fnTest(['1'],       false),
+    fnTest([[]],        false)
+  ),
+
+  runWith(fpx.isNatural,
+    fnTest([],          false),
+    fnTest([0],         true),
+    fnTest([1],         true),
+    fnTest([10],        true),
+    fnTest([-1],        false),
+    fnTest([-10],       false),
+    fnTest([1.1],       false),
+    fnTest([-1.1],      false),
+    fnTest([NaN],       false),
+    fnTest([Infinity],  false),
+    fnTest([-Infinity], false),
+    fnTest([null],      false),
+    fnTest(['1'],       false),
+    fnTest([[]],        false)
   ),
 
   runWith(fpx.isNaN,

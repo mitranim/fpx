@@ -75,11 +75,26 @@ Recommended over `isNumber` in most practical scenarios.
 ```js
 isFinite(1)
 // true
-isFinite('1')
-// false
-isFinite(NaN)
+isFinite('1') || isFinite(NaN)
 // false
 ```
+
+---
+
+### `isNatural(value)`
+
+True if `value` is a natural number: a positive integer, starting with `0`.
+
+```js
+isNatural(0)
+// true
+isNatural(1)
+// true
+isNatural(-1) || isNatural(1.1) || isNatural('1')
+// false
+```
+
+---
 
 ### `isNaN(value)`
 
