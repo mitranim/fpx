@@ -25,7 +25,7 @@ const src = {
 
 const out = {
   lib: 'dist',
-  docHtml: 'gh-pages',
+  docRoot: 'gh-pages',
   docStyles: 'gh-pages/styles',
   docFonts: 'gh-pages/fonts',
   docScripts: 'gh-pages/scripts'
@@ -39,15 +39,20 @@ let testProc
 
 /* ********************************* Tasks ***********************************/
 
-/* ---------------------------------- Lib -----------------------------------*/
+/* --------------------------------- Clear ---------------------------------- */
 
 gulp.task('lib:clear', () => (
   del(out.lib).catch(noop)
 ))
 
-gulp.task('lib:clear-min', () => (
-  del(out.lib + '/**/*.min.js').catch(noop)
+gulp.task('docs:clear', () => (
+  // Skips dotfiles like `.git` and `.gitignore`
+  del(out.docRoot + '/*').catch(noop)
 ))
+
+gulp.task('clear', gulp.parallel('lib:clear', 'docs:clear'))
+
+/* ---------------------------------- Lib -----------------------------------*/
 
 gulp.task('lib:compile', () => (
   gulp.src(src.lib)
@@ -57,7 +62,7 @@ gulp.task('lib:compile', () => (
 
 // Purely for evaluating minified code size.
 gulp.task('lib:minify', () => (
-  gulp.src(src.dist)
+  gulp.src(src.dist, {ignore: '**/*.min.js'})
     .pipe($.uglify({
       mangle: true,
       compress: {warnings: false, screw_ie8: true},
@@ -93,39 +98,26 @@ gulp.task('lib:test', done => {
 
 gulp.task('lib:build', gulp.series('lib:compile', 'lib:minify'))
 
-gulp.task('lib:rebuild', gulp.series('lib:clear', 'lib:build'))
-
 gulp.task('lib:watch', () => {
-  $.watch(src.lib, gulp.parallel('lib:test', gulp.series('lib:clear-min', 'lib:build')))
+  $.watch(src.lib, gulp.parallel('lib:test', gulp.series('lib:build')))
   $.watch(src.test, gulp.series('lib:test'))
 })
 
 /* --------------------------------- HTML -----------------------------------*/
 
-gulp.task('docs:html:clear', () => (
-  del(out.docHtml + '/**/*.html').catch(noop)
-))
-
-gulp.task('docs:html:compile', () => (
+gulp.task('docs:html:build', () => (
   gulp.src(src.docHtml)
     .pipe($.statil(statilConfig))
-    .pipe(gulp.dest(out.docHtml))
+    .pipe(gulp.dest(out.docRoot))
 ))
 
-gulp.task('docs:html:build', gulp.series('docs:html:clear', 'docs:html:compile'))
-
 gulp.task('docs:html:watch', () => {
-  // No docs:html:clear because it confuses browser-sync's file watcher
-  $.watch(src.docHtml, gulp.series('docs:html:compile'))
+  $.watch(src.docHtml, gulp.series('docs:html:build'))
 })
 
 /* -------------------------------- Styles ----------------------------------*/
 
-gulp.task('docs:styles:clear', () => (
-  del(out.docStyles).catch(noop)
-))
-
-gulp.task('docs:styles:compile', () => (
+gulp.task('docs:styles:build', () => (
   gulp.src(src.docStylesMain)
     .pipe($.sass())
     .pipe($.autoprefixer())
@@ -138,35 +130,21 @@ gulp.task('docs:styles:compile', () => (
     .pipe(gulp.dest(out.docStyles))
 ))
 
-gulp.task('docs:styles:build',
-  gulp.series('docs:styles:clear', 'docs:styles:compile'))
-
 gulp.task('docs:styles:watch', () => {
-  // No docs:styles:clear because it confuses browser-sync's file watcher
-  $.watch(src.docStyles, gulp.series('docs:styles:compile'))
+  $.watch(src.docStyles, gulp.series('docs:styles:build'))
 })
 
 /* -------------------------------- Fonts -----------------------------------*/
 
-gulp.task('docs:fonts:clear', () => (
-  del(out.docFonts).catch(noop)
-))
-
-gulp.task('docs:fonts:copy', () => (
+gulp.task('docs:fonts:build', () => (
   gulp.src(src.docFonts).pipe(gulp.dest(out.docFonts))
 ))
-
-gulp.task('docs:fonts:build', gulp.series('docs:fonts:copy'))
 
 gulp.task('docs:fonts:watch', () => {
   $.watch(src.docFonts, gulp.series('docs:fonts:build'))
 })
 
 /* ------------------------------- Scripts ----------------------------------*/
-
-gulp.task('docs:scripts:clear', () => (
-  del(out.docScripts).catch(noop)
-))
 
 gulp.task('docs:scripts:lib', () => (
   gulp.src(src.docScriptLib)
@@ -192,13 +170,9 @@ gulp.task('docs:scripts:copy', () => (
     .pipe(gulp.dest(out.docScripts))
 ))
 
-gulp.task('docs:scripts:build', gulp.series(
-  'docs:scripts:clear',
-  gulp.parallel('docs:scripts:lib', 'docs:scripts:copy')
-))
+gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:lib', 'docs:scripts:copy'))
 
 gulp.task('docs:scripts:watch', () => {
-  // No docs:scripts:clear because it confuses browser-sync's file watcher
   $.watch(src.docScriptLib, gulp.series('docs:scripts:lib'))
   $.watch(src.docScripts, gulp.series('docs:scripts:copy'))
 })
@@ -229,14 +203,24 @@ gulp.task('docs:server', () => (
 
 /* -------------------------------- Default ---------------------------------*/
 
-gulp.task('build', gulp.series(
-  'lib:clear', 'lib:build', 'lib:test',
-  gulp.parallel('docs:scripts:build', 'docs:html:build', 'docs:styles:build', 'docs:fonts:build')
+gulp.task('clear', gulp.parallel('lib:clear', 'docs:clear'))
+
+gulp.task('buildup', gulp.parallel(
+  gulp.series('lib:build', 'docs:scripts:build'),
+  'docs:html:build',
+  'docs:styles:build',
+  'docs:fonts:build'
 ))
 
 gulp.task('watch', gulp.parallel(
-  'lib:watch', 'docs:html:watch', 'docs:styles:watch', 'docs:fonts:watch',
-  'docs:scripts:watch', 'docs:server'
+  'lib:watch',
+  'docs:html:watch',
+  'docs:styles:watch',
+  'docs:fonts:watch',
+  'docs:scripts:watch',
+  'docs:server'
 ))
 
-gulp.task('default', gulp.series('build', 'watch'))
+gulp.task('default', gulp.series('clear', 'buildup', 'lib:test', 'watch'))
+
+gulp.task('build', gulp.series('clear', 'buildup', 'lib:test', 'docs:scripts:build'))
