@@ -154,7 +154,7 @@ dicts, arrays, regexes, user-defined "classes", built-in classes, and so on.
 Doesn't count functions as objects, even though _technically_ they are.
 
 Note: this is _not_ equivalent to lodash's `_.isObject`, which counts functions
-as objects.
+as objects. See [`isComplex`](#-iscomplex-value-) for that.
 
 ```js
 isObject('blah')
@@ -172,6 +172,36 @@ isObject(Object.create(null))
 isObject(() => {})
 // false
 ```
+
+---
+
+### `isComplex(value)`
+
+Definition:
+
+```js
+const isComplex = or(isObject, isFunction)
+```
+
+This includes all objects in the true JavaScript sense. Functions are
+technically objects, as they have properties and may be mutated.
+
+---
+
+### `isPrimitive(value)`
+
+Definition:
+
+```js
+const isPrimitive = not(isComplex)
+```
+
+This includes:
+  * numbers
+  * strings
+  * booleans
+  * symbols
+  * `null` and `undefined`
 
 ---
 
@@ -262,23 +292,6 @@ isPromise({then () {}})
 
 ---
 
-### `isPrimitive(value)`
-
-Definition:
-
-```js
-not(or(isObject, isFunction))
-```
-
-This includes:
-  * numbers
-  * strings
-  * booleans
-  * symbols
-  * `null` and `undefined`
-
-  ---
-
 ### `isNil(value)`
 
 Definition:
@@ -305,34 +318,34 @@ pattern.
 ```js
 // function -> apply as-is
 
-testBy(inc, 10)       =  11
+testBy(inc, 10)            =  11
 
 // primitive -> test for identity via `is`
 
-testBy(null, x)       =  is(null, x)
-testBy(1, x)          =  is(1, x)
-testBy(NaN, x)        =  is(NaN, x)
+testBy(null, x)            =  is(null, x)
+testBy(1, x)               =  is(1, x)
+testBy(NaN, x)             =  is(NaN, x)
 
 // regex -> call `RegExp.prototype.test`
 
-testBy(/blah/, x)     =  /blah/.test(x)
+testBy(/blah/, x)          =  /blah/.test(x)
 
 // list ->
 //   checks that input is a list
 //   each property tests the corresponding input property
 
-test([])              =  isList(x)
-test([/blah/])        =  isList(x) && /blah/.test(x[0])
-test([/blah/, 'c'])   =  isList(x) && /blah/.test(x[0]) && is(x[1], 'c')
+testBy([], x)              =  isList(x)
+testBy([/blah/], x)        =  isList(x) && /blah/.test(x[0])
+testBy([/blah/, 'c'], x)   =  isList(x) && /blah/.test(x[0]) && is(x[1], 'c')
 
 // dictionary ->
 //   checks that input is a dict
 //   each property tests the corresponding input property
 
-test({})              =  isObject(x)
-test({one: /blah/})   =  isObject(x) && /blah/.test(x.one)
-test({two: isArray})  =  isObject(x) && isArray(x.two)
-test({a: {b: 'c'}})   =  isObject(x) && isObject(x.a) && is(x.a.b, 'c')
+testBy({}, x)              =  isObject(x)
+testBy({one: /blah/}, x)   =  isObject(x) && /blah/.test(x.one)
+testBy({two: isArray}, x)  =  isObject(x) && isArray(x.two)
+testBy({a: {b: 'c'}}, x)   =  isObject(x) && isObject(x.a) && is(x.a.b, 'c')
 ```
 
 ### `test(pattern)`

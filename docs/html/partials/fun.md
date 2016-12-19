@@ -113,7 +113,8 @@ addf(1)(2)
 
 ### `flip(fun)`
 
-Returns a function that passes its arguments to `fun` in reverse.
+Returns a function that passes its arguments to `fun` in reverse. Only supports
+functions with variadic arity (from 0 to ∞ arguments).
 
 ```js
 function add3 (a, b, c) {return a + b + c}

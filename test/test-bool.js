@@ -132,6 +132,32 @@ module.exports = [
     fnTest([create({})],   true)
   ),
 
+  runWith(fpx.isComplex,
+    fnTest([],         false),
+    fnTest([null],     false),
+    fnTest([1],        false),
+    fnTest([''],       false),
+    fnTest([Symbol()], false),
+    fnTest([true],     false),
+    fnTest([{}],       true),
+    fnTest([[]],       true),
+    fnTest([id],       true),
+    fnTest([/!/],      true)
+  ),
+
+  runWith(fpx.isPrimitive,
+    fnTest([],         true),
+    fnTest([null],     true),
+    fnTest([1],        true),
+    fnTest([''],       true),
+    fnTest([Symbol()], true),
+    fnTest([true],     true),
+    fnTest([{}],       false),
+    fnTest([[]],       false),
+    fnTest([id],       false),
+    fnTest([/!/],      false)
+  ),
+
   runWith(fpx.isDict,
     fnTest([],             false),
     fnTest([null],         false),
@@ -173,19 +199,6 @@ module.exports = [
     fnTest([{then () {}, catch () {}}], true)
   ),
 
-  runWith(fpx.isPrimitive,
-    fnTest([],         true),
-    fnTest([null],     true),
-    fnTest([1],        true),
-    fnTest([''],       true),
-    fnTest([Symbol()], true),
-    fnTest([true],     true),
-    fnTest([{}],       false),
-    fnTest([[]],       false),
-    fnTest([id],       false),
-    fnTest([/!/],      false)
-  ),
-
   runWith(fpx.isNil,
     fnTest([],      true),
     fnTest([null],  true),
@@ -205,7 +218,7 @@ module.exports = [
     fnTest([/one/, 'two'], false),
 
     fnTest([NaN, NaN], true),
-    fnTest([NaN],    false),
+    fnTest([NaN],      false),
 
     fnTest([[], []],      true),
     fnTest([[], [1]],     true),
@@ -223,7 +236,9 @@ module.exports = [
 
     fnTest([{nan: isNaN}, {}],                 true),
     fnTest([{nan: isNaN}, {nan: NaN, one: 1}], true),
-    fnTest([{nan: isNaN}, {nan: 1}],           false)
+    fnTest([{nan: isNaN}, {nan: 1}],           false),
+
+    fnTest([{length: 1}, id], true)
   ),
 
   // This array of tests is now redundant, should probably remove.
@@ -274,6 +289,10 @@ module.exports = [
       fnTest([{}],                 true),
       fnTest([{nan: NaN, one: 1}], true),
       fnTest([{nan: 1}],           false)
+    )),
+
+    fnTest([{length: 1}], tests(
+      fnTest([id], true)
     )),
 
     // Must not accidentally use second argument.
