@@ -3,7 +3,6 @@
 const {runWith, fnTest, tests} = require('./utils')
 const fpx = require('../lib/fpx')
 
-function self    ()        {return this}
 function args    ()        {return arguments}
 function arglist (...args) {return args}
 function add     (a, b)    {return a + b}
@@ -17,19 +16,19 @@ function inc     (a)       {return a + 1}
 
 module.exports = [
   runWith(fpx.call,
-    fnTest([self],      undefined),
+    fnTest([add],       add()),
     fnTest([add, 1, 2], add(1, 2))
   ),
 
   runWith(fpx.apply,
-    fnTest([self],        undefined),
+    fnTest([add, []],     add()),
     fnTest([add, [1, 2]], add(1, 2))
   ),
 
   runWith(fpx.bind,
-    fnTest([self],      fnTest([],  self())),
-    fnTest([add, 1],    fnTest([2], add(1, 2))),
-    fnTest([add, 1, 2], fnTest([],  add(1, 2)))
+    fnTest([add],       fnTest([1, 2], add(1, 2))),
+    fnTest([add, 1],    fnTest([2],    add(1, 2))),
+    fnTest([add, 1, 2], fnTest([],     add(1, 2)))
   ),
 
   runWith(fpx.defer,
