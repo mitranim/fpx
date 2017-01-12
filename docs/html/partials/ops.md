@@ -1,5 +1,3 @@
----
-
 ## Ops
 
 Operator-style functions.
@@ -69,3 +67,5 @@ Decrements by `1`.
 dec(2)
 // 2 - 1 = 1
 ```
+
+----

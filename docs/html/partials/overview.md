@@ -1,9 +1,13 @@
 ## Overview
 
-`fpx` — **f**unctional **p**rogramming e**x**tensions for JavaScript. Source:
+`fpx` — **f**unctional **p**rogramming e**x**tensions for JavaScript.
 <a href="https://github.com/Mitranim/fpx/blob/master/lib/fpx.js" target="_blank">
-`fpx.js` <span class="fa fa-github"></span>
+Source <span class="fa fa-github"></span>
 </a>
+
+See sibling library
+<a href="http://mitranim.com/espo/" target="_blank">`espo`</a>
+for stateful programming utils.
 
 Similar to `lodash`, but more lightweight and specialised. Differences:
 
@@ -26,3 +30,5 @@ const {someFunction} = require('fpx')
 
 On this page, all `fpx` words are exported into global scope. You can run
 examples in the browser console.
+
+----

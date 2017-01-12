@@ -1,5 +1,3 @@
----
-
 ## Misc
 
 Uncategorised utils.
@@ -163,3 +161,5 @@ validateEach(isFunction, [x => x])
 validateEach(isFunction, [1])
 // Uncaught Error: Expected 1 at index 0 to satisfy test isFunction
 ```
+
+----

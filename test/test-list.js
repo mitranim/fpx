@@ -139,6 +139,21 @@ module.exports = [
     fnTest(['blah', 10],     [10])
   ),
 
+  runWith(fpx.concat,
+    fnTest([],                  []),
+    fnTest([[]],                []),
+    fnTest([[], []],            []),
+    fnTest([[], [], []],        []),
+    fnTest([[10], '20'],        [10]),
+    fnTest([10, 20],            []),
+    fnTest([[10], 20],          [10]),
+    fnTest([[10], [20]],        [10, 20]),
+    fnTest([[10], [20], 30],    [10, 20]),
+    fnTest([[10], [20], [30]],  [10, 20, 30]),
+    fnTest([[10], [[20]]],      [10, [20]]),
+    fnTest([[10], args(20)],    [10, 20])
+  ),
+
   runWith(fpx.flat,
     fnTest([],                                 []),
     fnTest([[[1], [['one']]]],                 [1, 'one']),

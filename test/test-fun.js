@@ -31,6 +31,12 @@ module.exports = [
     fnTest([add, 1, 2], fnTest([],     add(1, 2)))
   ),
 
+  runWith(fpx.bindApply,
+    fnTest([add, []],     fnTest([1, 2], add(1, 2))),
+    fnTest([add, [1]],    fnTest([2],    add(1, 2))),
+    fnTest([add, [1, 2]], fnTest([],     add(1, 2)))
+  ),
+
   runWith(fpx.defer,
     fnTest([add], tests(
       fnTest([],     fnTest([1, 2], add(1, 2))),

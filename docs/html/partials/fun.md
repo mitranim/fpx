@@ -1,5 +1,3 @@
----
-
 ## Fun
 
 Various higher-order functions.
@@ -69,6 +67,17 @@ incMany([1, 2, 3])
 
 // equivalent:
 // bind(map, inc) = map.bind(null, inc)
+```
+
+### `bindApply(fun, args)`
+
+Same as [`bind`](#-bind-fun-args-), but takes additional arguments as a list
+rather than rest parameters.
+
+```js
+const inc = bindApply(add, [1])
+inc(2)
+// 3
 ```
 
 ---
@@ -554,3 +563,5 @@ const b = fanout([double, double], sum)
 b(10)
 // sum(double(10), double(10)) = sum(20, 20) = 40
 ```
+
+----

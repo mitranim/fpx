@@ -56,6 +56,17 @@ $color-code-bg: floralwhite;
 @import './node_modules/font-awesome/scss/variables';
 @import './node_modules/font-awesome/scss/path';
 @import './node_modules/font-awesome/scss/core';
+@import './node_modules/font-awesome/scss/mixins';
+
+.fa-arrow-up::before      {content: $fa-var-arrow-up}
+.fa-code::before          {content: $fa-var-code}
+.fa-github::before        {content: $fa-var-github}
+.fa-link::before          {content: $fa-var-link}
+.fa-external-link::before {content: $fa-var-external-link}
+.fa-twitter::before       {content: $fa-var-twitter}
+
+.fa-github, a.fa-github   {color: $color-github}
+.fa-twitter, a.fa-twitter {color: $color-twitter}
 
 .fa::before {
   display: inline-block;
@@ -77,14 +88,16 @@ a.fa {
   border: none;
 }
 
-.fa-arrow-up::before      {content: $fa-var-arrow-up}
-.fa-code::before          {content: $fa-var-code}
-.fa-github::before        {content: $fa-var-github}
-.fa-link::before          {content: $fa-var-link}
-.fa-twitter::before       {content: $fa-var-twitter}
+article a[target~=_blank]:not(.fa)::after {
+  // Icon.
+  content: $fa-var-external-link;
+  @include fa-icon();
 
-.fa-github, a.fa-github   {color: $color-github}
-.fa-twitter, a.fa-twitter {color: $color-twitter}
+  // Cosmetic.
+  margin-left: 0.3em;
+  opacity: 0.5;
+  font-size: 0.8em;
+}
 
 /**
  * Misc

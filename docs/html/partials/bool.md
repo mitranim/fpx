@@ -1,5 +1,3 @@
----
-
 ## Bool
 
 Boolean tests.
@@ -478,3 +476,5 @@ x(10, 100)
 x(null, 'test')
 // testBy(isFinite, null) || testBy(/test/, 'test')  =  true
 ```
+
+----

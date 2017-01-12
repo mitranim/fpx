@@ -1,5 +1,3 @@
----
-
 ## Coll
 
 Utils for dealing with collections (lists and dicts).
@@ -66,3 +64,5 @@ size()
 size(size)
 // 0
 ```
+
+----

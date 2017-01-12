@@ -1,5 +1,3 @@
----
-
 ## Dict
 
 Utils for dealing with dictionaries ("objects") and properties in general.
@@ -113,3 +111,5 @@ Similar to lodash's `_.mapKeys`, but with an FP-friendly argument order.
 mapKeys(last, {one: 'one', two: 'two'})
 // {e: 'one', o: 'two'}
 ```
+
+----

@@ -1,5 +1,3 @@
----
-
 ## List
 
 List manipulation utils.
@@ -255,6 +253,31 @@ toggle([10, 20, 30], 30)
 
 ---
 
+### `concat(...lists)`
+
+Concatenates the given lists into one list. Ignores non-list arguments.
+
+This is intentionally **different** from
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat" target="_blank">`Array#concat`</a> and, by extension, lodash's `_.concat`. They inherited
+Scheme's mistakes and are hazardous. They accept both list and non-list
+arguments, concatenating lists and appending other values. This often leads to
+surprising results.
+
+fpx's `concat` is more intuitive and therefore safer to use.
+
+```js
+concat()
+// []
+
+concat([10], [20], [30])
+// [10, 20, 30]
+
+concat([10, 20], 30)
+// [10, 20]
+```
+
+---
+
 ### `flat(list)`
 
 Deeply flattens the given list.
@@ -331,3 +354,5 @@ last([1, 2, 3])
 last('str')
 // undefined
 ```
+
+----
