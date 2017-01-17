@@ -356,3 +356,21 @@ last('str')
 ```
 
 ----
+
+### `reverse(list)`
+
+Returns a version of `list` with the elements reversed end-to-start. If called
+with a non-list, returns an empty list.
+
+```js
+reverse()
+// []
+
+reverse([10, 20, 30])
+// [30, 20, 10]
+
+reverse('str')
+// []
+```
+
+----

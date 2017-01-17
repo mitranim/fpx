@@ -5,14 +5,14 @@
 Source <span class="fa fa-github"></span>
 </a>
 
-See sibling library
+See the sibling library
 <a href="http://mitranim.com/espo/" target="_blank">`espo`</a>
 for stateful programming utils.
 
 Similar to `lodash`, but more lightweight and specialised. Differences:
 
 * One small file (7 KB minified, compare with 67 KB in lodash 4.0)
-* Richer functional programming utils
+* Richer higher order function utils
 * Fewer data manipulation utils (relegated to <a href="https://github.com/Mitranim/emerge" target="_blank">Emerge <span class="fa fa-github"></span></a>)
 * Emphasis on simplicity of source code
 

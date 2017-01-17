@@ -188,5 +188,12 @@ module.exports = [
     fnTest([[10, 20]],     20),
     fnTest([args(10, 20)], 20),
     fnTest(['one'],        undefined)
+  ),
+
+  runWith(fpx.reverse,
+    fnTest([],                     []),
+    fnTest([[10, 20]],             [20, 10]),
+    fnTest([[[10, 20], [30, 40]]], [[30, 40], [10, 20]]),
+    fnTest(['one'],                [])
   )
 ]

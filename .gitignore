@@ -1,7 +1,6 @@
 # Files
 .DS_Store
 *.log
-/*.js
 
 # Folders
 dist
