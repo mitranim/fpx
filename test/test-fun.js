@@ -120,6 +120,13 @@ module.exports = [
     ))
   ),
 
+  runWith(fpx.ifexists,
+    fnTest([double], tests(
+      fnTest([2, 3], double(2)),
+      fnTest([0, 1], undefined)
+    ))
+  ),
+
   runWith(fpx.cond,
     fnTest([], fnTest([1], undefined)),
 
@@ -243,5 +250,12 @@ module.exports = [
       fnTest([], [NaN, NaN]),
       fnTest([10, 100, 1000], [110, -90])
     ))
+  ),
+
+  runWith(fpx.funnel,
+    fnTest([10, []],                10),
+    fnTest([10, [id]],              10),
+    fnTest([10, [id, double]],      20),
+    fnTest([10, [id, double, neg]], false)
   )
 ]

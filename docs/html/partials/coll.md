@@ -1,6 +1,7 @@
 ## Coll
 
-Utils for dealing with collections (lists and dicts).
+Utils for dealing with collections (lists and dicts). Like all other `fpx`
+functions, they treat their arguments as immutables and never modify them.
 
 ---
 

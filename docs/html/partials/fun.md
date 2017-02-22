@@ -281,6 +281,29 @@ x('1')
 
 ---
 
+### `ifexists(fun)`
+
+Like `ifthen` with an implicit `id` predicate. The resulting function calls
+`fun` when the first argument is truthy, and returns `undefined` otherwise.
+
+```js
+// definition
+const ifexists = bind(ifthen, id)
+
+ifexists(fun)
+// = ifthen(id, fun)
+
+const x = ifexists(inc)
+
+x(1)
+// inc(1) = 2
+
+x(0)
+// undefined
+```
+
+---
+
 ### `cond(...funs)`
 
 Represents the Lisp-style
@@ -565,3 +588,21 @@ b(10)
 ```
 
 ----
+
+### `funnel(value, funs)`
+
+Similar to [`pipe`](#-pipe-funs-), but immediate. Instead of creating a
+function, it flows `value` through `funs` left-to-right and returns the result.
+
+```js
+const double   = bind(mul, 2)
+const negative = bind(mul, -1)
+
+funnel(10, [])
+// 10
+
+funnel(10, [double, negative])
+// negative(double(10)) = -20
+```
+
+---

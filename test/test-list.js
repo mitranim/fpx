@@ -111,32 +111,44 @@ module.exports = [
   ),
 
   runWith(fpx.prepend,
-    fnTest([, 1],        [1]),
-    fnTest([[1], 2],     [2, 1]),
-    fnTest([[1], [2]],   [[2], 1]),
-    fnTest([args(1), 2], [2, 1]),
-    fnTest(['one', '!'], ['!'])
+    fnTest([, 1],             [1]),
+    fnTest([[1], 2],          [2, 1]),
+    fnTest([[1], [2]],        [[2], 1]),
+    fnTest([args(1), 2],      [2, 1]),
+    fnTest(['not list', '!'], ['!'])
   ),
 
   runWith(fpx.remove,
-    fnTest([],               []),
-    fnTest([[10, NaN]],      [10, NaN]),
-    fnTest([[10, NaN], NaN], [10]),
-    fnTest(['one', '!'],     [])
+    fnTest([],                    []),
+    fnTest([[10, NaN]],           [10, NaN]),
+    fnTest([[10, NaN], NaN],      [10]),
+    fnTest([[NaN, 10, NaN], NaN], [10, NaN]),
+    fnTest(['not list', '!'],     [])
+  ),
+
+  runWith(fpx.removeAtIndex,
+    fnTest([],                    []),
+    fnTest([[NaN, 10, NaN]],      [NaN, 10, NaN]),
+    fnTest([[NaN, 10, NaN], 0],   [10, NaN]),
+    fnTest([[NaN, 10, NaN], 1],   [NaN, NaN]),
+    fnTest([[NaN, 10, NaN], 10],  [NaN, 10, NaN]),
+    fnTest([[NaN, 10, NaN], -1],  [NaN, 10, NaN]),
+    fnTest([[NaN, 10, NaN], '1'], [NaN, 10, NaN]),
+    fnTest(['not list', '1'],     [])
   ),
 
   runWith(fpx.adjoin,
     fnTest([, 10],           [10]),
     fnTest([[10], NaN],      [10, NaN]),
     fnTest([[10, NaN], NaN], [10, NaN]),
-    fnTest(['blah', 10],     [10])
+    fnTest(['not list', 10], [10])
   ),
 
   runWith(fpx.toggle,
     fnTest([],               [undefined]),
     fnTest([[10], NaN],      [10, NaN]),
     fnTest([[10, NaN], NaN], [10]),
-    fnTest(['blah', 10],     [10])
+    fnTest(['not list', 10], [10])
   ),
 
   runWith(fpx.concat,

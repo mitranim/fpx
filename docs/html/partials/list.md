@@ -1,6 +1,7 @@
 ## List
 
-List manipulation utils.
+List manipulation utils. Like all other `fpx` functions, they treat their
+arguments as immutables and never modify them.
 
 ---
 
@@ -192,7 +193,7 @@ slice('hello world', 3, 5)
 
 ### `append(list, value)`
 
-Returns a copy of `list` with `value` appended at the end.
+Returns a version of `list` with `value` appended at the end.
 
 ```js
 append([1, 2], 3)
@@ -203,7 +204,7 @@ append([1, 2], 3)
 
 ### `prepend(list, value)`
 
-Returns a copy of `list` with `value` prepended at the start.
+Returns a version of `list` with `value` prepended at the start.
 
 ```js
 prepend([2, 3], 1)
@@ -214,12 +215,34 @@ prepend([2, 3], 1)
 
 ### `remove(list, value)`
 
-Returns a new list with all occurrences of `value` removed. Doesn't change the
-original list.
+Returns a version of `list` with one occurrence of `value` removed. May return
+the original list.
 
 ```js
 remove(['one', 'two', 'three'], 'two')
 // ['one', 'three']
+
+remove(['one', 'two', 'one'], 'one')
+// ['two', 'one']
+```
+
+---
+
+### `removeAtIndex(list, index)`
+
+Returns a version of `list` with the value at `index` removed _if and only if_
+`index` is a natural integer within the bounds of `list`. With any other input,
+returns the `list` argument, coercing it to a list if necessary.
+
+```js
+remove(['one', 'two', 'three'], 0)
+// ['two', 'three']
+
+remove(['one', 'two', 'three'], 1)
+// ['one', 'three']
+
+remove(['one', 'two', 'three'], 10)
+// ['one', 'two', 'three']
 ```
 
 ---

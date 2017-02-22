@@ -1,13 +1,16 @@
 ## Dict
 
-Utils for dealing with dictionaries ("objects") and properties in general.
+Utils for dealing with dictionaries ("objects") and properties in general. Like
+all other `fpx` functions, they treat their arguments as immutables and never
+modify them.
 
 ---
 
 ### `get(value, key)`
 
-Reads property `key` on `value`. Unlike dot or bracket notation, this is safe to
-use on `null` or `undefined` values.
+Reads property `key` from `value`. Similar to the bracket notation:
+`value[key]`. Advantages over the bracket notation: safe to use on `null` or
+`undefined` values; compatible with function composition.
 
 ```js
 get()

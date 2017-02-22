@@ -1,9 +1,7 @@
 ## Overview
 
 `fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript.
-<a href="https://github.com/Mitranim/fpx/blob/master/lib/fpx.js" target="_blank">
-Source <span class="fa fa-github"></span>
-</a>
+<a href="https://github.com/Mitranim/fpx/blob/master/lib/fpx.js" target="_blank">Source <span class="fa fa-github"></span></a>
 
 See the sibling library
 <a href="http://mitranim.com/espo/" target="_blank">`espo`</a>
