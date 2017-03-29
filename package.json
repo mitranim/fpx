@@ -1,13 +1,13 @@
 {
   "name": "fpx",
-  "version": "0.0.20",
+  "version": "0.1.0",
   "description": "Functional programming extensions for JavaScript",
   "main": "dist/fpx.js",
   "scripts": {
     "start": "gulp",
     "test": "node test/test",
-    "prepublish": "gulp build",
-    "push-docs": "gulp build && (cd gh-pages && git add -A . && git commit -a -m autocommit && git push origin gh-pages)"
+    "build": "gulp build",
+    "prepublish": "gulp build"
   },
   "keywords": [
     "functional",
