@@ -69,34 +69,41 @@ incMany([1, 2, 3])
 // bind(map, inc) = map.bind(null, inc)
 ```
 
-### `bindApply(fun, args)`
+### `applyBind(fun, args)`
 
 Same as [`bind`](#-bind-fun-args-), but takes additional arguments as a list
 rather than rest parameters.
 
 ```js
-const inc = bindApply(add, [1])
+const inc = applyBind(add, [1])
 inc(2)
 // 3
 ```
 
 ---
 
-### `defer(fun, ...args)`
+### `curry1(fun, ...args)`
 
-Similar to
-<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">curry</a>,
-but the original function is invoked after exactly two calls, regardless of
-how many arguments were passed. Extra arguments passed to `defer` are prepended
-to the rest.
+A restricted implementation of
+<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">currying</a>.
+Creates a function curried for exactly two calls:
 
-Note this is completely different from lodash's `_.defer` (which is basically
-`setTimeout`).
+```
+const curried = curry1(original, ...originalArgs)
+const intermediary = curried(...moreArgs)
+intermediary(...finalArgs)
+// original(...originalArgs, ...moreArgs, ...finalArgs)
+```
+
+In a language with widespread variadic and optional arguments, such as
+JavaScript, traditional currying based on argument count is hazardous. Currying
+for a fixed number of calls and ignoring the argument count is much safer in
+practice.
 
 ```js
 function add3 (a, b, c) {return a + b + c}
 
-const addf = defer(add3)
+const addf = curry1(add3)
 
 // is equivalent to:
 function addf () {
@@ -113,7 +120,7 @@ addf(1)(2, 3)
 // 6
 
 // with curry, this would have returned an intermediary function
-// with defer, two calls always reach the original
+// with curry1, two calls always reach the original
 addf(1)(2)
 // NaN
 ```

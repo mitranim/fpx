@@ -1,7 +1,11 @@
 const {
-  and, bind, defer, rest, getAt, seq, pipe, id: exists, ifelse, ifthen,
-  slice, find
-} = window.fpx
+  location,
+  history,
+  fpx: {
+    and, bind, curry1, rest, getAt, seq, pipe, id: exists, ifelse, ifthen,
+    slice, find
+  },
+} = window
 
 // Elems
 
@@ -15,7 +19,7 @@ const targets = main.querySelectorAll('[id]:not([id=""])')
 
 // Utils
 
-const getf = rest(defer(getAt))
+const getf = rest(curry1(getAt))
 
 const hasVisibleId = and(exists, tangible, withinViewport, getf('id'))
 

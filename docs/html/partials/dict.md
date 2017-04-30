@@ -78,7 +78,7 @@ getAt([], 1)
 getAt(['one', 'two'], {one: {two: 2}})
 // 2
 
-const from = defer(getAt)
+const from = curry1(getAt)
 
 const read = from(['one', 'two'])
 

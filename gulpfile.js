@@ -33,8 +33,6 @@ const out = {
 
 const testCommand = require('./package').scripts.test
 
-function noop () {}
-
 let testProc
 
 /* ********************************* Tasks ***********************************/
@@ -42,12 +40,12 @@ let testProc
 /* --------------------------------- Clear ---------------------------------- */
 
 gulp.task('lib:clear', () => (
-  del(out.lib).catch(noop)
+  del(out.lib).catch(console.error.bind(console))
 ))
 
 gulp.task('docs:clear', () => (
   // Skips dotfiles like `.git` and `.gitignore`
-  del(out.docRoot + '/*').catch(noop)
+  del(out.docRoot + '/*').catch(console.error.bind(console))
 ))
 
 gulp.task('clear', gulp.parallel('lib:clear', 'docs:clear'))

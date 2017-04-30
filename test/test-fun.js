@@ -31,13 +31,13 @@ module.exports = [
     fnTest([add, 1, 2], fnTest([],     add(1, 2)))
   ),
 
-  runWith(fpx.bindApply,
+  runWith(fpx.applyBind,
     fnTest([add, []],     fnTest([1, 2], add(1, 2))),
     fnTest([add, [1]],    fnTest([2],    add(1, 2))),
     fnTest([add, [1, 2]], fnTest([],     add(1, 2)))
   ),
 
-  runWith(fpx.defer,
+  runWith(fpx.curry1,
     fnTest([add], tests(
       fnTest([],     fnTest([1, 2], add(1, 2))),
       fnTest([1],    fnTest([2],    add(1, 2))),
