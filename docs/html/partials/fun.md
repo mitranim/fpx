@@ -6,10 +6,10 @@ Various higher-order functions.
 
 ### `call(fun, ...args)`
 
-Like
+Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank">`Function#call`</a>,
-but with the function as the first argument and an implicit `this = undefined`.
-Sometimes useful in function composition contexts.
+but doesn't take an argument for `this`.
+Sometimes useful in function composition.
 
 ```js
 call(add, 1, 2)
@@ -25,9 +25,10 @@ call(add, 1, 2)
 
 ### `apply(fun, args)`
 
-Like
+Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank">`Function#apply`</a>,
-but with the function as the first argument and an implicit `this = undefined`.
+but doesn't take an argument for `this`.
+Sometimes useful in function composition.
 
 ```js
 apply(add, [1, 2])
@@ -42,9 +43,10 @@ apply(add, [1, 2])
 
 ### `bind(fun, ...args)`
 
-Like
+Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank">`Function#bind`</a>,
-but with the function as the first argument and an implicit `this = undefined`.
+but doesn't take an argument for `this`, and doesn't affect the `this` binding
+of the created function.
 
 Returns a new function that represents
 <a href="https://en.wikipedia.org/wiki/Partial_application" target="_blank">partial application</a>
@@ -72,7 +74,7 @@ incMany([1, 2, 3])
 ### `applyBind(fun, args)`
 
 Same as [`bind`](#-bind-fun-args-), but takes additional arguments as a list
-rather than rest parameters.
+rather than as rest parameters.
 
 ```js
 const inc = applyBind(add, [1])
@@ -119,7 +121,7 @@ addf(1, 2)(3)
 addf(1)(2, 3)
 // 6
 
-// with curry, this would have returned an intermediary function
+// with generic currying, this would have returned an intermediary function
 // with curry1, two calls always reach the original
 addf(1)(2)
 // NaN
