@@ -26,18 +26,17 @@ module.exports = {
       return pt.join(pt.dirname(path), pt.parse(path).name)
     }
   },
-  ignorePaths: path => (
-    /^partials/.test(path)
+  ignorePath: path => /^partials/.test(path),
+  renamePath: (path, {dir, name}) => (
+    path === 'index.html' || path === '404.html'
+    ? path
+    : pt.join(dir, name, 'index.html')
   ),
-  rename: '$&/index.html',
-  renameExcept: ['index.html', '404.html'],
-  pipeline: [
-    (content, path) => {
-      if (pt.extname(path) === '.md') {
-        return marked(content)
-          .replace(/<pre><code class="(.*)">|<pre><code>/g, '<pre><code class="hljs $1">')
-          .replace(/<!--\s*:((?:[^:]|:(?!\s*-->))*):\s*-->/g, '$1')
-      }
-    }
-  ]
+  postProcess: (content, path, {ext}) => (
+    ext !== '.md'
+    ? content
+    : marked(content)
+        .replace(/<pre><code class="(.*)">|<pre><code>/g, '<pre><code class="hljs $1">')
+        .replace(/<!--\s*:((?:[^:]|:(?!\s*-->))*):\s*-->/g, '$1')
+  ),
 }
