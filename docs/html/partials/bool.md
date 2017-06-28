@@ -79,6 +79,23 @@ isFinite('1') || isFinite(NaN)
 
 ---
 
+### `isInteger(value)`
+
+True if `value` is an integer: finite without a fractional part.
+
+```js
+isInteger(0)
+// true
+isInteger(1)
+// true
+isInteger(-1)
+// true
+isInteger(1.1) || isInteger('1')
+// false
+```
+
+---
+
 ### `isNatural(value)`
 
 True if `value` is a natural number: a positive integer, starting with `0`.
