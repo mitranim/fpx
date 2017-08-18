@@ -7,7 +7,7 @@
     "start": "gulp",
     "test": "node test/test",
     "build": "gulp build",
-    "prepublish": "gulp build"
+    "prepublishOnly": "gulp build"
   },
   "keywords": [
     "functional",
