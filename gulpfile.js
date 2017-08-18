@@ -5,7 +5,7 @@
 const $ = require('gulp-load-plugins')()
 const bs = require('browser-sync').create()
 const del = require('del')
-const {exec} = require('child_process')
+const {spawn} = require('child_process')
 const gulp = require('gulp')
 const statilConfig = require('./statil')
 
@@ -31,9 +31,9 @@ const out = {
   docScripts: 'gh-pages/scripts'
 }
 
-const testCommand = require('./package').scripts.test
+const [testExecutable, ...testArgs] = require('./package').scripts.test.split(/\s/g)
 
-let testProc
+const GulpErr = msg => ({showStack: false, toString: () => msg})
 
 /* ********************************* Tasks ***********************************/
 
@@ -69,24 +69,18 @@ gulp.task('lib:minify', () => (
 ))
 
 gulp.task('lib:test', done => {
-  if (testProc) {
-    // Just started, let it finish
-    if (testProc.exitCode == null) return
-    testProc.kill()
-  }
+  const proc = spawn(testExecutable, testArgs)
 
-  $.util.log('Test started')
+  proc.stdout.pipe(process.stdout)
+  proc.stderr.pipe(process.stderr)
 
-  testProc = exec(testCommand, (err, stdout, stderr) => {
-    process.stdout.write(stdout)
-    process.stderr.write(stderr)
+  proc.once('error', err => {
+    proc.kill()
+    done(err)
+  })
 
-    if (err) {
-      throw new $.util.PluginError('lib:test', 'Test failed', {showProperties: false})
-    } else {
-      $.util.log('Test finished')
-      done()
-    }
+  proc.once('exit', code => {
+    done(code ? GulpErr(`Test failed with exit code ${code}`) : null)
   })
 })
 

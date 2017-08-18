@@ -153,6 +153,51 @@ isSymbol(Symbol('blah'))
 
 ---
 
+### `isPrimitive(value)`
+
+Definition:
+
+```js
+const isPrimitive = not(isComplex)
+```
+
+This includes:
+  * numbers
+  * strings
+  * booleans
+  * symbols
+  * `null` and `undefined`
+
+---
+
+### `isComplex(value)`
+
+Definition:
+
+```js
+const isComplex = or(isObject, isFunction)
+```
+
+This includes all objects in the true JavaScript sense. Functions are
+technically objects, as they have properties and may be mutated.
+
+---
+
+### `isInstance(value, Class)`
+
+Same as `instanceof` but avoids unnecessary allocations. When the left operand
+is a primitive, `instanceof` creates a temporary wrapper object, even though
+it's guaranteed to return `false`. This slightly decreases performance.
+`isInstance` avoids this mistake.
+
+```js
+isInstance([], Array)          // true
+isInstance(new Date(), Date)   // true
+isInstance(1, Number)          // false, free to call
+```
+
+---
+
 ### `isFunction(value)`
 
 ```js
@@ -187,36 +232,6 @@ isObject(Object.create(null))
 isObject(() => {})
 // false
 ```
-
----
-
-### `isComplex(value)`
-
-Definition:
-
-```js
-const isComplex = or(isObject, isFunction)
-```
-
-This includes all objects in the true JavaScript sense. Functions are
-technically objects, as they have properties and may be mutated.
-
----
-
-### `isPrimitive(value)`
-
-Definition:
-
-```js
-const isPrimitive = not(isComplex)
-```
-
-This includes:
-  * numbers
-  * strings
-  * booleans
-  * symbols
-  * `null` and `undefined`
 
 ---
 
@@ -282,6 +297,33 @@ isList('str')
 ```js
 isRegExp(/blah/)
 // true
+```
+
+---
+
+### `isDate(value)`
+
+```js
+isDate(new Date())             // true
+isDate(new Date().toString())  // false
+```
+
+---
+
+### `isValidDate(value)`
+
+```js
+isDate(new Date())     // true
+isDate(new Date(NaN))  // false
+```
+
+---
+
+### `isInvalidDate(value)`
+
+```js
+isDate(new Date())     // false
+isDate(new Date(NaN))  // true
 ```
 
 ---

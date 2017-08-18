@@ -20,13 +20,13 @@ const {create} = Object
 
 module.exports = [
   runWith(fpx.truthy,
-    fnTest([],   !!undefined),
+    fnTest([],   Boolean(undefined)),
     fnTest([],   false),
-    fnTest([0],  !!0),
+    fnTest([0],  Boolean(0)),
     fnTest([0],  false),
-    fnTest([''], !!''),
+    fnTest([''], Boolean('')),
     fnTest([''], false),
-    fnTest([1],  !!1),
+    fnTest([1],  Boolean(1)),
     fnTest([1],  true)
   ),
 
@@ -132,21 +132,17 @@ module.exports = [
     fnTest(['Symbol(blah)'], false)
   ),
 
-  runWith(fpx.isFunction,
-    fnTest([],                  false),
-    fnTest([id],                true),
-    fnTest([create(id)], false)
-  ),
-
-  runWith(fpx.isObject,
-    fnTest([],             false),
-    fnTest([null],         false),
-    fnTest([id],           false),
-    fnTest([{}],           true),
-    fnTest([[]],           true),
-    fnTest([/!/],          true),
-    fnTest([create(null)], true),
-    fnTest([create({})],   true)
+  runWith(fpx.isPrimitive,
+    fnTest([],         true),
+    fnTest([null],     true),
+    fnTest([1],        true),
+    fnTest([''],       true),
+    fnTest([Symbol()], true),
+    fnTest([true],     true),
+    fnTest([{}],       false),
+    fnTest([[]],       false),
+    fnTest([id],       false),
+    fnTest([/!/],      false)
   ),
 
   runWith(fpx.isComplex,
@@ -162,17 +158,27 @@ module.exports = [
     fnTest([/!/],      true)
   ),
 
-  runWith(fpx.isPrimitive,
-    fnTest([],         true),
-    fnTest([null],     true),
-    fnTest([1],        true),
-    fnTest([''],       true),
-    fnTest([Symbol()], true),
-    fnTest([true],     true),
-    fnTest([{}],       false),
-    fnTest([[]],       false),
-    fnTest([id],       false),
-    fnTest([/!/],      false)
+  runWith(fpx.isInstance,
+    fnTest([null, Object],   false),
+    fnTest([[],   Object],   true),
+    fnTest([Object, Object], true)
+  ),
+
+  runWith(fpx.isFunction,
+    fnTest([],                  false),
+    fnTest([id],                true),
+    fnTest([create(id)], false)
+  ),
+
+  runWith(fpx.isObject,
+    fnTest([],             false),
+    fnTest([null],         false),
+    fnTest([id],           false),
+    fnTest([{}],           true),
+    fnTest([[]],           true),
+    fnTest([/!/],          true),
+    fnTest([create(null)], true),
+    fnTest([create({})],   true)
   ),
 
   runWith(fpx.isDict,
@@ -216,6 +222,25 @@ module.exports = [
     fnTest([{then () {}, catch () {}}], true)
   ),
 
+  runWith(fpx.isDate,
+    fnTest([], false),
+    fnTest([new Date()], true),
+    fnTest([Date.now()], false),
+    fnTest([new Date().toString()], false)
+  ),
+
+  runWith(fpx.isValidDate,
+    fnTest([], false),
+    fnTest([new Date()], true),
+    fnTest([new Date(NaN)], false)
+  ),
+
+  runWith(fpx.isInvalidDate,
+    fnTest([], false),
+    fnTest([new Date()], false),
+    fnTest([new Date(NaN)], true)
+  ),
+
   runWith(fpx.isNil,
     fnTest([],      true),
     fnTest([null],  true),
@@ -251,9 +276,8 @@ module.exports = [
     fnTest([{}, [1]],       true),
     fnTest([{}, undefined], false),
 
-    fnTest([{nan: isNaN}, {}],                 true),
-    fnTest([{nan: isNaN}, {nan: NaN, one: 1}], true),
-    fnTest([{nan: isNaN}, {nan: 1}],           false),
+    fnTest([{nan: Number.isNaN}, {nan: NaN, one: 1}], true),
+    fnTest([{nan: Number.isNaN}, {nan: 1}],           false),
 
     fnTest([{length: 1}, id], true)
   ),
@@ -302,8 +326,7 @@ module.exports = [
       fnTest([],    false)
     )),
 
-    fnTest([{nan: isNaN}], tests(
-      fnTest([{}],                 true),
+    fnTest([{nan: Number.isNaN}], tests(
       fnTest([{nan: NaN, one: 1}], true),
       fnTest([{nan: 1}],           false)
     )),
@@ -328,5 +351,5 @@ module.exports = [
       fnTest([],      false),
       fnTest(['one'], true)
     ))
-  )
+  ),
 ]

@@ -88,17 +88,18 @@ read({one: {two: 2}})
 
 ---
 
-### `mapVals(fun, value)`
+### `mapDict(fun, dict)`
 
-Maps `value` to a dictionary with the same properties, transforming their values
-via `fun`.
+where `fun = ƒ(value: any, key: string): any`
+
+Creates a dict with the same keys as `dict`, transforming values via `fun`.
 
 Similar to lodash's `_.mapValues`, but with an FP-friendly argument order.
 
 ```js
 function bang (a) {return a + '!'}
 
-mapVals(bang, {ping: 'ping', pong: 'pong'})
+mapDict(bang, {ping: 'ping', pong: 'pong'})
 // {ping: 'ping!', pong: 'pong!'}
 ```
 
@@ -106,7 +107,9 @@ mapVals(bang, {ping: 'ping', pong: 'pong'})
 
 ### `mapKeys(fun, value)`
 
-Like [`mapVals`](#-mapvals-fun-value-), but alters keys rather than values.
+where `fun = ƒ(value: any, key: string): any`
+
+Like [`mapDict`](#-mapdict-fun-dict-), but alters keys rather than values.
 
 Similar to lodash's `_.mapKeys`, but with an FP-friendly argument order.
 

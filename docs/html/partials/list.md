@@ -23,6 +23,8 @@ list(1, [2])
 
 ### `foldl(fun, accumulator, list)`
 
+where `fun = ƒ(accumulator: any, value: any): any`
+
 Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank">`Array#reduce`</a>,
 but with an FP-friendly argument order, more suitable for currying and partial
@@ -37,6 +39,8 @@ foldl(add, 10, [1, 2, 3])
 
 ### `foldr(fun, accumulator, list)`
 
+where `fun = ƒ(accumulator: any, value: any, index: number): any`
+
 Similar to
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight" target="_blank">`Array#reduceRight`</a>,
 but with an FP-friendly argument order. The accumulator argument is mandatory.
@@ -49,6 +53,8 @@ foldr(sub, 100, [1, 5, 20])
 ---
 
 ### `map(fun, list)`
+
+where `fun = ƒ(value: any, index: number): any`
 
 Like
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank">`Array#map`</a>,
@@ -63,7 +69,9 @@ map(double, [1, 2, 3])
 
 ---
 
-### `filter(test, list)`
+### `filter(fun, list)`
+
+where `fun = ƒ(value: any, index: number): boolean`
 
 Like
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank">`Array#filter`</a>,
@@ -81,6 +89,8 @@ filter(test({val: id}), [{val: 0}, null, {val: 1}])
 
 ### `find(test, list)`
 
+where `fun = ƒ(value: any, index: number): boolean`
+
 Like
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target="_blank">`Array#find`</a>,
 but with an FP-friendly argument order.
@@ -96,6 +106,8 @@ find(test({val: id}), [{val: 0}, null, {val: 1}])
 ---
 
 ### `every(test, list)`
+
+where `fun = ƒ(value: any, index: number): boolean`
 
 Like
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every" target="_blank">`Array#every`</a>,
@@ -116,6 +128,8 @@ every(isBoolean, [true, false, 10, 20])
 
 ### `some(test, list)`
 
+where `fun = ƒ(value: any, index: number): boolean`
+
 Like
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some" target="_blank">`Array#some`</a>,
 but with an FP-friendly argument order.
@@ -134,6 +148,8 @@ some(isBoolean, [true, false, 10, 20])
 ---
 
 ### `procure(fun, list)`
+
+where `fun = ƒ(value: any, index: number): any`
 
 Similar to [`find`](#-find-test-list-), but returns the result of `fun` rather
 than the element it was called on.
@@ -378,7 +394,43 @@ last('str')
 // undefined
 ```
 
-----
+---
+
+### `take(count, list)`
+
+Returns a sublist with `count` elements taken from the start. Equivalent to
+`slice(list, count)`.
+
+```js
+take(0, undefined)
+// []
+
+take(2, [10, 20, 30, 40])
+// [10, 20]
+
+take(Infinity, [10, 20, 30, 40])
+// [10, 20, 30, 40]
+```
+
+---
+
+### `drop(count, list)`
+
+Returns a sublist with `count` elements removed from the start. Equivalent to
+`slice(list, 0, count)`.
+
+```js
+drop(0, undefined)
+// []
+
+drop(2, [10, 20, 30, 40])
+// [30, 40]
+
+drop(Infinity, [10, 20, 30, 40])
+// []
+```
+
+---
 
 ### `reverse(list)`
 
@@ -396,4 +448,4 @@ reverse('str')
 // []
 ```
 
-----
+---

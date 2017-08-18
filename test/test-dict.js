@@ -41,7 +41,7 @@ module.exports = [
     fnTest([args('one', 'two'), {one: {two: 2}}], 2)
   ),
 
-  runWith(fpx.mapVals,
+  runWith(fpx.mapDict,
     fnTest([],                      {}),
     fnTest([undefined, {}],         {}),
     fnTest([add, {one: 1, two: 2}], {one: '1one', two: '2two'})

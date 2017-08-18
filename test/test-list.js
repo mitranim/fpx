@@ -51,10 +51,10 @@ module.exports = [
   ),
 
   runWith(fpx.find,
-    fnTest([id],                 undefined),
-    fnTest([id, []],             undefined),
-    fnTest([isNaN, [1, NaN, 2]], NaN),
-    fnTest([Boolean, 'one'],     undefined)
+    fnTest([id],                        undefined),
+    fnTest([id, []],                    undefined),
+    fnTest([Number.isNaN, [1, NaN, 2]], NaN),
+    fnTest([Boolean, 'one'],            undefined)
   ),
 
   runWith(fpx.every,
@@ -202,10 +202,30 @@ module.exports = [
     fnTest(['one'],        undefined)
   ),
 
+  runWith(fpx.take,
+    fnTest([0],                  []),
+    fnTest([0,        []],       []),
+    fnTest([0,        [10, 20]], []),
+    fnTest([1,        [10, 20]], [10]),
+    fnTest([2,        [10, 20]], [10, 20]),
+    fnTest([3,        [10, 20]], [10, 20]),
+    fnTest([Infinity, [10, 20]], [10, 20])
+  ),
+
+  runWith(fpx.drop,
+    fnTest([0],                  []),
+    fnTest([Infinity],           []),
+    fnTest([1, []],              []),
+    fnTest([0, [10, 20]],        [10, 20]),
+    fnTest([1, [10, 20]],        [20]),
+    fnTest([2, [10, 20]],        []),
+    fnTest([Infinity, [10, 20]], [])
+  ),
+
   runWith(fpx.reverse,
     fnTest([],                     []),
     fnTest([[10, 20]],             [20, 10]),
     fnTest([[[10, 20], [30, 40]]], [[30, 40], [10, 20]]),
     fnTest(['one'],                [])
-  )
+  ),
 ]
