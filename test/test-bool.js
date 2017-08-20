@@ -3,7 +3,7 @@
 /* global Symbol, Promise */
 
 const {runWith, fnTest, tests} = require('./utils')
-const fpx = require('../lib/fpx')
+const fpx = require('../dist/fpx')
 
 /**
  * TODO

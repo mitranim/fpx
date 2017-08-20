@@ -11,38 +11,32 @@ const {
 // have to use a small non-zero value in some geometry checks.
 const PX_ERROR_MARGIN = 3
 
-class Throttle {
-  constructor (fun, options) {
-    validate(isFunction, fun)
-    this.fun = fun
-    this.options = options
-    this.timerId = null
-    this.tailPending = false
+function Throttle(fun, options) {
+  validate(isFunction, fun)
+  let timerId = null
+  let tailPending = false
+
+  function run () {
+    if (timerId) tailPending = true
+    else restartThrottle()
   }
 
-  run () {
-    if (this.timerId) this.tailPending = true
-    else restartThrottle.call(this)
+  function stop () {
+    clearTimeout(timerId)
+    timerId = null
   }
 
-  isPending () {
-    return Boolean(this.timerId)
+  function restartThrottle () {
+    stop()
+    timerId = setTimeout(() => {
+      timerId = null
+      if (tailPending) restartThrottle()
+      tailPending = false
+      fun(...arguments)
+    }, get(options, 'delay'))
   }
 
-  stop () {
-    clearTimeout(this.timerId)
-    this.timerId = null
-  }
-}
-
-function restartThrottle () {
-  this.stop()
-  this.timerId = setTimeout(() => {
-    this.timerId = null
-    if (this.tailPending) restartThrottle.call(this)
-    this.tailPending = false
-    this.fun(...arguments)
-  }, get(this.options, 'delay'))
+  return {run, stop}
 }
 
 const getVisibleId = and(truthy, hasArea, withinViewport, elem => elem.id)
@@ -63,8 +57,8 @@ function hasArea (elem) {
 function withinViewport (elem) {
   const {top, bottom} = elem.getBoundingClientRect()
   return (
-    bottom > -PX_ERROR_MARGIN && bottom < window.innerHeight ||
-    top > PX_ERROR_MARGIN && top < (window.innerHeight + PX_ERROR_MARGIN)
+    bottom > (-PX_ERROR_MARGIN && bottom < window.innerHeight) ||
+    top > (PX_ERROR_MARGIN && top < (window.innerHeight + PX_ERROR_MARGIN))
   )
 }
 
@@ -90,9 +84,9 @@ function preventScrollSpill (elem, event) {
  * Init
  */
 
-const scroller = new Throttle(updateLinksAndHash, {delay: 250})
+const scroller = Throttle(updateLinksAndHash, {delay: 250})
 
-window.addEventListener('scroll', scroller.run.bind(scroller))
+window.addEventListener('scroll', scroller.run)
 
 const shouldPreventSpill = bind(hasAttr, 'data-nospill')
 

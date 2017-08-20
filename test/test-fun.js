@@ -1,7 +1,7 @@
 'use strict'
 
 const {runWith, fnTest, tests} = require('./utils')
-const fpx = require('../lib/fpx')
+const fpx = require('../dist/fpx')
 
 function args    ()        {return arguments}
 function arglist (...args) {return args}

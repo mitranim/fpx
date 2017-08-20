@@ -1,7 +1,7 @@
 'use strict'
 
 const {runWith, fnTest} = require('./utils')
-const fpx = require('../lib/fpx')
+const fpx = require('../dist/fpx')
 
 function join    (a, b)          {return a.concat([b])}
 function add     (a, b)          {return a + b}

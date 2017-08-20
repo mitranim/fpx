@@ -1,7 +1,7 @@
 'use strict'
 
 const {runWith, fnTest} = require('./utils')
-const fpx = require('../lib/fpx')
+const fpx = require('../dist/fpx')
 
 module.exports = [
   runWith(fpx.add,

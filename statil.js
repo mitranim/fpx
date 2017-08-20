@@ -13,7 +13,7 @@ marked.setOptions({
   highlight (code, lang) {
     const result = lang ? hljs.highlight(lang, code) : hljs.highlightAuto(code)
     return result.value
-  }
+  },
 })
 
 /*
@@ -24,7 +24,7 @@ module.exports = {
   imports: {
     url (path) {
       return pt.join(pt.dirname(path), pt.parse(path).name)
-    }
+    },
   },
   ignorePath: path => /^partials/.test(path),
   renamePath: (path, {dir, name}) => (
@@ -36,7 +36,7 @@ module.exports = {
     ext !== '.md'
     ? content
     : marked(content)
-        .replace(/<pre><code class="(.*)">|<pre><code>/g, '<pre><code class="hljs $1">')
-        .replace(/<!--\s*:((?:[^:]|:(?!\s*-->))*):\s*-->/g, '$1')
+      .replace(/<pre><code class="(.*)">|<pre><code>/g, '<pre><code class="hljs $1">')
+      .replace(/<!--\s*:((?:[^:]|:(?!\s*-->))*):\s*-->/g, '$1')
   ),
 }

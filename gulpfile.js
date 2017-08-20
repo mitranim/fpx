@@ -1,6 +1,8 @@
 'use strict'
 
-/* ***************************** Dependencies ********************************/
+/**
+ * Dependencies
+ */
 
 const $ = require('gulp-load-plugins')()
 const bs = require('browser-sync').create()
@@ -9,133 +11,143 @@ const {spawn} = require('child_process')
 const gulp = require('gulp')
 const statilConfig = require('./statil')
 
-/* ******************************** Globals **********************************/
+/**
+ * Globals
+ */
 
-const src = {
-  lib: 'lib/**/*.js',
-  dist: 'dist/**/*.js',
-  docHtml: 'docs/html/**/*',
-  docStyles: 'docs/styles/**/*.scss',
-  docStylesMain: 'docs/styles/docs.scss',
-  docFonts: 'node_modules/font-awesome/fonts/**/*',
-  docScriptLib: 'dist/fpx.js',
-  docScripts: 'docs/scripts/**/*.js',
-  test: 'test/**/*.js'
-}
-
-const out = {
-  lib: 'dist',
-  docRoot: 'gh-pages',
-  docStyles: 'gh-pages/styles',
-  docFonts: 'gh-pages/fonts',
-  docScripts: 'gh-pages/scripts'
-}
+const _srcDir = 'src'
+const esDir = 'es'
+const distDir = 'dist'
+const srcFiles = 'src/**/*.js'
+const esFiles = 'es/**/*.js'
+const distFiles = 'dist/**/*.js'
+const testFiles = 'test/**/*.js'
+const distMain = require('./package').main
+const docHtmlFiles = 'docs/html/**/*'
+const docStyleFiles = 'docs/styles/**/*.scss'
+const docStyleMain = 'docs/styles/docs.scss'
+const docFontFiles = 'node_modules/font-awesome/fonts/**/*'
+const docScriptMain = 'docs/scripts/docs.js'
+const docOutDir = 'gh-pages'
+const docOutStyleDir = 'gh-pages/styles'
+const docOutFontDir = 'gh-pages/fonts'
+const docOutScriptDir = 'gh-pages/scripts'
 
 const [testExecutable, ...testArgs] = require('./package').scripts.test.split(/\s/g)
 
 const GulpErr = msg => ({showStack: false, toString: () => msg})
 
-/* ********************************* Tasks ***********************************/
+/**
+ * Tasks
+ */
 
 /* --------------------------------- Clear ---------------------------------- */
 
-gulp.task('lib:clear', () => (
-  del(out.lib).catch(console.error.bind(console))
+gulp.task('clear', () => (
+  del([
+    distFiles,
+    esFiles,
+    // Skips dotfiles like `.git` and `.gitignore`
+    `${docOutDir}/*`,
+  ]).catch(console.error.bind(console))
 ))
-
-gulp.task('docs:clear', () => (
-  // Skips dotfiles like `.git` and `.gitignore`
-  del(out.docRoot + '/*').catch(console.error.bind(console))
-))
-
-gulp.task('clear', gulp.parallel('lib:clear', 'docs:clear'))
 
 /* ---------------------------------- Lib -----------------------------------*/
 
-gulp.task('lib:compile', () => (
-  gulp.src(src.lib)
+gulp.task('lib:build', () => (
+  gulp.src(srcFiles)
     .pipe($.babel())
-    .pipe(gulp.dest(out.lib))
-))
-
-// Ensures ES5 compliance and shows minified size
-gulp.task('lib:minify', () => (
-  gulp.src(src.dist, {ignore: '**/*.min.js'})
-    .pipe($.uglify({toplevel: true}))
+    .pipe(gulp.dest(esDir))
+    .pipe($.babel({
+      plugins: [
+        'transform-es2015-modules-commonjs',
+      ],
+    }))
+    .pipe(gulp.dest(distDir))
+    // Ensures ES5 compliance and shows minified size
+    .pipe($.uglify({
+      mangle: {toplevel: true},
+      compress: {warnings: false},
+    }))
     .pipe($.rename(path => {
       path.extname = '.min.js'
     }))
-    .pipe(gulp.dest(out.lib))
+    .pipe(gulp.dest(distDir))
 ))
 
+let testProc = null
+
 gulp.task('lib:test', done => {
-  const proc = spawn(testExecutable, testArgs)
+  // Still running, let it finish
+  if (testProc && testProc.exitCode == null) {
+    done()
+    return
+  }
 
-  proc.stdout.pipe(process.stdout)
-  proc.stderr.pipe(process.stderr)
+  testProc = spawn(testExecutable, testArgs)
+  testProc.stdout.pipe(process.stdout)
+  testProc.stderr.pipe(process.stderr)
 
-  proc.once('error', err => {
-    proc.kill()
+  testProc.once('error', err => {
+    testProc.kill()
     done(err)
   })
 
-  proc.once('exit', code => {
+  testProc.once('exit', code => {
     done(code ? GulpErr(`Test failed with exit code ${code}`) : null)
   })
 })
 
-gulp.task('lib:build', gulp.series('lib:compile', 'lib:minify'))
-
 gulp.task('lib:watch', () => {
-  $.watch(src.lib, gulp.parallel('lib:test', gulp.series('lib:build')))
-  $.watch(src.test, gulp.series('lib:test'))
+  $.watch(srcFiles, gulp.series('lib:build', 'lib:test'))
+  $.watch(testFiles, gulp.series('lib:test'))
 })
 
 /* --------------------------------- HTML -----------------------------------*/
 
 gulp.task('docs:html:build', () => (
-  gulp.src(src.docHtml)
+  gulp.src(docHtmlFiles)
     .pipe($.statil(statilConfig))
-    .pipe(gulp.dest(out.docRoot))
+    .pipe(gulp.dest(docOutDir))
 ))
 
 gulp.task('docs:html:watch', () => {
-  $.watch(src.docHtml, gulp.series('docs:html:build'))
+  $.watch(docHtmlFiles, gulp.series('docs:html:build'))
 })
 
 /* -------------------------------- Styles ----------------------------------*/
 
 gulp.task('docs:styles:build', () => (
-  gulp.src(src.docStylesMain)
+  gulp.src(docStyleMain)
     .pipe($.sass())
     .pipe($.autoprefixer())
     .pipe($.cleanCss({
       keepSpecialComments: 0,
       aggressiveMerging: false,
       advanced: false,
-      compatibility: {properties: {colors: false}}
+      compatibility: {properties: {colors: false}},
     }))
-    .pipe(gulp.dest(out.docStyles))
+    .pipe(gulp.dest(docOutStyleDir))
 ))
 
 gulp.task('docs:styles:watch', () => {
-  $.watch(src.docStyles, gulp.series('docs:styles:build'))
+  $.watch(docStyleFiles, gulp.series('docs:styles:build'))
 })
 
 /* -------------------------------- Fonts -----------------------------------*/
 
 gulp.task('docs:fonts:build', () => (
-  gulp.src(src.docFonts).pipe(gulp.dest(out.docFonts))
+  gulp.src(docFontFiles).pipe(gulp.dest(docOutFontDir))
 ))
 
 gulp.task('docs:fonts:watch', () => {
-  $.watch(src.docFonts, gulp.series('docs:fonts:build'))
+  $.watch(docFontFiles, gulp.series('docs:fonts:build'))
 })
 
 /* ------------------------------- Scripts ----------------------------------*/
 
-gulp.task('docs:scripts:lib', () => (
-  gulp.src(src.docScriptLib)
+gulp.task('docs:scripts:copy', () => (
+  gulp.src(distMain)
     .pipe($.wrap(
 `// Built version. See lib/fpx.js.
 !function (exports) {
@@ -143,11 +155,11 @@ gulp.task('docs:scripts:lib', () => (
 
 Object.assign(window, exports);
 }(window.fpx = {});`))
-    .pipe(gulp.dest(out.docScripts))
+    .pipe(gulp.dest(docOutScriptDir))
 ))
 
-gulp.task('docs:scripts:copy', () => (
-  gulp.src(src.docScripts)
+gulp.task('docs:scripts:compile', () => (
+  gulp.src(docScriptMain)
     .pipe($.babel())
     .pipe($.wrap(
 `!function () {
@@ -155,14 +167,14 @@ gulp.task('docs:scripts:copy', () => (
 
 <%= contents %>
 }();`))
-    .pipe(gulp.dest(out.docScripts))
+    .pipe(gulp.dest(docOutScriptDir))
 ))
 
-gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:lib', 'docs:scripts:copy'))
+gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:copy', 'docs:scripts:compile'))
 
 gulp.task('docs:scripts:watch', () => {
-  $.watch(src.docScriptLib, gulp.series('docs:scripts:lib'))
-  $.watch(src.docScripts, gulp.series('docs:scripts:copy'))
+  $.watch(distMain, gulp.series('docs:scripts:copy'))
+  $.watch(docScriptMain, gulp.series('docs:scripts:compile'))
 })
 
 /* -------------------------------- Server ----------------------------------*/
@@ -176,8 +188,8 @@ gulp.task('docs:server', () => (
         (req, res, next) => {
           req.url = req.url.replace(/^\/fpx\//, '').replace(/^[/]*/, '/')
           next()
-        }
-      ]
+        },
+      ],
     },
     port: 3474,
     files: 'gh-pages',
@@ -185,7 +197,7 @@ gulp.task('docs:server', () => (
     online: false,
     ui: false,
     ghostMode: false,
-    notify: false
+    notify: false,
   })
 ))
 

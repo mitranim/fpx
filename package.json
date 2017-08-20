@@ -1,13 +1,14 @@
 {
   "name": "fpx",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Functional programming extensions for JavaScript",
   "main": "dist/fpx.js",
+  "module": "es/fpx.js",
   "scripts": {
     "start": "gulp",
     "test": "node test/test",
-    "build": "gulp build",
-    "prepublishOnly": "gulp build"
+    "compile": "gulp build",
+    "prepublishOnly": "npm run compile"
   },
   "keywords": [
     "functional",
@@ -28,13 +29,14 @@
     "babel-plugin-transform-es2015-arrow-functions": "6.22.0",
     "babel-plugin-transform-es2015-block-scoping": "6.24.1",
     "babel-plugin-transform-es2015-destructuring": "6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
     "babel-plugin-transform-es2015-parameters": "6.24.1",
     "babel-plugin-transform-es2015-spread": "6.22.0",
     "babel-plugin-transform-es2015-template-literals": "6.22.0",
     "browser-sync": "2.18.12",
     "del": "3.0.0",
     "emerge": "0.0.32",
-    "eslint_d": "5.0.0",
+    "eslint_d": "4.2.5",
     "font-awesome": "4.7.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "4.0.0",
