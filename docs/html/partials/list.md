@@ -304,6 +304,9 @@ surprising results.
 
 fpx's `concat` is more intuitive and therefore safer to use.
 
+**Note**: for individual elements, use [`append`](#-append-list-value-) and
+[`prepend`](#-prepend-list-value-) instead.
+
 ```js
 concat()
 // []
