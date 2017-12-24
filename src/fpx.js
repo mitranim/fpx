@@ -286,12 +286,6 @@ export function isDict(value) {
   return isObject(value) && isPlainPrototype(getPrototypeOf(value))
 }
 
-// WTB better name, then publish and document.
-// "Special object" has a special meaning in the ES spec, this ain't it.
-function isSpecialObject(value) {
-  return isObject(value) && (!isPlainPrototype(getPrototypeOf(value)) || isArguments(value))
-}
-
 // TODO consider documenting
 function isArguments(value) {
   return isObject(value) && 'callee' in value && 'length' in value && isNatural(value.length)
@@ -306,7 +300,7 @@ export function isArray(value) {
 }
 
 export function isList(value) {
-  return isSpecialObject(value) && 'length' in value && isNatural(value.length)
+  return isArray(value) || isArguments(value)
 }
 
 export function isRegExp(value) {
@@ -552,12 +546,14 @@ export function getAt(path, value) {
 
 export const mapVals = mapDict
 export function mapDict(fun, value) {
+  validate(isFunction, fun)
   const out = {}
   for (const key in value) out[key] = fun(value[key], key)
   return out
 }
 
 export function mapKeys(fun, value) {
+  validate(isFunction, fun)
   const out = {}
   for (const key in value) {
     const prop = value[key]

@@ -7,7 +7,7 @@
 const $ = require('gulp-load-plugins')()
 const bs = require('browser-sync').create()
 const del = require('del')
-const {spawn} = require('child_process')
+const {fork} = require('child_process')
 const gulp = require('gulp')
 const statilConfig = require('./statil')
 
@@ -32,8 +32,6 @@ const docOutDir = 'gh-pages'
 const docOutStyleDir = 'gh-pages/styles'
 const docOutFontDir = 'gh-pages/fonts'
 const docOutScriptDir = 'gh-pages/scripts'
-
-const [testExecutable, ...testArgs] = require('./package').scripts.test.split(/\s/g)
 
 const GulpErr = msg => ({showStack: false, toString: () => msg})
 
@@ -84,14 +82,7 @@ gulp.task('lib:test', done => {
     return
   }
 
-  testProc = spawn(testExecutable, testArgs)
-  testProc.stdout.pipe(process.stdout)
-  testProc.stderr.pipe(process.stderr)
-
-  testProc.once('error', err => {
-    testProc.kill()
-    done(err)
-  })
+  testProc = fork('./test/test')
 
   testProc.once('exit', code => {
     done(code ? GulpErr(`Test failed with exit code ${code}`) : null)

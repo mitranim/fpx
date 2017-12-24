@@ -42,14 +42,12 @@ module.exports = [
   ),
 
   runWith(fpx.mapDict,
-    fnTest([],                      {}),
-    fnTest([undefined, {}],         {}),
+    fnTest([add], {}),
     fnTest([add, {one: 1, two: 2}], {one: '1one', two: '2two'})
   ),
 
   runWith(fpx.mapKeys,
-    fnTest([],                      {}),
-    fnTest([undefined, {}],         {}),
+    fnTest([add], {}),
     fnTest([add, {one: 1, two: 2}], {'1one': 1, '2two': 2})
-  )
+  ),
 ]

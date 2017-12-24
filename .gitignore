@@ -1,8 +1,7 @@
-# Files
 .DS_Store
 *.log
-
-# Folders
+*.lock
+package-lock.json*
 dist
 es
 gh-pages

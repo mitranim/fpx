@@ -1,6 +1,6 @@
 {
   "name": "fpx",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Functional programming extensions for JavaScript",
   "main": "dist/fpx.js",
   "module": "es/fpx.js",
