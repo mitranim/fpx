@@ -2,354 +2,208 @@
 
 /* global Symbol, Promise */
 
-const {runWith, fnTest, tests} = require('./utils')
+const {eq} = require('./utils')
 const fpx = require('../dist/fpx')
-
-/**
- * TODO
- *   testAnd
- *   testOr
- *   testArgsAnd
- *   testArgsOr
- */
-
-function id (a)  {return a}
-function args () {return arguments}
-
 const {create} = Object
 
-module.exports = [
-  runWith(fpx.truthy,
-    fnTest([],   Boolean(undefined)),
-    fnTest([],   false),
-    fnTest([0],  Boolean(0)),
-    fnTest([0],  false),
-    fnTest([''], Boolean('')),
-    fnTest([''], false),
-    fnTest([1],  Boolean(1)),
-    fnTest([1],  true)
-  ),
+function id   (a) {return a}
+function args ()  {return arguments}
 
-  runWith(fpx.falsy,
-    fnTest([],   !undefined),
-    fnTest([],   true),
-    fnTest([0],  !0),
-    fnTest([0],  true),
-    fnTest([''], !''),
-    fnTest([''], true),
-    fnTest([1],  !1),
-    fnTest([1],  false)
-  ),
+eq(fpx.truthy(), Boolean(undefined))
+eq(fpx.truthy(0), Boolean(0))
+eq(fpx.truthy(''), Boolean(''))
+eq(fpx.truthy(1), Boolean(1))
 
-  runWith(fpx.is,
-    fnTest([],             true),
-    fnTest([NaN, NaN],     true),
-    fnTest(['one', 'one'], true),
-    fnTest(['one', 'two'], false),
-    fnTest([{}, {}],       false)
-  ),
+eq(fpx.falsy(), !undefined)
+eq(fpx.falsy(0), !0)
+eq(fpx.falsy(''), !'')
+eq(fpx.falsy(1), !1)
 
-  runWith(fpx.isNumber,
-    fnTest([],         false),
-    fnTest([1],        true),
-    fnTest([NaN],      true),
-    fnTest([Infinity], true),
-    fnTest([null],     false),
-    fnTest(['1'],      false),
-    fnTest([[]],       false)
-  ),
+eq(fpx.is(), true)
+eq(fpx.is(NaN, NaN), true)
+eq(fpx.is('one', 'one'), true)
+eq(fpx.is('one', 'two'), false)
+eq(fpx.is({}, {}), false)
 
-  runWith(fpx.isFinite,
-    fnTest([],          false),
-    fnTest([1],         true),
-    fnTest([1.1],       true),
-    fnTest([-1.1],      true),
-    fnTest([NaN],       false),
-    fnTest([Infinity],  false),
-    fnTest([-Infinity], false),
-    fnTest([null],      false),
-    fnTest(['1'],       false),
-    fnTest([[]],        false)
-  ),
+eq(fpx.isNumber(), false)
+eq(fpx.isNumber(1), true)
+eq(fpx.isNumber(NaN), true)
+eq(fpx.isNumber(Infinity), true)
+eq(fpx.isNumber(null), false)
+eq(fpx.isNumber('1'), false)
+eq(fpx.isNumber([]), false)
 
-  runWith(fpx.isInteger,
-    fnTest([],          false),
-    fnTest([0],         true),
-    fnTest([1],         true),
-    fnTest([10],        true),
-    fnTest([-1],        true),
-    fnTest([-10],       true),
-    fnTest([1.1],       false),
-    fnTest([-1.1],      false),
-    fnTest([NaN],       false),
-    fnTest([Infinity],  false),
-    fnTest([-Infinity], false),
-    fnTest([null],      false),
-    fnTest(['1'],       false),
-    fnTest([[]],        false)
-  ),
+eq(fpx.isFinite(), false)
+eq(fpx.isFinite(1), true)
+eq(fpx.isFinite(1.1), true)
+eq(fpx.isFinite(-1.1), true)
+eq(fpx.isFinite(NaN), false)
+eq(fpx.isFinite(Infinity), false)
+eq(fpx.isFinite(-Infinity), false)
+eq(fpx.isFinite(null), false)
+eq(fpx.isFinite('1'), false)
+eq(fpx.isFinite([]), false)
 
-  runWith(fpx.isNatural,
-    fnTest([],          false),
-    fnTest([0],         true),
-    fnTest([1],         true),
-    fnTest([10],        true),
-    fnTest([-1],        false),
-    fnTest([-10],       false),
-    fnTest([1.1],       false),
-    fnTest([-1.1],      false),
-    fnTest([NaN],       false),
-    fnTest([Infinity],  false),
-    fnTest([-Infinity], false),
-    fnTest([null],      false),
-    fnTest(['1'],       false),
-    fnTest([[]],        false)
-  ),
+eq(fpx.isInteger(), false)
+eq(fpx.isInteger(0), true)
+eq(fpx.isInteger(1), true)
+eq(fpx.isInteger(10), true)
+eq(fpx.isInteger(-1), true)
+eq(fpx.isInteger(-10), true)
+eq(fpx.isInteger(1.1), false)
+eq(fpx.isInteger(-1.1), false)
+eq(fpx.isInteger(NaN), false)
+eq(fpx.isInteger(Infinity), false)
+eq(fpx.isInteger(-Infinity), false)
+eq(fpx.isInteger(null), false)
+eq(fpx.isInteger('1'), false)
+eq(fpx.isInteger([]), false)
 
-  runWith(fpx.isNaN,
-    fnTest([],          false),
-    fnTest([NaN],       true),
-    fnTest([Infinity],  false),
-    fnTest([undefined], false)
-  ),
+eq(fpx.isNatural(), false)
+eq(fpx.isNatural(0), true)
+eq(fpx.isNatural(1), true)
+eq(fpx.isNatural(10), true)
+eq(fpx.isNatural(-1), false)
+eq(fpx.isNatural(-10), false)
+eq(fpx.isNatural(1.1), false)
+eq(fpx.isNatural(-1.1), false)
+eq(fpx.isNatural(NaN), false)
+eq(fpx.isNatural(Infinity), false)
+eq(fpx.isNatural(-Infinity), false)
+eq(fpx.isNatural(null), false)
+eq(fpx.isNatural('1'), false)
+eq(fpx.isNatural([]), false)
 
-  runWith(fpx.isString,
-    fnTest([],   false),
-    fnTest([''], true)
-  ),
+eq(fpx.isNaN(), false)
+eq(fpx.isNaN(NaN), true)
+eq(fpx.isNaN(Infinity), false)
+eq(fpx.isNaN(undefined), false)
 
-  runWith(fpx.isBoolean,
-    fnTest([],        false),
-    fnTest([true],    true),
-    fnTest([false],   true),
-    fnTest([null],    false),
-    fnTest([Boolean], false)
-  ),
+eq(fpx.isString(), false)
+eq(fpx.isString(''), true)
 
-  runWith(fpx.isSymbol,
-    fnTest([],               false),
-    fnTest([Symbol('blah')], true),
-    fnTest(['Symbol(blah)'], false)
-  ),
+eq(fpx.isBoolean(), false)
+eq(fpx.isBoolean(true), true)
+eq(fpx.isBoolean(false), true)
+eq(fpx.isBoolean(null), false)
+eq(fpx.isBoolean(Boolean), false)
 
-  runWith(fpx.isPrimitive,
-    fnTest([],         true),
-    fnTest([null],     true),
-    fnTest([1],        true),
-    fnTest([''],       true),
-    fnTest([Symbol()], true),
-    fnTest([true],     true),
-    fnTest([{}],       false),
-    fnTest([[]],       false),
-    fnTest([id],       false),
-    fnTest([/!/],      false)
-  ),
+eq(fpx.isSymbol(), false)
+eq(fpx.isSymbol(Symbol('blah')), true)
+eq(fpx.isSymbol('Symbol(blah)'), false)
 
-  runWith(fpx.isComplex,
-    fnTest([],         false),
-    fnTest([null],     false),
-    fnTest([1],        false),
-    fnTest([''],       false),
-    fnTest([Symbol()], false),
-    fnTest([true],     false),
-    fnTest([{}],       true),
-    fnTest([[]],       true),
-    fnTest([id],       true),
-    fnTest([/!/],      true)
-  ),
+eq(fpx.isPrimitive(), true)
+eq(fpx.isPrimitive(null), true)
+eq(fpx.isPrimitive(1), true)
+eq(fpx.isPrimitive(''), true)
+eq(fpx.isPrimitive(Symbol()), true)
+eq(fpx.isPrimitive(true), true)
+eq(fpx.isPrimitive({}), false)
+eq(fpx.isPrimitive([]), false)
+eq(fpx.isPrimitive(id), false)
+eq(fpx.isPrimitive(/!/), false)
 
-  runWith(fpx.isInstance,
-    fnTest([null, Object],   false),
-    fnTest([[],   Object],   true),
-    fnTest([Object, Object], true)
-  ),
+eq(fpx.isComplex(), false)
+eq(fpx.isComplex(null), false)
+eq(fpx.isComplex(1), false)
+eq(fpx.isComplex(''), false)
+eq(fpx.isComplex(Symbol()), false)
+eq(fpx.isComplex(true), false)
+eq(fpx.isComplex({}), true)
+eq(fpx.isComplex([]), true)
+eq(fpx.isComplex(id), true)
+eq(fpx.isComplex(/!/), true)
 
-  runWith(fpx.isFunction,
-    fnTest([],                  false),
-    fnTest([id],                true),
-    fnTest([create(id)], false)
-  ),
+eq(fpx.isInstance(null, Object), false)
+eq(fpx.isInstance([],   Object), true)
+eq(fpx.isInstance(Object, Object), true)
 
-  runWith(fpx.isObject,
-    fnTest([],             false),
-    fnTest([null],         false),
-    fnTest([id],           false),
-    fnTest([{}],           true),
-    fnTest([[]],           true),
-    fnTest([/!/],          true),
-    fnTest([create(null)], true),
-    fnTest([create({})],   true)
-  ),
+eq(fpx.isFunction(), false)
+eq(fpx.isFunction(id), true)
+eq(fpx.isFunction(create(id)), false)
 
-  runWith(fpx.isDict,
-    fnTest([],             false),
-    fnTest([null],         false),
-    fnTest([id],           false),
-    fnTest([{}],           true),
-    fnTest([[]],           false),
-    fnTest([/!/],          false),
-    fnTest([create(null)], true),
-    fnTest([create({})],   false)
-  ),
+eq(fpx.isObject(), false)
+eq(fpx.isObject(null), false)
+eq(fpx.isObject(id), false)
+eq(fpx.isObject({}), true)
+eq(fpx.isObject([]), true)
+eq(fpx.isObject(/!/), true)
+eq(fpx.isObject(create(null)), true)
+eq(fpx.isObject(create({})), true)
 
-  runWith(fpx.isArray,
-    fnTest([],           false),
-    fnTest([[]],         true),
-    fnTest([create([])], true),
-    fnTest([args(1, 2)], false)
-  ),
+eq(fpx.isDict(), false)
+eq(fpx.isDict(null), false)
+eq(fpx.isDict(id), false)
+eq(fpx.isDict({}), true)
+eq(fpx.isDict([]), false)
+eq(fpx.isDict(/!/), false)
+eq(fpx.isDict(create(null)), true)
+eq(fpx.isDict(create({})), false)
 
-  runWith(fpx.isList,
-    fnTest([],              false),
-    fnTest([[]],            true),
-    fnTest([create([])],    true),
-    fnTest([args(1, 2)],    true),
-    fnTest([{length: NaN}], false)
-  ),
+eq(fpx.isArray(), false)
+eq(fpx.isArray([]), true)
+eq(fpx.isArray(create([])), true)
+eq(fpx.isArray(args(1, 2)), false)
 
-  runWith(fpx.isRegExp,
-    fnTest([],            false),
-    fnTest([/!/],         true),
-    fnTest([create(/!/)], true),
-    fnTest([{}],          false)
-  ),
+eq(fpx.isList(), false)
+eq(fpx.isList([]), true)
+eq(fpx.isList(create([])), true)
+eq(fpx.isList(args(1, 2)), true)
+eq(fpx.isList({length: NaN}), false)
 
-  runWith(fpx.isPromise,
-    fnTest([],                          false),
-    fnTest([{}],                        false),
-    fnTest([{then () {}}],              false),
-    fnTest([Promise.resolve()],         true),
-    fnTest([{then () {}, catch () {}}], true)
-  ),
+eq(fpx.isRegExp(), false)
+eq(fpx.isRegExp(/!/), true)
+eq(fpx.isRegExp(create(/!/)), true)
+eq(fpx.isRegExp({}), false)
 
-  runWith(fpx.isDate,
-    fnTest([], false),
-    fnTest([new Date()], true),
-    fnTest([Date.now()], false),
-    fnTest([new Date().toString()], false)
-  ),
+eq(fpx.isPromise(), false)
+eq(fpx.isPromise({}), false)
+eq(fpx.isPromise({then () {}}), false)
+eq(fpx.isPromise(Promise.resolve()), true)
+eq(fpx.isPromise({then () {}, catch () {}}), true)
 
-  runWith(fpx.isValidDate,
-    fnTest([], false),
-    fnTest([new Date()], true),
-    fnTest([new Date(NaN)], false)
-  ),
+eq(fpx.isDate(), false)
+eq(fpx.isDate(new Date()), true)
+eq(fpx.isDate(Date.now()), false)
+eq(fpx.isDate(new Date().toString()), false)
 
-  runWith(fpx.isInvalidDate,
-    fnTest([], false),
-    fnTest([new Date()], false),
-    fnTest([new Date(NaN)], true)
-  ),
+eq(fpx.isValidDate(), false)
+eq(fpx.isValidDate(new Date()), true)
+eq(fpx.isValidDate(new Date(NaN)), false)
 
-  runWith(fpx.isNil,
-    fnTest([],      true),
-    fnTest([null],  true),
-    fnTest([false], false)
-  ),
+eq(fpx.isInvalidDate(), false)
+eq(fpx.isInvalidDate(new Date()), false)
+eq(fpx.isInvalidDate(new Date(NaN)), true)
 
-  runWith(fpx.testBy,
-    fnTest([id, 1], 1),
+eq(fpx.isNil(), true)
+eq(fpx.isNil(null), true)
+eq(fpx.isNil(false), false)
 
-    fnTest([],     true),
-    fnTest([null], false),
+eq(fpx.testBy(1, id),           1)
+eq(fpx.testBy(),                true)
+eq(fpx.testBy(undefined, null), false)
 
-    fnTest(['one', 'one'], true),
-    fnTest(['one', 'two'], false),
+eq(fpx.testBy('one', 'one'), true)
+eq(fpx.testBy('one', 'two'), false)
+eq(fpx.testBy('one', /one/), true)
+eq(fpx.testBy('two', /one/), false)
+eq(fpx.testBy(NaN, NaN),     true)
+eq(fpx.testBy(NaN),          false)
 
-    fnTest([/one/, 'one'], true),
-    fnTest([/one/, 'two'], false),
+eq(fpx.testBy([],      []),  true)
+eq(fpx.testBy([1],     []),  true)
+eq(fpx.testBy(args(1), []),  true)
+eq(fpx.testBy({},      []),  false)
+eq(fpx.testBy([],      [1]), false)
+eq(fpx.testBy([1],     [1]), true)
+eq(fpx.testBy(args(1), [1]), true)
+eq(fpx.testBy({0: 1},  [1]), false)
 
-    fnTest([NaN, NaN], true),
-    fnTest([NaN],      false),
+eq(fpx.testBy({},        {}), true)
+eq(fpx.testBy([1],       {}), true)
+eq(fpx.testBy(undefined, {}), false)
 
-    fnTest([[], []],      true),
-    fnTest([[], [1]],     true),
-    fnTest([[], args(1)], true),
-    fnTest([[], {}],      false),
+eq(fpx.testBy({nan: NaN, one: 1}, {nan: Number.isNaN}), true)
+eq(fpx.testBy({nan: 1}, {nan: Number.isNaN}), false)
 
-    fnTest([[1], []],      false),
-    fnTest([[1], [1]],     true),
-    fnTest([[1], args(1)], true),
-    fnTest([[1], {0: 1}],  false),
-
-    fnTest([{}, {}],        true),
-    fnTest([{}, [1]],       true),
-    fnTest([{}, undefined], false),
-
-    fnTest([{nan: Number.isNaN}, {nan: NaN, one: 1}], true),
-    fnTest([{nan: Number.isNaN}, {nan: 1}],           false),
-
-    fnTest([{length: 1}, id], true)
-  ),
-
-  // This array of tests is now redundant, should probably remove.
-  runWith(fpx.test,
-    fnTest([id], fnTest([1], 1)),
-
-    fnTest([], tests(
-      fnTest([],     true),
-      fnTest([null], false)
-    )),
-
-    fnTest(['one'], tests(
-      fnTest(['one'], true),
-      fnTest(['two'], false)
-    )),
-
-    fnTest([/one/], tests(
-      fnTest(['one'], true),
-      fnTest(['two'], false)
-    )),
-
-    fnTest([NaN], tests(
-      fnTest([NaN], true),
-      fnTest([],    false)
-    )),
-
-    fnTest([[]], tests(
-      fnTest([[]],      true),
-      fnTest([[1]],     true),
-      fnTest([args(1)], true),
-      fnTest([{}],      false)
-    )),
-
-    fnTest([[1]], tests(
-      fnTest([[]],      false),
-      fnTest([[1]],     true),
-      fnTest([args(1)], true),
-      fnTest([{0: 1}],  false)
-    )),
-
-    fnTest([{}], tests(
-      fnTest([{}],  true),
-      fnTest([[1]], true),
-      fnTest([],    false)
-    )),
-
-    fnTest([{nan: Number.isNaN}], tests(
-      fnTest([{nan: NaN, one: 1}], true),
-      fnTest([{nan: 1}],           false)
-    )),
-
-    fnTest([{length: 1}], tests(
-      fnTest([id], true)
-    )),
-
-    // Must not accidentally use second argument.
-
-    fnTest([id, 1], tests(
-      fnTest([],  undefined),
-      fnTest([1], 1)
-    )),
-
-    fnTest([1, 1], tests(
-      fnTest([],  false),
-      fnTest([1], true)
-    )),
-
-    fnTest([/one/, 'one'], tests(
-      fnTest([],      false),
-      fnTest(['one'], true)
-    ))
-  ),
-]
+eq(fpx.testBy(id, {length: 1}), true)

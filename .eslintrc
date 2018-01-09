@@ -126,7 +126,7 @@
     "comma-spacing": "error",
     "comma-style": "error",
     "computed-property-spacing": "error",
-    "func-call-spacing": "error",
+    // "func-call-spacing": "error",
     "func-names": ["error", "as-needed"],
     // "func-style": ["error", "declaration"],
     // "id-length": ["error", {"min": 3}],
@@ -183,7 +183,7 @@
     "prefer-const": "error",
     "prefer-numeric-literals": "error",
     "prefer-spread": "error",
-    "prefer-template": "error",
+    // "prefer-template": "error",
     // "require-yield": "error",
     "rest-spread-spacing": "error",
     "template-curly-spacing": "error"

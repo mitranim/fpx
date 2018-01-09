@@ -1,35 +1,30 @@
 'use strict'
 
-const {runWith, fnTest} = require('./utils')
+const {eq} = require('./utils')
 const fpx = require('../dist/fpx')
 
-module.exports = [
-  runWith(fpx.keys,
-    fnTest([],                 []),
-    fnTest([null],             []),
-    fnTest([10],               []),
-    fnTest(['blah'],           []),
-    fnTest([fpx.keys],         []),
-    fnTest([[10, 20]],         ['0', '1']),
-    fnTest([{one: 1, two: 2}], ['one', 'two'])
-  ),
+eq(fpx.keys(),     [])
+eq(fpx.keys(null), [])
 
-  runWith(fpx.values,
-    fnTest([],                 []),
-    fnTest([null],             []),
-    fnTest([10],               []),
-    fnTest(['blah'],           []),
-    fnTest([fpx.values],       []),
-    fnTest([[10, 20]],         [10, 20]),
-    fnTest([{one: 1, two: 2}], [1, 2])
-  ),
+eq(fpx.keys(),                 [])
+eq(fpx.keys(null),             [])
+eq(fpx.keys(10),               [])
+eq(fpx.keys('blah'),           [])
+eq(fpx.keys(fpx.keys),         [])
+eq(fpx.keys([10, 20]),         ['0', '1'])
+eq(fpx.keys({one: 1, two: 2}), ['one', 'two'])
 
-  runWith(fpx.size,
-    fnTest([],                 0),
-    fnTest([null],             0),
-    fnTest([10],               0),
-    fnTest(['blah'],           0),
-    fnTest([[10, 20]],         2),
-    fnTest([{one: 1, two: 2}], 2)
-  ),
-]
+eq(fpx.values(),                 [])
+eq(fpx.values(null),             [])
+eq(fpx.values(10),               [])
+eq(fpx.values('blah'),           [])
+eq(fpx.values(fpx.values),       [])
+eq(fpx.values([10, 20]),         [10, 20])
+eq(fpx.values({one: 1, two: 2}), [1, 2])
+
+eq(fpx.size(),                 0)
+eq(fpx.size(null),             0)
+eq(fpx.size(10),               0)
+eq(fpx.size('blah'),           0)
+eq(fpx.size([10, 20]),         2)
+eq(fpx.size({one: 1, two: 2}), 2)

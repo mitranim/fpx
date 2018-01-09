@@ -6,10 +6,7 @@ Various higher-order functions.
 
 ### `call(fun, ...args)`
 
-Similar to
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank">`Function#call`</a>,
-but doesn't take an argument for `this`.
-Sometimes useful in function composition.
+Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank">`Function.prototype.call`</a>. Sometimes useful in function composition.
 
 ```js
 call(add, 1, 2)
@@ -25,16 +22,15 @@ call(add, 1, 2)
 
 ### `apply(fun, args)`
 
-Similar to
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank">`Function#apply`</a>,
-but doesn't take an argument for `this`.
-Sometimes useful in function composition.
+Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank">`Function.prototype.apply`</a>. Sometimes useful in function composition.
 
 ```js
 apply(add, [1, 2])
 // 3
 
 // equivalent:
+// add(1, 2)
+// add(...[1, 2])
 // apply(add, [1, 2])
 // add.apply(null, [1, 2])
 ```
@@ -43,10 +39,7 @@ apply(add, [1, 2])
 
 ### `bind(fun, ...args)`
 
-Similar to
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank">`Function#bind`</a>,
-but doesn't take an argument for `this`, and doesn't affect the `this` binding
-of the created function.
+Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank">`Function.prototype.bind`</a>, with implicit `this = undefined`.
 
 Returns a new function that represents
 <a href="https://en.wikipedia.org/wiki/Partial_application" target="_blank">partial application</a>
@@ -69,79 +62,6 @@ incMany([1, 2, 3])
 
 // equivalent:
 // bind(map, inc) = map.bind(null, inc)
-```
-
-### `applyBind(fun, args)`
-
-Same as [`bind`](#-bind-fun-args-), but takes additional arguments as a list
-rather than as rest parameters.
-
-```js
-const inc = applyBind(add, [1])
-inc(2)
-// 3
-```
-
----
-
-### `curry1(fun, ...args)`
-
-A restricted implementation of
-<a href="https://en.wikipedia.org/wiki/Currying" target="_blank">currying</a>.
-Creates a function curried for exactly two calls:
-
-```
-const curried = curry1(original, ...originalArgs)
-const intermediary = curried(...moreArgs)
-intermediary(...finalArgs)
-// original(...originalArgs, ...moreArgs, ...finalArgs)
-```
-
-In a language with widespread variadic and optional arguments, such as
-JavaScript, traditional currying based on argument count is hazardous. Currying
-for a fixed number of calls and ignoring the argument count is much safer in
-practice.
-
-```js
-function add3 (a, b, c) {return a + b + c}
-
-const addf = curry1(add3)
-
-// is equivalent to:
-function addf () {
-  return bind(add3, ...arguments)
-}
-
-addf(1, 2, 3)()
-// 6
-
-addf(1, 2)(3)
-// 6
-
-addf(1)(2, 3)
-// 6
-
-// with generic currying, this would have returned an intermediary function
-// with curry1, two calls always reach the original
-addf(1)(2)
-// NaN
-```
-
----
-
-### `flip(fun)`
-
-Returns a function that passes its arguments to `fun` in reverse. Only supports
-functions with variadic arity (from 0 to ∞ arguments).
-
-```js
-function add3 (a, b, c) {return a + b + c}
-
-add3('left', '-', 'right')
-// 'left-right'
-
-flip(add3)('left', '-', 'right')
-// 'right-left'
 ```
 
 ---
@@ -224,9 +144,7 @@ different(1, 2)
 
 ### `ifelse(test, left, right)`
 
-Represents the `_ ? _ : _` operation in terms of functions rather than
-expressions. Returns a new function that calls `left` if `test` succeeds and
-`right` otherwise, passing all arguments to each.
+Represents the ternary boolean operation  `_ ? _ : _` in terms of functions rather than expressions. Returns a new function that calls `left` if `test` succeeds and `right` otherwise, passing all arguments to each.
 
 ```js
 function bang (a) {return a + '!'}
@@ -364,45 +282,42 @@ x([])
 
 ### `pipe(...funs)`
 
-Returns a new function that represents
-<a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
-of the given functions, a common tool in functional programming. When called, it
-passes all arguments to the first function and pipes the output through the rest.
+Combines `funs` left-to-right. The resulting function will pass all arguments to the first `fun`, the returned value to the second, and so on.
 
-Flows values left-to-right, in the direction of reading. See
-[`comp`](#-comp-funs-) for the opposite direction.
+Note the left-to-right flow. See [`comp`](#-comp-funs-) for the opposite direction.
 
 Equivalent to lodash's `_.flow`.
 
 ```js
+// Equivalent
+pipe(a, b, c)(...args)
+c(b(a(...args)))
+
 const double = bind(mul, 2)
-
 const x = pipe(add, double)
-
 x(1, 2)
 // 6
-// = double(add(1, 2))
+// Same as: double(add(1, 2))
 ```
 
 ---
 
 ### `comp(...funs)`
 
-Returns a new function that represents
-<a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)" target="_blank">composition</a>
-of the given functions.
+Combines `funs` right-to-left, similar to nested function calls. The resulting function will pass all arguments to the last `fun`, the returned value to the second-last, and so on.
 
-Flows values right-to-left, similarly to direct nested function calls. See
-[`pipe`](#-pipe-funs-) for the opposite direction.
+Note the right-to-left flow. See [`pipe`](#-pipe-funs-) for the opposite direction.
 
 ```js
+// Equivalent
+comp(c, b, a)(...args)
+c(b(a(...args)))
+
 const double = bind(mul, 2)
-
 const x = comp(double, add)
-
 x(1, 2)
 // 6
-// = double(add(1, 2))
+// Same as: double(add(1, 2))
 ```
 
 ---
@@ -410,12 +325,9 @@ x(1, 2)
 ### `seq(...funs)`
 
 Represents the
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator" target="_blank">`,`</a>
-operator in terms of functions rather than expressions.
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Comma_Operator" target="_blank">comma operator</a> in terms of functions rather than expressions.
 
-Returns a new function that runs the given functions in order, passing the same
-arguments to each, returning the result of the last one. Useful for combining
-operations that have side effects.
+Returns a new function that runs the given functions in order, passing the same original arguments to each, returning the result of the last function. Useful for combining side-effectful functions.
 
 ```js
 function first (a, b) {
@@ -438,9 +350,7 @@ x(1, 2)
 
 ### `pipeAnd(...funs)`
 
-Same as [`pipe`](#-pipe-funs-) but inserts `&&` between function calls. If one
-of the chained functions returns a falsy value, others are not invoked. Useful
-for composing functions that expect truthy values.
+Same as [`pipe`](#-pipe-funs-) but inserts `&&` between function calls. If one of the chained functions returns a falsy value, the others are not invoked. Useful for composing functions that expect truthy values.
 
 ```js
 function getOne (a) {return a.one}
@@ -459,9 +369,7 @@ x({one: NaN})
 
 ### `compAnd(...funs)`
 
-Same as [`comp`](#-comp-funs-) but inserts `&&` between function calls. If one
-of the chained functions returns a falsy value, others are not invoked. Useful
-for composing functions that expect truthy values.
+Same as [`comp`](#-comp-funs-) but inserts `&&` between function calls. If one of the chained functions returns a falsy value, the others are not invoked. Useful for composing functions that expect truthy values.
 
 ```js
 function getOne (a) {return a.one}
@@ -480,12 +388,9 @@ x({one: NaN})
 
 ### `juxt(...funs)`
 
-Returns a function that calls all `funs`, returning the results as a list. It
-passes the same arguments to each fun.
+Returns a function that calls all `funs`, passing the same arguments, returning the results as a list.
 
-Name taken from a similar
-<a href="https://clojuredocs.org/clojure.core/juxt" target="_blank">function</a>
-in Clojure. Short for "juxtapose". Equivalent to lodash's `_.over`.
+Name taken from Clojure's version: <a href="https://clojuredocs.org/clojure.core/juxt" target="_blank">`clojure.core/juxt`</a>. Short for "juxtapose". Equivalent to lodash's `_.over`.
 
 ```js
 const x = juxt(add, sub)
@@ -498,8 +403,7 @@ x(1, 2)
 
 ### `rest(fun)`
 
-Returns a function that collects its arguments and passes them to `fun` as the
-first argument. An opposite of `spread`.
+Returns a function that collects its arguments and passes them to `fun` as a single argument. Opposite of `spread`.
 
 ```js
 rest(id)(1, 2, 3)
@@ -514,12 +418,11 @@ id([1, 2, 3])
 
 ### `spread(fun)`
 
-Returns a function that takes arguments as one list-like value and spreads it
-over `fun` as multiple arguments. An opposite of `rest`.
+Returns a function that takes a single list and spreads it over `fun` as multiple arguments. Opposite of `rest`.
 
 ```js
 function sum () {
-  return foldl(add, 0, arguments)
+  return foldl(arguments, 0, add)
 }
 
 spread(sum)([1, 2, 3])
@@ -534,13 +437,12 @@ sum(1, 2, 3)
 
 ### `alter(fun, ...args)`
 
-Spiritual complement of [`bind`](#-bind-fun-args-). Creates a function that
-takes one value and calls `fun` with that value and `...args`. Useful for
-transforms where arguments `1..N` are known in advance. The resulting function
-ignores all arguments after the first.
+Spiritual complement of [`bind`](#-bind-fun-args-): binds arguments _after_ the first, leaving the first spot open. Returns a function that takes one argument and calls `fun` with it and `...args`, ignoring additional arguments. Useful for transforms where arguments `1..N` are known in advance.
 
 ```js
-const sum = bind(foldl, 0, add)
+function sum(vals) {
+  return foldl(vals, 0, add)
+}
 
 const x = alter(sum, 10, 20)
 
@@ -549,69 +451,6 @@ x(1)
 
 x(1, 'ignored arg')
 // sum(1, 10, 20) = 31
-```
-
----
-
-### `revise(transforms, fun)`
-
-Creates a function that will revise its arguments before calling `fun`.
-`transforms` is a list of functions that are used to rewrite the corresponding
-arguments, positionally. The resulting function ignores arguments beyond the
-available transforms.
-
-```js
-const double = bind(mul, 2)
-
-const x = revise([inc, double], add)
-
-x(10, 20)
-// add(inc(10), double(20)) = add(11, 40) = 51
-
-x(10, 20, 'ignored arg')
-// add(inc(10), double(20)) = add(11, 40) = 51
-```
-
----
-
-### `fanout(transforms, fun)`
-
-Creates a function that will magnify its inputs before calling `fun`.
-`transforms` is a list of functions that are called with _all_ available
-arguments; the list of their results is then spread over `fun`.
-
-```js
-const sum = bind(foldl, 0, add)
-
-const a = fanout([add, sub], sum)
-
-a(10, 20)
-// sum(add(10, 20), sub(10, 20)) = sum(30, -10) = 20
-
-const double = bind(mul, 2)
-
-const b = fanout([double, double], sum)
-
-b(10)
-// sum(double(10), double(10)) = sum(20, 20) = 40
-```
-
-----
-
-### `funnel(value, funs)`
-
-Similar to [`pipe`](#-pipe-funs-), but immediate. Instead of creating a
-function, it flows `value` through `funs` left-to-right and returns the result.
-
-```js
-const double   = bind(mul, 2)
-const negative = bind(mul, -1)
-
-funnel(10, [])
-// 10
-
-funnel(10, [double, negative])
-// negative(double(10)) = -20
 ```
 
 ---

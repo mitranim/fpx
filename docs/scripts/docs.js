@@ -12,22 +12,22 @@ const {
 const PX_ERROR_MARGIN = 3
 
 function Throttle(fun, options) {
-  validate(isFunction, fun)
+  validate(fun, isFunction)
   let timerId = null
   let tailPending = false
 
-  function run () {
+  function init () {
     if (timerId) tailPending = true
     else restartThrottle()
   }
 
-  function stop () {
+  function deinit () {
     clearTimeout(timerId)
     timerId = null
   }
 
   function restartThrottle () {
-    stop()
+    deinit()
     timerId = setTimeout(() => {
       timerId = null
       if (tailPending) restartThrottle()
@@ -36,7 +36,7 @@ function Throttle(fun, options) {
     }, get(options, 'delay'))
   }
 
-  return {run, stop}
+  return {init, deinit}
 }
 
 const getVisibleId = and(truthy, hasArea, withinViewport, elem => elem.id)
@@ -57,8 +57,8 @@ function hasArea (elem) {
 function withinViewport (elem) {
   const {top, bottom} = elem.getBoundingClientRect()
   return (
-    bottom > (-PX_ERROR_MARGIN && bottom < window.innerHeight) ||
-    top > (PX_ERROR_MARGIN && top < (window.innerHeight + PX_ERROR_MARGIN))
+    (bottom > -PX_ERROR_MARGIN && bottom < window.innerHeight) ||
+    (top > PX_ERROR_MARGIN && top < (window.innerHeight + PX_ERROR_MARGIN))
   )
 }
 
@@ -86,7 +86,7 @@ function preventScrollSpill (elem, event) {
 
 const scroller = Throttle(updateLinksAndHash, {delay: 250})
 
-window.addEventListener('scroll', scroller.run)
+window.addEventListener('scroll', scroller.init)
 
 const shouldPreventSpill = bind(hasAttr, 'data-nospill')
 
@@ -96,13 +96,13 @@ window.addEventListener('wheel', function preventSpill (event) {
 })
 
 // window.addEventListener('popstate', function toHash () {
-//   scroller.stop()
+//   scroller.deinit()
 //   const hash = window.location.hash.replace(/^#/, '')
 //   if (hash) updateSidenavLinks(hash)
 // })
 
 function updateLinksAndHash () {
-  const id = procure(getVisibleId, document.querySelectorAll('#main [id]'))
+  const id = procure(document.querySelectorAll('#main [id]'), getVisibleId)
   if (id) {
     setHash(id)
     updateSidenavLinks(id)

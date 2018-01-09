@@ -15,23 +15,23 @@ const statilConfig = require('./statil')
  * Globals
  */
 
-const _srcDir = 'src'
+const srcScriptFiles = 'src/**/*.js'
+const srcDocHtmlFiles = 'docs/html/**/*'
+const srcDocStyleFiles = 'docs/styles/**/*.scss'
+const srcDocStyleMain = 'docs/styles/docs.scss'
+const srcDocScriptMain = 'docs/scripts/docs.js'
+
 const esDir = 'es'
-const distDir = 'dist'
-const srcFiles = 'src/**/*.js'
-const esFiles = 'es/**/*.js'
-const distFiles = 'dist/**/*.js'
-const testFiles = 'test/**/*.js'
-const distMain = require('./package').main
-const docHtmlFiles = 'docs/html/**/*'
-const docStyleFiles = 'docs/styles/**/*.scss'
-const docStyleMain = 'docs/styles/docs.scss'
-const docFontFiles = 'node_modules/font-awesome/fonts/**/*'
-const docScriptMain = 'docs/scripts/docs.js'
-const docOutDir = 'gh-pages'
-const docOutStyleDir = 'gh-pages/styles'
-const docOutFontDir = 'gh-pages/fonts'
-const docOutScriptDir = 'gh-pages/scripts'
+
+const outDocDir = 'gh-pages'
+const outDocStyleDir = 'gh-pages/styles'
+const outDocScriptDir = 'gh-pages/scripts'
+const outRootDir = 'dist'
+const outEsFiles = 'es/**/*.js'
+const outDistScriptFiles = 'dist/**/*.js'
+const outMainScriptFile = require('./package').main
+
+const testScriptFiles = 'test/**/*.js'
 
 const GulpErr = msg => ({showStack: false, toString: () => msg})
 
@@ -43,17 +43,17 @@ const GulpErr = msg => ({showStack: false, toString: () => msg})
 
 gulp.task('clear', () => (
   del([
-    distFiles,
-    esFiles,
+    outDistScriptFiles,
+    outEsFiles,
     // Skips dotfiles like `.git` and `.gitignore`
-    `${docOutDir}/*`,
+    `${outDocDir}/*`,
   ]).catch(console.error.bind(console))
 ))
 
 /* ---------------------------------- Lib -----------------------------------*/
 
 gulp.task('lib:build', () => (
-  gulp.src(srcFiles)
+  gulp.src(srcScriptFiles)
     .pipe($.babel())
     .pipe(gulp.dest(esDir))
     .pipe($.babel({
@@ -61,7 +61,7 @@ gulp.task('lib:build', () => (
         'transform-es2015-modules-commonjs',
       ],
     }))
-    .pipe(gulp.dest(distDir))
+    .pipe(gulp.dest(outRootDir))
     // Ensures ES5 compliance and shows minified size
     .pipe($.uglify({
       mangle: {toplevel: true},
@@ -70,7 +70,7 @@ gulp.task('lib:build', () => (
     .pipe($.rename(path => {
       path.extname = '.min.js'
     }))
-    .pipe(gulp.dest(distDir))
+    .pipe(gulp.dest(outRootDir))
 ))
 
 let testProc = null
@@ -90,26 +90,26 @@ gulp.task('lib:test', done => {
 })
 
 gulp.task('lib:watch', () => {
-  $.watch(srcFiles, gulp.series('lib:build', 'lib:test'))
-  $.watch(testFiles, gulp.series('lib:test'))
+  $.watch(srcScriptFiles, gulp.series('lib:build', 'lib:test'))
+  $.watch(testScriptFiles, gulp.series('lib:test'))
 })
 
 /* --------------------------------- HTML -----------------------------------*/
 
 gulp.task('docs:html:build', () => (
-  gulp.src(docHtmlFiles)
+  gulp.src(srcDocHtmlFiles)
     .pipe($.statil(statilConfig))
-    .pipe(gulp.dest(docOutDir))
+    .pipe(gulp.dest(outDocDir))
 ))
 
 gulp.task('docs:html:watch', () => {
-  $.watch(docHtmlFiles, gulp.series('docs:html:build'))
+  $.watch(srcDocHtmlFiles, gulp.series('docs:html:build'))
 })
 
 /* -------------------------------- Styles ----------------------------------*/
 
 gulp.task('docs:styles:build', () => (
-  gulp.src(docStyleMain)
+  gulp.src(srcDocStyleMain)
     .pipe($.sass())
     .pipe($.autoprefixer())
     .pipe($.cleanCss({
@@ -118,27 +118,17 @@ gulp.task('docs:styles:build', () => (
       advanced: false,
       compatibility: {properties: {colors: false}},
     }))
-    .pipe(gulp.dest(docOutStyleDir))
+    .pipe(gulp.dest(outDocStyleDir))
 ))
 
 gulp.task('docs:styles:watch', () => {
-  $.watch(docStyleFiles, gulp.series('docs:styles:build'))
-})
-
-/* -------------------------------- Fonts -----------------------------------*/
-
-gulp.task('docs:fonts:build', () => (
-  gulp.src(docFontFiles).pipe(gulp.dest(docOutFontDir))
-))
-
-gulp.task('docs:fonts:watch', () => {
-  $.watch(docFontFiles, gulp.series('docs:fonts:build'))
+  $.watch(srcDocStyleFiles, gulp.series('docs:styles:build'))
 })
 
 /* ------------------------------- Scripts ----------------------------------*/
 
 gulp.task('docs:scripts:copy', () => (
-  gulp.src(distMain)
+  gulp.src(outMainScriptFile)
     .pipe($.wrap(
 `// Built version. See lib/fpx.js.
 !function (exports) {
@@ -146,11 +136,11 @@ gulp.task('docs:scripts:copy', () => (
 
 Object.assign(window, exports);
 }(window.fpx = {});`))
-    .pipe(gulp.dest(docOutScriptDir))
+    .pipe(gulp.dest(outDocScriptDir))
 ))
 
 gulp.task('docs:scripts:compile', () => (
-  gulp.src(docScriptMain)
+  gulp.src(srcDocScriptMain)
     .pipe($.babel())
     .pipe($.wrap(
 `!function () {
@@ -158,14 +148,14 @@ gulp.task('docs:scripts:compile', () => (
 
 <%= contents %>
 }();`))
-    .pipe(gulp.dest(docOutScriptDir))
+    .pipe(gulp.dest(outDocScriptDir))
 ))
 
 gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:copy', 'docs:scripts:compile'))
 
 gulp.task('docs:scripts:watch', () => {
-  $.watch(distMain, gulp.series('docs:scripts:copy'))
-  $.watch(docScriptMain, gulp.series('docs:scripts:compile'))
+  $.watch(outMainScriptFile, gulp.series('docs:scripts:copy'))
+  $.watch(srcDocScriptMain, gulp.series('docs:scripts:compile'))
 })
 
 /* -------------------------------- Server ----------------------------------*/
@@ -197,15 +187,13 @@ gulp.task('docs:server', () => (
 gulp.task('buildup', gulp.parallel(
   gulp.series('lib:build', 'docs:scripts:build'),
   'docs:html:build',
-  'docs:styles:build',
-  'docs:fonts:build'
+  'docs:styles:build'
 ))
 
 gulp.task('watch', gulp.parallel(
   'lib:watch',
   'docs:html:watch',
   'docs:styles:watch',
-  'docs:fonts:watch',
   'docs:scripts:watch',
   'docs:server'
 ))

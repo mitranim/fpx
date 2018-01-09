@@ -8,7 +8,7 @@ Boolean tests.
 
 Aliases: `truthy`, `bool`.
 
-Same as `!!`.
+Same as `!!` or `Boolean`. Sometimes useful in function composition.
 
 ```js
 truthy(null)
@@ -24,7 +24,7 @@ truthy(1)
 
 Aliases: `falsy`, `negate`.
 
-Same as `!`.
+Same as `!`. Sometimes useful in function composition.
 
 ```js
 falsy(null)
@@ -41,8 +41,7 @@ falsy(1)
 Same as ES2015's
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is" target="_blank">`Object.is`</a>. Like `===` but considers `NaN` equal to itself.
 
-Used internally for identity tests. Recommended over `===` in most practical
-scenarios.
+Used by `fpx` for all identity tests. When comparing unknown values, you should prefer this to `===`.
 
 ```js
 is(1, '1')
@@ -56,9 +55,16 @@ is(NaN, NaN)
 
 ### `isNumber(value)`
 
+Same as `typeof value === 'number'`. Returns `true` for `NaN` and `Infinity`.
+In most cases, you should use `isFinite` instead.
+
 ```js
 isNumber(1)
 // true
+isNumber('1')
+// false
+isNumber(NaN)
+// true <-- WTF
 ```
 
 ---
@@ -68,12 +74,14 @@ isNumber(1)
 Same as ES2015's
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite" target="_blank">`Number.isFinite`</a>.
 
-Recommended over `isNumber` in most practical scenarios.
+Returns `true` if `value` is a number and is _not_ `NaN` or `Infinity`. In most cases, you should prefer this to `isNumber`.
 
 ```js
 isFinite(1)
 // true
-isFinite('1') || isFinite(NaN)
+isFinite('1')
+// false
+isFinite(NaN)
 // false
 ```
 
@@ -90,7 +98,9 @@ isInteger(1)
 // true
 isInteger(-1)
 // true
-isInteger(1.1) || isInteger('1')
+isInteger(1.1)
+// false
+isInteger('1')
 // false
 ```
 
@@ -105,7 +115,11 @@ isNatural(0)
 // true
 isNatural(1)
 // true
-isNatural(-1) || isNatural(1.1) || isNatural('1')
+isNatural(-1)
+// false
+isNatural(1.1)
+// false
+isNatural('1')
 // false
 ```
 
@@ -155,13 +169,8 @@ isSymbol(Symbol('blah'))
 
 ### `isPrimitive(value)`
 
-Definition:
+Opposite of `isComplex`. True for:
 
-```js
-const isPrimitive = not(isComplex)
-```
-
-This includes:
   * numbers
   * strings
   * booleans
@@ -175,25 +184,24 @@ This includes:
 Definition:
 
 ```js
-const isComplex = or(isObject, isFunction)
+function isComplex(value) {
+  return isObject(value) || isFunction(value)
+}
 ```
 
-This includes all objects in the true JavaScript sense. Functions are
-technically objects, as they have properties and may be mutated.
+This includes all "objects" in the true JavaScript sense. Functions are
+technically objects, as you can assign properties to them.
 
 ---
 
 ### `isInstance(value, Class)`
 
-Same as `instanceof` but avoids unnecessary allocations. When the left operand
-is a primitive, `instanceof` creates a temporary wrapper object, even though
-it's guaranteed to return `false`. This slightly decreases performance.
-`isInstance` avoids this mistake.
+Same as `instanceof` but avoids unnecessary allocations. `instanceof` has a problem: when the left operand is a primitive, even though `instanceof` is guaranteed to return `false`, it creates a temporary wrapper object, wasting performance. `isInstance` avoids this mistake.
 
 ```js
 isInstance([], Array)          // true
 isInstance(new Date(), Date)   // true
-isInstance(1, Number)          // false, free to call
+isInstance(1, Number)          // false, but the call is free
 ```
 
 ---
@@ -273,7 +281,7 @@ isArray([])
 
 True if `value` looks like a linear, ordered list. This includes `arguments`,
 `NodeList`s, and so on. Used internally for most list checks. Note that this
-_doesn't_ include strings.
+_doesn't include strings_.
 
 ```js
 isList([])
@@ -286,7 +294,7 @@ isList(args)
 isList(document.querySelectorAll('div'))
 // true
 
-isList('str')
+isList('string')
 // false
 ```
 
@@ -334,7 +342,7 @@ True if the value
 <a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank">quacks</a>
 like an ES2015
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">`Promise`</a>.
-The value doesn't have to belong to any specific promise implementation, native or otherwise.
+Works for non-native promise implementations.
 
 ```js
 isPromise(Promise.resolve('test'))
@@ -363,7 +371,7 @@ This includes `null` and `undefined`.
 
 ---
 
-### `testBy(pattern, value)`
+### `testBy(value, pattern)`
 
 Limited form of pattern testing. Together with ES2015 destructuring, it lets you
 crudely approximate pattern matching, a feature common in functional languages
@@ -372,64 +380,49 @@ but missing from JavaScript.
 Tests `value` against `pattern`. The nature of the test depends on the provided
 pattern.
 
+Rules:
+
 ```js
 // function -> apply as-is
 
-testBy(inc, 10)            =  11
+testBy(10, inc)            =  11
 
 // primitive -> test for identity via `is`
 
-testBy(null, x)            =  is(null, x)
-testBy(1, x)               =  is(1, x)
-testBy(NaN, x)             =  is(NaN, x)
+testBy(x, null)            =  is(x, null)
+testBy(x, 1)               =  is(x, 1)
+testBy(x, NaN)             =  is(x, NaN)
 
 // regex -> call `RegExp.prototype.test`
 
-testBy(/blah/, x)          =  /blah/.test(x)
+testBy(x, /blah/)          =  /blah/.test(x)
 
 // list ->
 //   checks that input is a list
 //   each property tests the corresponding input property
 
-testBy([], x)              =  isList(x)
-testBy([/blah/], x)        =  isList(x) && /blah/.test(x[0])
-testBy([/blah/, 'c'], x)   =  isList(x) && /blah/.test(x[0]) && is(x[1], 'c')
+testBy(x, [])              =  isList(x)
+testBy(x, [/blah/])        =  isList(x) && /blah/.test(x[0])
+testBy(x, [/blah/, 'c'])   =  isList(x) && /blah/.test(x[0]) && is(x[1], 'c')
 
 // dictionary ->
 //   checks that input is a dict
 //   each property tests the corresponding input property
 
-testBy({}, x)              =  isObject(x)
-testBy({one: /blah/}, x)   =  isObject(x) && /blah/.test(x.one)
-testBy({two: isArray}, x)  =  isObject(x) && isArray(x.two)
-testBy({a: {b: 'c'}}, x)   =  isObject(x) && isObject(x.a) && is(x.a.b, 'c')
+testBy(x, {})              =  isObject(x)
+testBy(x, {one: /blah/})   =  isObject(x) && /blah/.test(x.one)
+testBy(x, {two: isArray})  =  isObject(x) && isArray(x.two)
+testBy(x, {a: {b: 'c'}})   =  isObject(x) && isObject(x.a) && is(x.a.b, 'c')
 ```
 
 ### `test(pattern)`
 
-`curry1`-version of [`testBy`](#-testby-pattern-value-). Takes a pattern and
-returns a function that tests any value against that pattern.
+Takes a pattern and returns a version of [`testBy`](#-testby-value-pattern-) bound to that pattern.
 
 ```js
-test(isNumber)        =  isNumber
-
-test(null)            =  x => is(x, null)
-test(1)               =  x => is(x, 1)
-test(NaN)             =  x => is(x, NaN)
-
-test(/blah/)          =  x => /blah/.test(x)
-
-test([])              =  x => isList(x)
-test([/blah/])        =  x => isList(x) && /blah/.test(x[0])
-test([/blah/, 'c'])   =  x => isList(x) && /blah/.test(x[0]) && is(x[1], 'c')
-test({})              =  x => isObject(x)
-
-test({one: /blah/})   =  x => isObject(x) && /blah/.test(x.one)
-test({two: isArray})  =  x => isObject(x) && isArray(x.two)
-test({a: {b: 'c'}})   =  x => isObject(x) && isObject(x.a) && is(x.a.b, 'c')
+test(pattern)
+// Same as: x => testBy(x, pattern)
 ```
-
-#### Using Patterns
 
 Using `test` and ES2015 destructuring to approximate pattern matching:
 
@@ -468,10 +461,10 @@ const x = testAnd(isString, /10/)
 // true
 
 x(1001)
-// testBy(isString, 1001)  =  false
+// testBy(1001, isString)  =  false
 
 x('1001')
-// testBy(isString, '1001') && testBy(/10/, '1001')  =  true
+// testBy('1001', isString) && testBy('1001', /10/)  =  true
 ```
 
 ---
@@ -486,13 +479,13 @@ each pattern and decide if it matches some of them.
 const x = testOr(truthy, 0)
 
 x(null)
-// testBy(truthy, null) || testBy(0, null)  =  false
+// testBy(null, truthy) || testBy(null, 0)  =  false
 
 x(1)
-// testBy(truthy, 1)  =  false
+// testBy(1, truthy)  =  false
 
 x(0)
-// testBy(truthy, 0) || testBy(0, 0)  =  true
+// testBy(0, truthy) || testBy(0, 0)  =  true
 ```
 
 ---
@@ -508,10 +501,10 @@ The resulting function returns `true` if every pattern matches its argument, and
 const x = testArgsAnd(isFinite, isFinite)
 
 x(10, Infinity)
-// testBy(isFinite, 10) && testBy(isFinite, Infinity)  =  false
+// testBy(10, isFinite) && testBy(Infinity, isFinite)  =  false
 
 x(10, 20)
-// testBy(isFinite, 10) && testBy(isFinite, 20)  =  true
+// testBy(10, isFinite) && testBy(20, isFinite)  =  true
 ```
 
 ---
@@ -527,13 +520,13 @@ argument, and `false` otherwise.
 const x = testArgsOr(isFinite, /test/)
 
 x(null, 100)
-// testBy(isFinite, null) || testBy(/test/, 100)  =  false
+// testBy(null, isFinite) || testBy(100, /test/)  =  false
 
 x(10, 100)
-// testBy(isFinite, 10)  =  true
+// testBy(10, isFinite)  =  true
 
 x(null, 'test')
-// testBy(isFinite, null) || testBy(/test/, 'test')  =  true
+// testBy(null, isFinite) || testBy('test', /test/)  =  true
 ```
 
 ----

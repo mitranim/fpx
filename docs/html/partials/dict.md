@@ -1,8 +1,6 @@
 ## Dict
 
-Utils for dealing with dictionaries ("objects") and properties in general. Like
-all other `fpx` functions, they treat their arguments as immutables and never
-modify them.
+Utils for dealing with dictionaries (typically called "objects") and object properties. Like all other `fpx` functions, they treat their arguments as immutables and never modify them.
 
 ---
 
@@ -10,7 +8,7 @@ modify them.
 
 Reads property `key` from `value`. Similar to the bracket notation:
 `value[key]`. Advantages over the bracket notation: safe to use on `null` or
-`undefined` values; compatible with function composition.
+`undefined` values, compatible with function composition.
 
 ```js
 get()
@@ -22,8 +20,8 @@ get(null, 'one')
 get({one: 1}, 'one')
 // 1
 
-get('str', 'length')
-// 3
+get('string', 'length')
+// 6
 ```
 
 ---
@@ -53,8 +51,7 @@ scan({one: {two: 2}}, 'one', 'two')
 
 ### `getIn(value, path)`
 
-Like `scan` but expects the entire `path` as the second argument. Useful when
-path is determined dynamically.
+Like `scan` but expects the entire `path` as the second argument.
 
 ```js
 getIn(1, [])
@@ -68,8 +65,7 @@ getIn({one: {two: 2}}, ['one', 'two'])
 
 ### `getAt(path, value)`
 
-Like `getIn` but expects the entire `path` as the _first_ argument. Useful in
-function composition contexts when path is known in advance.
+Like `getIn` but expects the entire `path` as the _first_ argument. Sometimes useful in function composition when path is known in advance.
 
 ```js
 getAt([], 1)
@@ -78,44 +74,40 @@ getAt([], 1)
 getAt(['one', 'two'], {one: {two: 2}})
 // 2
 
-const from = curry1(getAt)
+const readTwo = bind(getAt, ['one', 'two'])
 
-const read = from(['one', 'two'])
-
-read({one: {two: 2}})
+readTwo({one: {two: 2}})
 // 2
 ```
 
 ---
 
-### `mapDict(fun, dict)`
+### `mapVals(dict, fun)`
 
-where `fun = ƒ(value: any, key: string): any`
+where `fun = ƒ(value: any, key: string) -> any`
 
 Creates a dict with the same keys as `dict`, transforming values via `fun`.
 
-Similar to lodash's `_.mapValues`, but with an FP-friendly argument order.
+Same as lodash's `_.mapValues`.
 
 ```js
-function bang (a) {return a + '!'}
-
-mapDict(bang, {ping: 'ping', pong: 'pong'})
+mapDict({ping: 'ping', pong: 'pong'}, function bang(a) {return a + '!'})
 // {ping: 'ping!', pong: 'pong!'}
 ```
 
 ---
 
-### `mapKeys(fun, value)`
+### `mapKeys(dict, fun)`
 
-where `fun = ƒ(value: any, key: string): any`
+where `fun = ƒ(key: string, value: any) -> string`
 
-Like [`mapDict`](#-mapdict-fun-dict-), but alters keys rather than values.
+Like [`mapVals`](#-mapvals-dict-fun-), but alters keys rather than values.
 
-Similar to lodash's `_.mapKeys`, but with an FP-friendly argument order.
+Similar to lodash's `_.mapKeys`, but the mapper function receives `key, value` rather than `value, key`.
 
 ```js
-mapKeys(last, {one: 'one', two: 'two'})
-// {e: 'one', o: 'two'}
+mapKeys({one: 10, two: 20}, (key, _value) => key[0])
+// {o: 10, t: 20}
 ```
 
 ----

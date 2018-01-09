@@ -15,20 +15,20 @@
 <meta http-equiv="pragma" content="no-cache" />
 
 <body>
-  <div id="sidenav" class="pad" data-nospill>
+  <div id="sidenav" class="side-column pad" data-nospill>
     {{include('partials/sidenav.html')}}
   </div>
 
-  <article id="main" class="pad">
-    {{include('partials/overview.md')}}
-    {{include('partials/fun.md')}}
-    {{include('partials/bool.md')}}
-    {{include('partials/list.md')}}
-    {{include('partials/dict.md')}}
-    {{include('partials/coll.md')}}
-    {{include('partials/ops.md')}}
-    {{include('partials/misc.md')}}
-    {{include('partials/author.md')}}
+  <article id="main" class="main-column pad">
+    {{md(include('partials/overview.md'))}}
+    {{md(include('partials/fun.md'))}}
+    {{md(include('partials/bool.md'))}}
+    {{md(include('partials/list.md'))}}
+    {{md(include('partials/dict.md'))}}
+    {{md(include('partials/coll.md'))}}
+    {{md(include('partials/ops.md'))}}
+    {{md(include('partials/misc.md'))}}
+    {{md(include('partials/author.md'))}}
   </article>
 </body>
 

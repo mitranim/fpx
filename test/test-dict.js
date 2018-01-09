@@ -1,53 +1,39 @@
 'use strict'
 
-const {runWith, fnTest} = require('./utils')
+const {eq} = require('./utils')
 const fpx = require('../dist/fpx')
 
 function args ()     {return arguments}
 function join (a, b) {return a.concat([b])}
-function add (a, b)  {return a + b}
+function add  (a, b) {return a + b}
 
-module.exports = [
-  runWith(fpx.get,
-    fnTest([],                 undefined),
-    fnTest([undefined, 'one'], undefined),
-    fnTest([[], 'length'],     [].length),
-    fnTest([join, 'length'],   join.length),
-    fnTest([{one: 1}, 'one'],  1)
-  ),
+eq(fpx.get(),                 undefined)
+eq(fpx.get(undefined, 'one'), undefined)
+eq(fpx.get([], 'length'),     [].length)
+eq(fpx.get(join, 'length'),   join.length)
+eq(fpx.get({one: 1}, 'one'),  1)
 
-  runWith(fpx.scan,
-    fnTest([undefined, 'one'],              undefined),
-    fnTest([1],                             1),
-    fnTest([{one: 1}, 'one'],               1),
-    fnTest([{one: {two: 2}}, 'one', 'two'], 2)
-  ),
+eq(fpx.scan(undefined, 'one'),              undefined)
+eq(fpx.scan(1),                             1)
+eq(fpx.scan({one: 1}, 'one'),               1)
+eq(fpx.scan({one: {two: 2}}, 'one', 'two'), 2)
 
-  runWith(fpx.getIn,
-    fnTest([undefined, []],                       undefined),
-    fnTest([undefined, ['one']],                  undefined),
-    fnTest([{one: 1}, []],                        {one: 1}),
-    fnTest([{one: 1}, ['one']],                   1),
-    fnTest([{one: {two: 2}}, ['one', 'two']],     2),
-    fnTest([{one: {two: 2}}, args('one', 'two')], 2)
-  ),
+eq(fpx.getIn(undefined, []),                       undefined)
+eq(fpx.getIn(undefined, ['one']),                  undefined)
+eq(fpx.getIn({one: 1}, []),                        {one: 1})
+eq(fpx.getIn({one: 1}, ['one']),                   1)
+eq(fpx.getIn({one: {two: 2}}, ['one', 'two']),     2)
+eq(fpx.getIn({one: {two: 2}}, args('one', 'two')), 2)
 
-  runWith(fpx.getAt,
-    fnTest([[]],                                  undefined),
-    fnTest([['one']],                             undefined),
-    fnTest([[], {one: 1}],                        {one: 1}),
-    fnTest([['one'], {one: 1}],                   1),
-    fnTest([['one', 'two'], {one: {two: 2}}],     2),
-    fnTest([args('one', 'two'), {one: {two: 2}}], 2)
-  ),
+eq(fpx.getAt([]),                                  undefined)
+eq(fpx.getAt(['one']),                             undefined)
+eq(fpx.getAt([], {one: 1}),                        {one: 1})
+eq(fpx.getAt(['one'], {one: 1}),                   1)
+eq(fpx.getAt(['one', 'two'], {one: {two: 2}}),     2)
+eq(fpx.getAt(args('one', 'two'), {one: {two: 2}}), 2)
 
-  runWith(fpx.mapDict,
-    fnTest([add], {}),
-    fnTest([add, {one: 1, two: 2}], {one: '1one', two: '2two'})
-  ),
+eq(fpx.mapVals(undefined, add), {})
+eq(fpx.mapVals({one: 1, two: 2}, add), {one: '1one', two: '2two'})
 
-  runWith(fpx.mapKeys,
-    fnTest([add], {}),
-    fnTest([add, {one: 1, two: 2}], {'1one': 1, '2two': 2})
-  ),
-]
+eq(fpx.mapKeys(undefined, add), {})
+eq(fpx.mapKeys({one: 1, two: 2}, add), {one1: 1, two2: 2})

@@ -1,7 +1,5 @@
 <p>
-  <a href="https://github.com/Mitranim/fpx" target="_blank">
-    Source <span class="fa fa-github"></span>
-  </a>
+  <a href="https://github.com/Mitranim/fpx" target="_blank" class="external-link">Source on GitHub</a>
 </p>
 
 <div class="list flex-col flex-stretch">
@@ -14,9 +12,6 @@
     <a href="#-call-fun-args-" class="frb"><code>call</code></a>
     <a href="#-apply-fun-args-" class="frb"><code>apply</code></a>
     <a href="#-bind-fun-args-" class="frb"><code>bind</code></a>
-    <a href="#-applybind-fun-args-" class="frb"><code>applyBind</code></a>
-    <a href="#-curry1-fun-args-" class="frb"><code>curry1</code></a>
-    <a href="#-flip-fun-" class="frb"><code>flip</code></a>
     <a href="#-and-funs-" class="frb"><code>and</code></a>
     <a href="#-or-funs-" class="frb"><code>or</code></a>
     <a href="#-not-fun-" class="frb"><code>not</code></a>
@@ -34,9 +29,6 @@
     <a href="#-rest-fun-" class="frb"><code>rest</code></a>
     <a href="#-spread-fun-" class="frb"><code>spread</code></a>
     <a href="#-alter-fun-args-" class="frb"><code>alter</code></a>
-    <a href="#-revise-transforms-fun-" class="frb"><code>revise</code></a>
-    <a href="#-fanout-transforms-fun-" class="frb"><code>fanout</code></a>
-    <a href="#-funnel-value-funs-" class="frb"><code>funnel</code></a>
   </div>
 
   <a href="#bool" class="frb"><span>Bool</span></a>
@@ -69,7 +61,7 @@
     <a href="#-isinvaliddate-value-" class="frb"><code>isInvalidDate</code></a>
     <a href="#-ispromise-value-" class="frb"><code>isPromise</code></a>
     <a href="#-isnil-value-" class="frb"><code>isNil</code></a>
-    <a href="#-testby-pattern-value-" class="frb"><code>testBy</code></a>
+    <a href="#-testby-value-pattern-" class="frb"><code>testBy</code></a>
     <a href="#-test-pattern-" class="frb"><code>test</code></a>
     <a href="#-testand-patterns-" class="frb"><code>testAnd</code></a>
     <a href="#-testor-patterns-" class="frb"><code>testOr</code></a>
@@ -80,20 +72,21 @@
   <a href="#list" class="frb"><span>List</span></a>
   <div class="list flex-col flex-stretch">
     <a href="#-list-values-" class="frb"><code>list</code></a>
-    <a href="#-foldl-fun-accumulator-list-" class="frb"><code>foldl</code></a>
-    <a href="#-foldr-fun-accumulator-list-" class="frb"><code>foldr</code></a>
-    <a href="#-map-fun-list-" class="frb"><code>map</code></a>
-    <a href="#-filter-test-list-" class="frb"><code>filter</code></a>
-    <a href="#-find-test-list-" class="frb"><code>find</code></a>
-    <a href="#-every-test-list-" class="frb"><code>every</code></a>
-    <a href="#-some-test-list-" class="frb"><code>some</code></a>
-    <a href="#-procure-fun-list-" class="frb"><code>procure</code></a>
+    <a href="#-foldl-list-init-fun-" class="frb"><code>foldl</code></a>
+    <a href="#-foldr-list-init-fun-" class="frb"><code>foldr</code></a>
+    <a href="#-map-list-fun-" class="frb"><code>map</code></a>
+    <a href="#-filter-list-test-" class="frb"><code>filter</code></a>
+    <a href="#-find-list-test-" class="frb"><code>find</code></a>
+    <a href="#-every-list-test-" class="frb"><code>every</code></a>
+    <a href="#-some-list-test-" class="frb"><code>some</code></a>
+    <a href="#-procure-list-fun-" class="frb"><code>procure</code></a>
     <a href="#-includes-list-value-" class="frb"><code>includes</code></a>
     <a href="#-indexof-list-value-" class="frb"><code>indexOf</code></a>
     <a href="#-slice-value-start-end-" class="frb"><code>slice</code></a>
     <a href="#-append-list-value-" class="frb"><code>append</code></a>
     <a href="#-prepend-list-value-" class="frb"><code>prepend</code></a>
     <a href="#-remove-list-value-" class="frb"><code>remove</code></a>
+    <a href="#-insertatindex-list-index-value-" class="frb"><code>insertAtIndex</code></a>
     <a href="#-removeatindex-list-index-" class="frb"><code>removeAtIndex</code></a>
     <a href="#-adjoin-list-value-" class="frb"><code>adjoin</code></a>
     <a href="#-toggle-list-value-" class="frb"><code>toggle</code></a>
@@ -103,8 +96,8 @@
     <a href="#-tail-list-" class="frb"><code>tail</code></a>
     <a href="#-init-list-" class="frb"><code>init</code></a>
     <a href="#-last-list-" class="frb"><code>last</code></a>
-    <a href="#-take-count-list-" class="frb"><code>take</code></a>
-    <a href="#-drop-count-list-" class="frb"><code>drop</code></a>
+    <a href="#-take-list-count-" class="frb"><code>take</code></a>
+    <a href="#-drop-list-count-" class="frb"><code>drop</code></a>
     <a href="#-reverse-list-" class="frb"><code>reverse</code></a>
   </div>
 
@@ -114,9 +107,8 @@
     <a href="#-scan-value-path-" class="frb"><code>scan</code></a>
     <a href="#-getin-value-path-" class="frb"><code>getIn</code></a>
     <a href="#-getat-path-value-" class="frb"><code>getAt</code></a>
-    <a href="#-mapdict-fun-dict-" class="frb"><code>mapDict</code></a>
-    <a href="#-mapdict-fun-dict-" class="frb opacity-40 margin-left"><code>mapVals</code></a>
-    <a href="#-mapkeys-fun-value-" class="frb"><code>mapKeys</code></a>
+    <a href="#-mapvals-dict-fun-" class="frb"><code>mapVals</code></a>
+    <a href="#-mapkeys-dict-fun-" class="frb"><code>mapKeys</code></a>
   </div>
 
   <a href="#coll" class="frb"><span>Coll</span></a>
@@ -141,12 +133,12 @@
   <a href="#-id-value-" class="frb"><code>id</code></a>
   <a href="#-di-_-value-" class="frb"><code>di</code></a>
     <a href="#-val-value-" class="frb"><code>val</code></a>
-    <a href="#-maskby-pattern-value-" class="frb"><code>maskBy</code></a>
+    <a href="#-maskby-value-pattern-" class="frb"><code>maskBy</code></a>
     <a href="#-mask-pattern-" class="frb"><code>mask</code></a>
     <a href="#-noop-" class="frb"><code>noop</code></a>
     <a href="#-rethrow-val-" class="frb"><code>rethrow</code></a>
-    <a href="#-validate-test-value-" class="frb"><code>validate</code></a>
-    <a href="#-validateeach-test-list-" class="frb"><code>validateEach</code></a>
+    <a href="#-validate-value-test-" class="frb"><code>validate</code></a>
+    <a href="#-validateeach-list-test-" class="frb"><code>validateEach</code></a>
   </div>
 
   <a href="#author" class="frb"><span>Author</span></a>

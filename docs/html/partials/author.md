@@ -1,3 +1,3 @@
 ## Author
 
-<a href="http://mitranim.com" target="_blank">mitranim.com</a>
+<a href="https://mitranim.com" target="_blank">mitranim.com</a>

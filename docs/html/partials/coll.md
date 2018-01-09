@@ -1,7 +1,6 @@
 ## Coll
 
-Utils for dealing with collections (lists and dicts). Like all other `fpx`
-functions, they treat their arguments as immutables and never modify them.
+Functions applicable to all collections (lists and dicts).
 
 ---
 
@@ -49,8 +48,6 @@ Depends on `value`'s type:
   * [`isList`](#-islist-value-) → length
   * [`isObject`](#-isobject-value-) → number of [`keys`](#-keys-value-)
   * primitive or function → `0`
-
-Safe to use on primitives.
 
 ```js
 size([10, 20])

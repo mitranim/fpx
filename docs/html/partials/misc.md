@@ -6,7 +6,7 @@ Uncategorised utils.
 
 ### `id(value)`
 
-Identity function: returns its argument unchanged. Useful in boolean contexts.
+Identity function: returns its first argument unchanged. Sometimes useful in function composition.
 
 ```js
 id('first', 'second', 'third')
@@ -17,7 +17,7 @@ id('first', 'second', 'third')
 
 ### `di(_, value)`
 
-Returns its _second_ argument unchanged. Useful in function composition contexts.
+Returns its _second_ argument unchanged. Sometimes useful in function composition.
 
 ```js
 di('first', 'second', 'third')
@@ -28,8 +28,7 @@ di('first', 'second', 'third')
 
 ### `val(value)`
 
-"Constant" function. Returns a function that always returns the passed value.
-Useful for dealing with functional APIs when values are known in advance.
+"Constant" function. Returns a function that always returns the original value. Useful for dealing with functional APIs when values are known in advance.
 
 Equivalent to lodash's `_.constant`.
 
@@ -45,70 +44,56 @@ one(100)
 
 ---
 
-### `maskBy(pattern, value)`
+### `maskBy(value, pattern)`
 
 Overlays `pattern` on `value`. The nature of the result depends on the provided
 pattern.
 
+Rules:
+
 ```js
 // function -> apply as-is
 
-maskBy(isNumber, x)        =  isNumber(x)
+maskBy(x, isNumber)        =  isNumber(x)
 
 // primitive -> replace value
 
-maskBy(null, x)            =  null
-maskBy(1, x)               =  1
-maskBy(NaN, x)             =  NaN
+maskBy(x, null)            =  null
+maskBy(x, 1)               =  1
+maskBy(x, NaN)             =  NaN
 
 // regex -> call `RegExp.prototype.test`
 
-maskBy(/blah/, x)          =  /blah/.test(x)
+maskBy(x, /blah/)          =  /blah/.test(x)
 
 // list -> map to corresponding input properties, masking them
 
-maskBy([], x)              =  []
-maskBy([/blah/], x)        =  [/blah/.test(get(x, 0))]
-maskBy([/blah/, 'c'], x)   =  [/blah/.test(get(x, 0)), 'c']
+maskBy(x, [])              =  []
+maskBy(x, [/blah/])        =  [/blah/.test(get(x, 0))]
+maskBy(x, [/blah/, 'c'])   =  [/blah/.test(get(x, 0)), 'c']
 
-// dict -> map to corresponding input properties, masking them
+// dict -> create an extended version, masking known properties
 
-maskBy({}, x)              =  {}
-maskBy({one: /blah/}, x)   =  {one: /blah/.test(get(x, 'one'))}
-maskBy({two: isArray}, x)  =  {two: isArray(get(x, 'two'))}
-maskBy({a: {b: 'c'}}, x)   =  {a: {b: 'c'}}
+maskBy(x, {})              =  {}
+maskBy(x, {a: {b: 'c'}})   =  {a: {b: 'c'}}
+maskBy(x, {one: /blah/})   =  {one: /blah/.test(get(x, 'one'))}
+maskBy(x, {two: isArray})  =  {two: isArray(get(x, 'two'))}
 ```
 
 ### `mask(pattern)`
 
-`curry1`-version of [`maskBy`](#-maskby-pattern-value-). Takes a pattern and
-returns a function that overlays that pattern on any value.
+Takes a pattern and returns a version of [`maskBy`](#-maskby-pattern-value-) bound to that pattern. See rules above.
 
 ```js
-mask(isNumber)        =  isNumber
-
-mask(null)            =  val(null)
-mask(1)               =  val(1)
-mask(NaN)             =  val(NaN)
-
-mask(/blah/)          =  x => /blah/.test(x)
-
-mask([])              =  _ => []
-mask([/blah/])        =  x => [/blah/.test(get(x, 0))]
-mask([/blah/, 'c'])   =  x => [/blah/.test(get(x, 0)), 'c']
-
-mask({})              =  _ => ({})
-mask({one: /blah/})   =  x => ({one: /blah/.test(get(x, 'one'))})
-mask({two: isArray})  =  x => ({two: isArray(get(x, 'two'))})
-mask({a: {b: 'c'}})   =  x => ({a: {b: 'c'}})
+mask(pattern)
+// Same as: x => maskBy(x, pattern)
 ```
 
 ---
 
 ### `noop`
 
-Empty function. Functional equivalent of `;` or `undefined`. Useful in
-composition contexts.
+Empty function. Functional equivalent of `;` or `undefined`. Sometimes useful in function composition.
 
 ```js
 noop()
@@ -133,33 +118,30 @@ Promise.reject(Error('fail')).catch(pipe(log, rethrow))
 
 ---
 
-### `validate(test, value)`
+### `validate(value, test)`
 
-If `value` doesn't satisfy the provided `test` function, raises an exception
-with a message including `test`'s name and the failing value.
+where `test = ƒ(any) -> boolean`
 
-Convenient and minification-friendly way to assert values.
+Minification-friendly assertion. If `!test(value)`, throws an exception with a message including `value` and the name of the `test` function.
 
 ```js
-validate(isFunction, x => x)
-// undefined
+validate({}, isObject)
 
-validate(isFunction, 1)
+validate('blah', isFunction)
 // Uncaught Error: Expected 1 to satisfy test isFunction
 ```
 
 ---
 
-### `validateEach(test, list)`
+### `validateEach(list, test)`
 
-Same as `validate` but asserts each value in the provided `list`.
+Same as `validate` but asserts each value in the provided `list`. Includes the list index in the error message.
 
 ```js
-validateEach(isFunction, [x => x])
-// undefined
+validateEach([isFunction], isFunction)
 
-validateEach(isFunction, [1])
-// Uncaught Error: Expected 1 at index 0 to satisfy test isFunction
+validateEach(['blah'], isFunction)
+// Uncaught Error: Expected blah at index 0 to satisfy test isFunction
 ```
 
 ----

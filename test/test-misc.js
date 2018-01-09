@@ -1,69 +1,31 @@
 'use strict'
 
-const {runWith, fnTest, tests} = require('./utils')
+const {eq} = require('./utils')
 const fpx = require('../dist/fpx')
 
 function double (a) {return a * 2}
-function args () {return arguments}
+function args   ()  {return arguments}
 
-module.exports = [
-  runWith(fpx.id,
-    fnTest([],       undefined),
-    fnTest([10],     10),
-    fnTest([10, 20], 10)
-  ),
+eq(fpx.id(),       undefined)
+eq(fpx.id(10),     10)
+eq(fpx.id(10, 20), 10)
 
-  runWith(fpx.di,
-    fnTest([],           undefined),
-    fnTest([10, 20],     20),
-    fnTest([10, 20, 30], 20)
-  ),
+eq(fpx.di(),           undefined)
+eq(fpx.di(10, 20),     20)
+eq(fpx.di(10, 20, 30), 20)
 
-  runWith(fpx.val,
-    fnTest([],  fnTest([2], undefined)),
-    fnTest([1], fnTest([2], 1))
-  ),
+eq(fpx.val()(2),  undefined)
+eq(fpx.val(1)(2), 1)
 
-  runWith(fpx.maskBy,
-    fnTest([undefined, 1], undefined),
+eq(fpx.maskBy(1, undefined),           undefined)
+eq(fpx.maskBy(undefined, 1),           1)
+eq(fpx.maskBy({}, 1),                  1)
+eq(fpx.maskBy(1, double),              2)
+eq(fpx.maskBy({}, double),             NaN)
 
-    fnTest([1],     1),
-    fnTest([1, {}], 1),
+eq(fpx.maskBy(undefined, [/text/, 1]),       [false, 1])
+eq(fpx.maskBy(['text', 2], [/text/, 1]),     [true, 1])
+eq(fpx.maskBy(args('text', 2), [/text/, 1]), [true, 1])
 
-    fnTest([double, 1],  2),
-    fnTest([double, {}], NaN),
-
-    fnTest([[/text/, 1]],                  [false, 1]),
-    fnTest([[/text/, 1], ['text', 2]],     [true, 1]),
-    fnTest([[/text/, 1], args('text', 2)], [true, 1]),
-
-    fnTest([{text: /text/, one: 1}],                         {text: false, one: 1}),
-    fnTest([{text: /text/, one: 1}, {text: 'text', one: 2}], {text: true,  one: 1})
-  ),
-
-  // This array of tests is now redundant, should probably remove.
-  runWith(fpx.mask,
-    fnTest([],  fnTest([1], undefined)),
-
-    fnTest([1], tests(
-      fnTest([],   1),
-      fnTest([{}], 1)
-    )),
-
-    fnTest([double], tests(
-      fnTest([1],  2),
-      fnTest([{}], NaN)
-    )),
-
-    fnTest([[/text/, 1]], tests(
-      fnTest([],                [false, 1]),
-      fnTest([['text', 2]],     [true, 1]),
-      fnTest([args('text', 2)], [true, 1])
-    )),
-
-    fnTest([{text: /text/, one: 1}], tests(
-      fnTest([],                       {text: false, one: 1}),
-      fnTest([{text: 'text', one: 2}], {text: true, one: 1})
-    ))
-  )
-]
+eq(fpx.maskBy(undefined, {text: /text/, one: 1}),              {text: false, one: 1})
+eq(fpx.maskBy({text: 'text', one: 2}, {text: /text/, one: 1}), {text: true,  one: 1})

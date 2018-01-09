@@ -1,46 +1,32 @@
 'use strict'
 
-const {runWith, fnTest} = require('./utils')
+const {eq} = require('./utils')
 const fpx = require('../dist/fpx')
 
-module.exports = [
-  runWith(fpx.add,
-    fnTest([],       undefined + undefined),
-    fnTest(['7', 3], '7' + 3),
-    fnTest([7, 3],   7 + 3)
-  ),
+eq(fpx.add(),       undefined + undefined)
+eq(fpx.add('7', 3), '7' + 3)
+eq(fpx.add(7, 3),   7 + 3)
 
-  runWith(fpx.sub,
-    fnTest([],       undefined - undefined),
-    fnTest(['7', 3], '7' - 3),
-    fnTest([7, 3],   7 - 3)
-  ),
+eq(fpx.sub(),       undefined - undefined)
+eq(fpx.sub('7', 3), '7' - 3)
+eq(fpx.sub(7, 3),   7 - 3)
 
-  runWith(fpx.mul,
-    fnTest([],       undefined * undefined),
-    fnTest(['7', 3], '7' * 3),
-    fnTest([7, 3],   7 * 3)
-  ),
+eq(fpx.mul(),       undefined * undefined)
+eq(fpx.mul('7', 3), '7' * 3)
+eq(fpx.mul(7, 3),   7 * 3)
 
-  runWith(fpx.div,
-    fnTest([],       undefined / undefined),
-    fnTest(['7', 3], '7' / 3),
-    fnTest([7, 3],   7 / 3)
-  ),
+eq(fpx.div(),       undefined / undefined)
+eq(fpx.div('7', 3), '7' / 3)
+eq(fpx.div(7, 3),   7 / 3)
 
-  runWith(fpx.inc,
-    fnTest([],      undefined + 1),
-    fnTest(['one'], 'one' + 1),
-    fnTest([NaN],   NaN + 1),
-    fnTest([-2],    -2 + 1),
-    fnTest([1],     1 + 1)
-  ),
+eq(fpx.inc(),      undefined + 1)
+eq(fpx.inc('one'), 'one' + 1)
+eq(fpx.inc(NaN),   NaN + 1)
+eq(fpx.inc(-2),    -2 + 1)
+eq(fpx.inc(1),     1 + 1)
 
-  runWith(fpx.dec,
-    fnTest([],      undefined - 1),
-    fnTest(['one'], 'one' - 1),
-    fnTest([NaN],   NaN - 1),
-    fnTest([-2],    -2 - 1),
-    fnTest([2],     2 - 1)
-  )
-]
+eq(fpx.dec(),      undefined - 1)
+eq(fpx.dec('one'), 'one' - 1)
+eq(fpx.dec(NaN),   NaN - 1)
+eq(fpx.dec(-2),    -2 - 1)
+eq(fpx.dec(2),     2 - 1)

@@ -9,85 +9,60 @@ const {
 // Fun
 
 export function call(fun) {
-  validate(isFunction, fun)
+  validate(fun, isFunction)
   arguments[0] = this  // relies on strict mode
   return fun.call.apply(fun, arguments)
 }
 
 export function apply(fun, args) {
-  validate(isFunction, fun)
-  validate(isList, args)
+  validate(fun, isFunction)
+  validate(args, isList)
   return fun.apply(this, args)
 }
 
-// Much slower than a version that doesn't preserve "this"
-// TODO figure out how to make it go faster, or abandon the preservation of "this"
 export function bind(fun) {
-  return applyBind(fun, slice(arguments, 1))
+  return fun.bind.apply(fun, arguments)
 }
 
-export function applyBind(fun, args) {
-  validate(isFunction, fun)
-  validate(isList, args)
-  if (!isArray(args)) args = slice(args)
-  return function bound() {
-    return fun.apply(this, args.concat(slice(arguments)))
-  }
-}
-
-export function curry1(fun) {
-  validate(isFunction, fun)
-  return applyBind(bind, arguments)
-}
-
-export function flip(fun) {
-  validate(isFunction, fun)
-  return function flip_() {
-    return fun.apply(this, slice(arguments).reverse())
-  }
-}
-
-// TODO should be expressed in terms of seq, or built from same primitives as seq
 export function and() {
   return compose(composeAnd, arguments)
 }
 
 function composeAnd(fun, funs) {
   return function and_() {
-    return foldlWith.call(this, stepAnd, fun.apply(this, arguments), funs, arguments)
+    return foldlWith(funs, fun(...arguments), stepAnd, arguments)
   }
 }
 
 function stepAnd(acc, fun, index, args) {
-  return acc && fun.apply(this, args)
+  return acc && fun(...args)
 }
 
-// TODO should be expressed in terms of seq, or built from same primitives as seq
 export function or() {
   return compose(composeOr, arguments)
 }
 
 function composeOr(fun, funs) {
   return function or_() {
-    return foldlWith.call(this, stepOr, fun.apply(this, arguments), funs, arguments)
+    return foldlWith(funs, fun(...arguments), stepOr, arguments)
   }
 }
 
 function stepOr(acc, fun, index, args) {
-  return acc || fun.apply(this, args)
+  return acc || fun(...args)
 }
 
 export function not(fun) {
-  validate(isFunction, fun)
-  return function not_() {return !fun.apply(this, arguments)}
+  validate(fun, isFunction)
+  return function not_() {return !fun(...arguments)}
 }
 
 export function ifelse(test, left, right) {
-  validate(isFunction, test)
-  validate(isFunction, left)
-  validate(isFunction, right)
+  validate(test, isFunction)
+  validate(left, isFunction)
+  validate(right, isFunction)
   return function ifelse_() {
-    return (test.apply(this, arguments) ? left : right).apply(this, arguments)
+    return (test(...arguments) ? left : right)(...arguments)
   }
 }
 
@@ -105,7 +80,7 @@ export function ifexists(fun) {
 
 export function cond(test, fun) {
   if (!arguments.length) return noop
-  validate(isFunction, test)
+  validate(test, isFunction)
   if (arguments.length === 1) return test
   return ifelse(test, fun, cond(...slice(arguments, 2)))
 }
@@ -116,12 +91,12 @@ export function pipe() {
 
 function composePipe(fun, funs) {
   return function pipe_() {
-    return funs.reduce(callRight, fun.apply(this, arguments), this)
+    return funs.reduce(callRight, fun(...arguments), this)
   }
 }
 
 function callRight(value, fun) {
-  return fun.call(this, value)
+  return fun(value)
 }
 
 export function comp() {
@@ -134,12 +109,12 @@ export function seq() {
 
 function composeSeq(fun, funs) {
   return function seq_() {
-    return foldlWith.call(this, stepSeq, fun.apply(this, arguments), funs, arguments)
+    return foldlWith(funs, fun(...arguments), stepSeq, arguments)
   }
 }
 
 function stepSeq(_, fun, __, args) {
-  return fun.apply(this, args)
+  return fun(...args)
 }
 
 export function pipeAnd() {
@@ -153,7 +128,7 @@ function composePipeAnd(fun, funs) {
 }
 
 function stepPipeAnd(acc, fun) {
-  return acc && fun.call(this, acc)
+  return acc && fun(acc)
 }
 
 export function compAnd() {
@@ -162,59 +137,38 @@ export function compAnd() {
 
 export function juxt() {
   const funs = slice(arguments)
-  validateEach(isFunction, funs)
+  validateEach(funs, isFunction)
   return function juxt_() {
-    return funs.map(applyRight.bind(this, arguments))
+    return funs.map(applyRight.bind(undefined, arguments))
   }
 }
 
 function applyRight(args, fun) {
-  return fun.apply(this, args)
+  return fun(...args)
 }
 
 export function rest(fun) {
-  validate(isFunction, fun)
-  return function rest_() {return fun.call(this, slice(arguments))}
+  validate(fun, isFunction)
+  return function rest_() {return fun(slice(arguments))}
 }
 
 export function spread(fun) {
-  validate(isFunction, fun)
+  validate(fun, isFunction)
   return bind(apply, fun)
 }
 
 export function alter(fun) {
-  validate(isFunction, fun)
+  validate(fun, isFunction)
   return pipe(bind(prepend, slice(arguments, 1)), spread(fun))
-}
-
-export function revise(transforms, fun) {
-  validateEach(isFunction, transforms)
-  validate(isFunction, fun)
-  return function revise_() {
-    return fun.apply(this, nmap.call(transforms, transmute, arguments))
-  }
-}
-
-function transmute(fun, i) {
-  return fun(this[i])
-}
-
-export function fanout(args, fun) {
-  return pipe(juxt(...args), spread(fun))
-}
-
-export function funnel(value, funs) {
-  validateEach(isFunction, funs)
-  return funs.reduce(callRight, value, this)
 }
 
 function compose(composerFun, funs) {
   if (!funs.length) return id
   const fun = funs[0]
-  validate(isFunction, fun)
+  validate(fun, isFunction)
   if (funs.length === 1) return fun
   const rest = slice(funs, 1)
-  validateEach(isFunction, rest)
+  validateEach(rest, isFunction)
   return composerFun(fun, rest)
 }
 
@@ -222,6 +176,7 @@ function compose(composerFun, funs) {
 
 export const bool = Boolean
 export const truthy = bool
+
 export const negate = falsy
 export function falsy(value) {return !value}
 
@@ -286,11 +241,6 @@ export function isDict(value) {
   return isObject(value) && isPlainPrototype(getPrototypeOf(value))
 }
 
-// TODO consider documenting
-function isArguments(value) {
-  return isObject(value) && 'callee' in value && 'length' in value && isNatural(value.length)
-}
-
 function isPlainPrototype(value) {
   return value === null || value === protoObject
 }
@@ -300,7 +250,12 @@ export function isArray(value) {
 }
 
 export function isList(value) {
-  return isArray(value) || isArguments(value)
+  return isObject(value) && (isArguments(value) || (!isDict(value) && isNatural(value.length)))
+}
+
+// TODO consider documenting
+function isArguments(value) {
+  return isObject(value) && 'callee' in value && 'length' in value && isNatural(value.length)
 }
 
 export function isRegExp(value) {
@@ -327,50 +282,50 @@ export function isNil(value) {
   return value == null
 }
 
-export function testBy(pattern, value) {
+export function testBy(value, pattern) {
   return (
     isFunction(pattern)  ? pattern(value) :
-    isPrimitive(pattern) ? is(pattern, value) :
+    isPrimitive(pattern) ? is(value, pattern) :
     isRegExp(pattern)    ? pattern.test(value) :
     isList(pattern)      ? isList(value) && nevery.call(pattern, testByIndex, value) :
-    isComplex(pattern)   ? testComplex(pattern, value) :
+    isComplex(pattern)   ? testComplex(value, pattern) :
     false
   )
 }
 
 function testByIndex(pattern, i) {
-  return testBy(pattern, this[i])
+  return testBy(this[i], pattern)
 }
 
-function testComplex(pattern, value) {
+function testComplex(value, pattern) {
   if (!isComplex(value)) return false
-  for (const key in pattern) if (!testBy(pattern[key], value[key])) return false
+  for (const key in pattern) if (!testBy(value[key], pattern[key])) return false
   return true
 }
 
 export function test(pattern) {
-  return bind(testBy, pattern)
+  return function test_(value) {return testBy(value, pattern)}
 }
 
 export function testAnd() {
-  return and(...map(test, arguments))
+  return and(...map(arguments, test))
 }
 
 export function testOr() {
-  return or(...map(test, arguments))
+  return or(...map(arguments, test))
 }
 
 export function testArgsAnd() {
-  return and(...map(test, arguments).map(pin))
+  return and(...map(arguments, testAtIndex))
 }
 
 export function testArgsOr() {
-  return or(...map(test, arguments).map(pin))
+  return or(...map(arguments, testAtIndex))
 }
 
-function pin(fun, i) {
-  return function pin_() {
-    return fun(arguments[i])
+function testAtIndex(pattern, i) {
+  return function testAtIndex_() {
+    return testBy(arguments[i], pattern)
   }
 }
 
@@ -380,46 +335,46 @@ export function list() {
   return slice(arguments)
 }
 
-export function foldl(fun, acc, list) {
-  return reduce.call(toList(list), fun, acc, this)
+export function foldl(list, init, fun) {
+  return reduce.call(toList(list), fun, init, this)
 }
 
-export function foldr(fun, acc, list) {
-  return reduceRight.call(toList(list), fun, acc, this)
+export function foldr(list, init, fun) {
+  return reduceRight.call(toList(list), fun, init, this)
 }
 
-function foldlWith(fun, acc, list, a, b) {
-  for (let i = -1; (i += 1) < list.length;) acc = fun.call(this, acc, list[i], i, a, b)
+function foldlWith(list, acc, fun, a, b) {
+  for (let i = -1; (i += 1) < list.length;) acc = fun(acc, list[i], i, a, b)
   return acc
 }
 
-export function map(fun, list) {
-  validate(isFunction, fun)
+export function map(list, fun) {
+  validate(fun, isFunction)
   return nmap.call(toList(list), fun, this)
 }
 
-export function filter(fun, list) {
-  validate(isFunction, fun)
+export function filter(list, fun) {
+  validate(fun, isFunction)
   return nfilter.call(toList(list), fun, this)
 }
 
-export function find(fun, list) {
-  validate(isFunction, fun)
+export function find(list, fun) {
+  validate(fun, isFunction)
   return nfind.call(toList(list), fun, this)
 }
 
-export function every(fun, list) {
-  validate(isFunction, fun)
+export function every(list, fun) {
+  validate(fun, isFunction)
   return nevery.call(toList(list), fun, this)
 }
 
-export function some(fun, list) {
-  validate(isFunction, fun)
+export function some(list, fun) {
+  validate(fun, isFunction)
   return nsome.call(toList(list), fun, this)
 }
 
-export function procure(fun, list) {
-  validate(isFunction, fun)
+export function procure(list, fun) {
+  validate(fun, isFunction)
   list = toList(list)
   for (let i = -1; (i += 1) < list.length;) {
     const result = fun.call(this, list[i], i)
@@ -454,7 +409,19 @@ export function remove(list, value) {
   return removeAtIndex(list, indexOf(list, value))
 }
 
+export function insertAtIndex(list, index, value) {
+  validate(index, isInteger)
+  list = toList(list)
+  if (isNatural(index) && index <= list.length) {
+    list = slice(list)
+    list.splice(index, 0, value)
+    return list
+  }
+  throw Error(`Index ${index} out of bounds for length ${list.length}`)
+}
+
 export function removeAtIndex(list, index) {
+  validate(index, isInteger)
   list = toList(list)
   if (isNatural(index) && index < list.length) {
     list = slice(list)
@@ -472,7 +439,7 @@ export function toggle(list, value) {
 }
 
 export function concat() {
-  return foldl(concatTwo, [], arguments)
+  return foldl(arguments, [], concatTwo)
 }
 
 function concatTwo(left, right) {
@@ -480,7 +447,7 @@ function concatTwo(left, right) {
 }
 
 export function flat(list) {
-  return foldl(concatFlat, [], list)
+  return foldl(list, [], concatFlat)
 }
 
 function concatFlat(list, value) {
@@ -504,13 +471,13 @@ export function last(list) {
   return isList(list) ? list[list.length - 1] : undefined
 }
 
-export function take(count, list) {
-  validate(isNumber, count)
+export function take(list, count) {
+  validate(count, isNumber)
   return isList(list) ? slice(list, 0, count) : []
 }
 
-export function drop(count, list) {
-  validate(isNumber, count)
+export function drop(list, count) {
+  validate(count, isNumber)
   return isList(list) ? slice(list, count) : []
 }
 
@@ -544,20 +511,19 @@ export function getAt(path, value) {
   return reduce.call(path, get, value)
 }
 
-export const mapVals = mapDict
-export function mapDict(fun, value) {
-  validate(isFunction, fun)
+export function mapVals(value, fun) {
+  validate(fun, isFunction)
   const out = {}
   for (const key in value) out[key] = fun(value[key], key)
   return out
 }
 
-export function mapKeys(fun, value) {
-  validate(isFunction, fun)
+export function mapKeys(value, fun) {
+  validate(fun, isFunction)
   const out = {}
   for (const key in value) {
     const prop = value[key]
-    out[fun(prop, key)] = prop
+    out[fun(key, prop)] = prop
   }
   return out
 }
@@ -612,37 +578,38 @@ export function rethrow(val) {
   throw val
 }
 
-export function maskBy(pattern, value) {
+export function maskBy(value, pattern) {
   return (
     isFunction(pattern)  ? pattern(value) :
     isPrimitive(pattern) ? pattern :
     isRegExp(pattern)    ? pattern.test(value) :
-    isList(pattern)      ? nmap.call(pattern, maskByIndex, (isList(value) ? value : [])) :
-    isComplex(pattern)   ? maskComplex(pattern, value) :
+    isList(pattern)      ? nmap.call(pattern, maskByIndex, toList(value)) :
+    isComplex(pattern)   ? maskDict(value, pattern) :
     undefined
   )
 }
 
 function maskByIndex(pattern, i) {
-  return maskBy(pattern, this[i])
+  return maskBy(this[i], pattern)
 }
 
-function maskComplex(pattern, value) {
+function maskDict(value, pattern) {
   const out = {}
-  for (const key in pattern) out[key] = maskBy(pattern[key], get(value, key))
+  for (const key in pattern) out[key] = maskBy(get(value, key), pattern[key])
   return out
 }
 
 export function mask(pattern) {
-  return bind(maskBy, pattern)
+  return function mask_(value) {return maskBy(value, pattern)}
 }
 
-export function validate(test, value) {
+export function validate(value, test) {
+  if (!isFunction(test)) throw Error(`Expected validator function, got ${show(test)}`)
   if (!test(value)) throw Error(`Expected ${show(value)} to satisfy test ${show(test)}`)
 }
 
-export function validateEach(test, list) {
-  validate(isList, list)
+export function validateEach(list, test) {
+  validate(list, isList)
   for (let i = -1; (i += 1) < list.length;) {
     if (!test(list[i])) {
       throw Error(`Expected ${show(list[i])} at index ${i} to satisfy test ${show(test)}`)
@@ -650,7 +617,6 @@ export function validateEach(test, list) {
   }
 }
 
-// Questionable
 function show(value) {
   return isFunction(value) ? (value.name || value.toString()) : String(value)
 }
