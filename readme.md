@@ -62,7 +62,6 @@ Functions changed:
     * changed arguments in mapping function to `(key, value)`
   * `maskBy`
     * changed arguments to `(operand, pattern)`
-    * when called on a dict with a dict mask, only applies
   * `validate`
     * changed arguments to `(operand, validator)`
 
