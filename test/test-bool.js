@@ -79,6 +79,16 @@ eq(fpx.isNaN(NaN), true)
 eq(fpx.isNaN(Infinity), false)
 eq(fpx.isNaN(undefined), false)
 
+eq(fpx.isInfinity(), false)
+eq(fpx.isInfinity(Infinity), true)
+eq(fpx.isInfinity(-Infinity), true)
+eq(fpx.isInfinity(NaN), false)
+eq(fpx.isInfinity(undefined), false)
+eq(fpx.isInfinity(10), false)
+eq(fpx.isInfinity(-10), false)
+eq(fpx.isInfinity('Infinity'), false)
+eq(fpx.isInfinity('-Infinity'), false)
+
 eq(fpx.isString(), false)
 eq(fpx.isString(''), true)
 

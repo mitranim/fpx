@@ -189,11 +189,11 @@ export function isNumber(value) {
 }
 
 export function isFinite(value) {
-  return isNumber(value) && !isNaN(value) && value !== Infinity && value !== -Infinity
+  return isNumber(value) && !isNaN(value) && !isInfinity(value)
 }
 
 export function isInteger(value) {
-  return isFinite(value) && ((value % 1) === 0)
+  return isNumber(value) && ((value % 1) === 0)
 }
 
 export function isNatural(value) {
@@ -202,6 +202,11 @@ export function isNatural(value) {
 
 export function isNaN(value) {
   return value !== value  // eslint-disable-line no-self-compare
+}
+
+// In V8, seems to be slightly faster than comparing to both Infinity and -Infinity
+export function isInfinity(value) {
+  return typeof value === 'number' && Math.abs(value) === Infinity
 }
 
 export function isString(value) {
@@ -255,7 +260,7 @@ export function isList(value) {
 
 // TODO consider documenting
 function isArguments(value) {
-  return isObject(value) && 'callee' in value && 'length' in value && isNatural(value.length)
+  return isObject(value) && isNatural(value.length) && 'callee' in value
 }
 
 export function isRegExp(value) {
@@ -511,18 +516,18 @@ export function getAt(path, value) {
   return reduce.call(path, get, value)
 }
 
-export function mapVals(value, fun) {
+export function mapVals(dict, fun) {
   validate(fun, isFunction)
   const out = {}
-  for (const key in value) out[key] = fun(value[key], key)
+  for (const key in dict) out[key] = fun(dict[key], key)
   return out
 }
 
-export function mapKeys(value, fun) {
+export function mapKeys(dict, fun) {
   validate(fun, isFunction)
   const out = {}
-  for (const key in value) {
-    const prop = value[key]
+  for (const key in dict) {
+    const prop = dict[key]
     out[fun(key, prop)] = prop
   }
   return out
@@ -618,5 +623,9 @@ export function validateEach(list, test) {
 }
 
 function show(value) {
-  return isFunction(value) ? (value.name || value.toString()) : String(value)
+  return isFunction(value)
+    ? (value.name || value.toString())
+    : isArray(value) || isDict(value)
+    ? JSON.stringify(value)
+    : String(value)
 }

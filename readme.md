@@ -74,3 +74,7 @@ Rule/mnemonic for argument order: primary operand first. Motivation:
 In list functions, the argument order is now similar to `Array.prototype` built-ins.
 
 Removed the preservation of `this` from all higher-order functions that create a new function: `bind`, `and`, `or`, `not`, `ifelse`, `ifthen`, `ifonly`, `ifexists`, `cond`, `pipe`, `comp`, `seq`, `pipeAnd`, `juxt`, `rest`. Motivation: too implicit to rely on, tends to be unused, no tests.
+
+## Misc
+
+I'm receptive to suggestions. If this library _almost_ fits you but needs changes, open an issue or chat me up. Contacts: https://mitranim.com/#contacts

@@ -140,6 +140,25 @@ isNaN(undefined)
 
 ---
 
+### `isInfinity(value)`
+
+True if `value` is `-Infinity` or `Infinity`.
+
+```js
+isInfinity(Infinity)
+// true
+isInfinity(-Infinity)
+// true
+isInfinity(10)
+// false
+isInfinity(NaN)
+// false
+isInfinity(undefined)
+// false
+```
+
+---
+
 ### `isString(value)`
 
 ```js
