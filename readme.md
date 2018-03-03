@@ -19,6 +19,12 @@ See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
 
+### 0.4.1
+
+* added `isInfinity`
+* `isList` is faster
+* `isInteger` is faster
+
 ### 0.4.0
 
 `0.4.0` has massive breaking changes. It removes a few functions and changes the argument order in 15 functions. It should basically be treated as a different library under the same name. Migrating an existing application is likely to cause subtle breakage, and existing dependents should probably remain on `0.3.1`.
