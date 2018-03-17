@@ -1,6 +1,7 @@
 /* eslint-disable no-invalid-this, prefer-spread */
 
 const {getPrototypeOf, prototype: protoObject, keys: getKeys} = Object
+const {hasOwnProperty} = protoObject
 const {
   slice: nslice, reduce, reduceRight, map: nmap, find: nfind,
   filter: nfilter, every: nevery, some: nsome,
@@ -255,12 +256,15 @@ export function isArray(value) {
 }
 
 export function isList(value) {
-  return isObject(value) && (isArguments(value) || (!isDict(value) && isNatural(value.length)))
+  return isObject(value) && (
+    isArguments(value) ||
+    (!isPlainPrototype(getPrototypeOf(value)) && isNatural(value.length))
+  )
 }
 
 // TODO consider documenting
 function isArguments(value) {
-  return isObject(value) && isNatural(value.length) && 'callee' in value
+  return isObject(value) && isNatural(value.length) && hasOwnProperty.call(value, 'callee')
 }
 
 export function isRegExp(value) {
@@ -415,14 +419,14 @@ export function remove(list, value) {
 }
 
 export function insertAtIndex(list, index, value) {
-  validate(index, isInteger)
+  validate(index, isNatural)
   list = toList(list)
-  if (isNatural(index) && index <= list.length) {
-    list = slice(list)
-    list.splice(index, 0, value)
-    return list
+  if (!(index <= list.length)) {
+    throw Error(`Index ${index} out of bounds for length ${list.length}`)
   }
-  throw Error(`Index ${index} out of bounds for length ${list.length}`)
+  list = slice(list)
+  list.splice(index, 0, value)
+  return list
 }
 
 export function removeAtIndex(list, index) {
@@ -560,6 +564,11 @@ export function add(a, b) {return a + b}
 export function sub(a, b) {return a - b}
 export function mul(a, b) {return a * b}
 export function div(a, b) {return a / b}
+export function rem(a, b) {return a % b}
+export function lt(a, b)  {return a < b}
+export function gt(a, b)  {return a > b}
+export function lte(a, b) {return a <= b}
+export function gte(a, b) {return a >= b}
 export function inc(a)    {return a + 1}
 export function dec(a)    {return a - 1}
 
