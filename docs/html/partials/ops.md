@@ -1,6 +1,6 @@
 ## Ops
 
-Operator-style functions. Sometimes useful in function composition.
+Operator-style functions. Sometimes useful with higher-order functions.
 
 ---
 

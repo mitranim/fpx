@@ -83,4 +83,4 @@ Removed the preservation of `this` from all higher-order functions that create a
 
 ## Misc
 
-I'm receptive to suggestions. If this library _almost_ fits you but needs changes, open an issue or chat me up. Contacts: https://mitranim.com/#contacts
+I'm receptive to suggestions. If this library _almost_ satisfies you but needs changes, open an issue or chat me up. Contacts: https://mitranim.com/#contacts

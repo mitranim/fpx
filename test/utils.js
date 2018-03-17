@@ -9,7 +9,8 @@ function eq(actual, expected) {
     throw new AssertionError({
       actual,
       expected,
-      operator: `equals`, stackStartFunction: eq,
+      operator: `equals`,
+      stackStartFunction: eq,
     })
   }
 }

@@ -6,7 +6,7 @@ Uncategorised utils.
 
 ### `id(value)`
 
-Identity function: returns its first argument unchanged. Sometimes useful in function composition.
+Identity function: returns its first argument unchanged. Sometimes useful with higher-order functions.
 
 ```js
 id('first', 'second', 'third')
@@ -17,7 +17,7 @@ id('first', 'second', 'third')
 
 ### `di(_, value)`
 
-Returns its _second_ argument unchanged. Sometimes useful in function composition.
+Returns its _second_ argument unchanged. Sometimes useful with higher-order functions.
 
 ```js
 di('first', 'second', 'third')
@@ -93,7 +93,7 @@ mask(pattern)
 
 ### `noop`
 
-Empty function. Functional equivalent of `;` or `undefined`. Sometimes useful in function composition.
+Empty function. Functional equivalent of `;` or `undefined`. Sometimes useful with higher-order functions.
 
 ```js
 noop()

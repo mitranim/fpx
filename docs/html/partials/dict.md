@@ -65,7 +65,7 @@ getIn({one: {two: 2}}, ['one', 'two'])
 
 ### `getAt(path, value)`
 
-Like `getIn` but expects the entire `path` as the _first_ argument. Sometimes useful in function composition when path is known in advance.
+Like `getIn` but expects the entire `path` as the _first_ argument. Sometimes useful with higher-order functions when path is known in advance.
 
 ```js
 getAt([], 1)

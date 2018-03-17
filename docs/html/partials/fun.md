@@ -6,7 +6,7 @@ Various higher-order functions.
 
 ### `call(fun, ...args)`
 
-Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank">`Function.prototype.call`</a>. Sometimes useful in function composition.
+Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank">`Function.prototype.call`</a>. Sometimes useful with higher-order functions.
 
 ```js
 call(add, 1, 2)
@@ -22,7 +22,7 @@ call(add, 1, 2)
 
 ### `apply(fun, args)`
 
-Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank">`Function.prototype.apply`</a>. Sometimes useful in function composition.
+Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank">`Function.prototype.apply`</a>. Sometimes useful with higher-order functions.
 
 ```js
 apply(add, [1, 2])

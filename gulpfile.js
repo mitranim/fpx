@@ -7,8 +7,10 @@
 const $ = require('gulp-load-plugins')()
 const bs = require('browser-sync').create()
 const del = require('del')
-const {fork} = require('child_process')
 const gulp = require('gulp')
+const log = require('fancy-log')
+const {Transform} = require('stream')
+const {fork} = require('child_process')
 const statilConfig = require('./statil')
 
 /**
@@ -62,15 +64,18 @@ gulp.task('lib:build', () => (
       ],
     }))
     .pipe(gulp.dest(outRootDir))
-    // Ensures ES5 compliance and shows minified size
+    // Ensures ES5 compliance and lets us measure minified size
     .pipe($.uglify({
       mangle: {toplevel: true},
       compress: {warnings: false},
     }))
-    .pipe($.rename(path => {
-      path.extname = '.min.js'
+    .pipe(new Transform({
+      objectMode: true,
+      transform(file, __, done) {
+        log(`Minified size: ${file._contents.length} bytes`)
+        done()
+      },
     }))
-    .pipe(gulp.dest(outRootDir))
 ))
 
 let testProc = null

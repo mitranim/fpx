@@ -93,7 +93,7 @@
       // global (node)
       "root",
       // other
-      "test",
+      "test", "hasOwnProperty",
       // These global functions are broken
       "isNaN", "isFinite"
     ],

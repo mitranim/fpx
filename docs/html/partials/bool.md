@@ -8,7 +8,7 @@ Boolean tests.
 
 Aliases: `truthy`, `bool`.
 
-Same as `!!` or `Boolean`. Sometimes useful in function composition.
+Same as `!!` or `Boolean`. Sometimes useful with higher-order functions.
 
 ```js
 truthy(null)
@@ -24,7 +24,7 @@ truthy(1)
 
 Aliases: `falsy`, `negate`.
 
-Same as `!`. Sometimes useful in function composition.
+Same as `!`. Sometimes useful with higher-order functions.
 
 ```js
 falsy(null)
