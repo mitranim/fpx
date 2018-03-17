@@ -87,6 +87,14 @@ body > :not(.main-column):not(.side-column) {
   max-width: $content-max-width;
 }
 
+p {
+  margin-top: 0;
+}
+
+p:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
 /**
  * Icons
  */

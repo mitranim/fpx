@@ -3,7 +3,7 @@
 List manipulation utils. Like all other `fpx` functions, they treat their
 arguments as immutables and never modify them.
 
-Note that from `fpx`'s perspective, **strings are not lists** and are treated as `undefined` or `[]`. You must [`slice`](#-slice-value-start-end-) strings first.
+Note that in `fpx`, **strings are not lists** and are treated as `undefined` or `[]`. To operate on a list of "characters", [`slice`](#-slice-value-start-end-) a string first.
 
 ---
 
