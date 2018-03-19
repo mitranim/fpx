@@ -255,16 +255,13 @@ export function isArray(value) {
   return isInstance(value, Array)
 }
 
+// Could be made much faster in V8 by retrieving the prototype before checking
+// any properties. Should check other engines before making such "weird"
+// optimizations.
 export function isList(value) {
-  return isObject(value) && (
-    isArguments(value) ||
-    (!isPlainPrototype(getPrototypeOf(value)) && isNatural(value.length))
+  return isObject(value) && isNatural(value.length) && (
+    !isPlainPrototype(getPrototypeOf(value)) || hasOwnProperty.call(value, 'callee')
   )
-}
-
-// TODO consider documenting
-function isArguments(value) {
-  return isObject(value) && isNatural(value.length) && hasOwnProperty.call(value, 'callee')
 }
 
 export function isRegExp(value) {
@@ -508,12 +505,15 @@ export function get(value, key) {
   return value == null ? undefined : value[key]
 }
 
-export function scan() {
-  return arguments.length ? reduce.call(arguments, get) : undefined
+export function scan(value) {
+  for (let i = 0; ++i < arguments.length;) value = get(value, arguments[i])
+  return value
 }
 
 export function getIn(value, path) {
-  return reduce.call(path, get, value)
+  validate(path, isList)
+  for (let i = -1; ++i < path.length;) value = get(value, path[i])
+  return value
 }
 
 export function getAt(path, value) {

@@ -7,3 +7,4 @@ es
 gh-pages
 node_modules
 /todo
+/perf.js
