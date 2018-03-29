@@ -1,12 +1,11 @@
 {
   "name": "fpx",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Functional programming extensions for JavaScript",
   "main": "dist/fpx.js",
   "module": "es/fpx.js",
   "scripts": {
     "start": "gulp",
-    "test": "node test/test",
     "compile": "gulp build",
     "prepublishOnly": "npm run compile"
   },

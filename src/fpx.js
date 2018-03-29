@@ -137,15 +137,15 @@ export function compAnd() {
 }
 
 export function juxt() {
-  const funs = slice(arguments)
+  const funs = arguments
   validateEach(funs, isFunction)
   return function juxt_() {
-    return funs.map(applyRight.bind(undefined, arguments))
+    return nmap.call(funs, applySelf, arguments)
   }
 }
 
-function applyRight(args, fun) {
-  return fun(...args)
+function applySelf(fun) {
+  return fun(...this)
 }
 
 export function rest(fun) {
@@ -517,7 +517,7 @@ export function getIn(value, path) {
 }
 
 export function getAt(path, value) {
-  return reduce.call(path, get, value)
+  return getIn(value, path)
 }
 
 export function mapVals(dict, fun) {
