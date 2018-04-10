@@ -19,6 +19,14 @@ See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
 
+### 0.4.5
+
+Added `isIterator`, published `show`.
+
+### 0.4.2
+
+Added `lt`, `gt`, `lte`, `gte`.
+
 ### 0.4.1
 
 * added `isInfinity`
