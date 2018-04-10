@@ -104,7 +104,7 @@ ifthen(a, b) = ifelse(a, b, noop)
 
 ---
 
-### `rethrow(val)`
+### `rethrow(value)`
 
 Same as `throw` but can be used as an expression or composed with other funs.
 
@@ -118,17 +118,39 @@ Promise.reject(Error('fail')).catch(pipe(log, rethrow))
 
 ---
 
+### `show(value)`
+
+Returns a string describing the value. To avoid the dreaded `[Object object]`, prints plain data structures as JSON. Convenient for interpolation into error messages. Used internally in [`validate`](#-validate-value-test-).
+
+```js
+show(10)
+// '10'
+
+show(show)
+// <source code>
+
+const someData = {one: 1, two: 2}
+
+show(someData)
+// same as JSON.stringify(someData)
+```
+
+---
+
 ### `validate(value, test)`
 
 where `test = ƒ(any) -> boolean`
 
-Minification-friendly assertion. If `!test(value)`, throws an exception with a message including `value` and the name of the `test` function.
+Minification-friendly assertion. If `!test(value)`, throws an exception with a message including `value` and the name of the test function.
+
+Since the assertion doesn't contain any strings, it can be minified to just a few characters. May depend on how your module bundler handles imports.
 
 ```js
 validate({}, isObject)
+// ok
 
 validate('blah', isFunction)
-// Uncaught Error: Expected 1 to satisfy test isFunction
+// Uncaught Error: Expected blah to satisfy test isFunction
 ```
 
 ---

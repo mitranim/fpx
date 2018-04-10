@@ -6,8 +6,9 @@ const {eq} = require('./utils')
 const f = require('../dist/fpx')
 const {create} = Object
 
-function id   (a) {return a}
-function args ()  {return arguments}
+function id(a) {return a}
+function args() {return arguments}
+function* gen() {}
 
 eq(f.truthy(), Boolean(undefined))
 eq(f.truthy(0), Boolean(0))
@@ -171,6 +172,10 @@ eq(f.isPromise({}), false)
 eq(f.isPromise({then () {}}), false)
 eq(f.isPromise(Promise.resolve()), true)
 eq(f.isPromise({then () {}, catch () {}}), true)
+
+eq(f.isIterator(), false)
+eq(f.isIterator(gen), false)
+eq(f.isIterator(gen()), true)
 
 eq(f.isDate(), false)
 eq(f.isDate(new Date()), true)

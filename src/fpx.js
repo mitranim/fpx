@@ -3,11 +3,13 @@
 const {getPrototypeOf, prototype: protoObject, keys: getKeys} = Object
 const {hasOwnProperty} = protoObject
 const {
-  slice: nslice, reduce, reduceRight, map: nmap, find: nfind,
+  slice: nslice, reduce: nreduce, reduceRight, map: nmap, find: nfind,
   filter: nfilter, every: nevery, some: nsome,
 } = Array.prototype
 
-// Fun
+/**
+ * Fun
+ */
 
 export function call(fun) {
   validate(fun, isFunction)
@@ -173,7 +175,9 @@ function compose(composerFun, funs) {
   return composerFun(fun, rest)
 }
 
-// Bool
+/**
+ * Bool
+ */
 
 export const bool = Boolean
 export const truthy = bool
@@ -284,6 +288,15 @@ export function isPromise(value) {
   return isComplex(value) && isFunction(value.then) && isFunction(value.catch)
 }
 
+export function isIterator(value) {
+  return (
+    isObject(value) &&
+    isFunction(value.next) &&
+    isFunction(value.return) &&
+    isFunction(value.throw)
+  )
+}
+
 export function isNil(value) {
   return value == null
 }
@@ -335,14 +348,16 @@ function testAtIndex(pattern, i) {
   }
 }
 
-// List
+/**
+ * List
+ */
 
 export function list() {
   return slice(arguments)
 }
 
 export function foldl(list, init, fun) {
-  return reduce.call(toList(list), fun, init, this)
+  return nreduce.call(toList(list), fun, init, this)
 }
 
 export function foldr(list, init, fun) {
@@ -350,7 +365,7 @@ export function foldr(list, init, fun) {
 }
 
 function foldlWith(list, acc, fun, a, b) {
-  for (let i = -1; (i += 1) < list.length;) acc = fun(acc, list[i], i, a, b)
+  for (let i = 0; i < list.length; i += 1) acc = fun(acc, list[i], i, a, b)
   return acc
 }
 
@@ -382,7 +397,7 @@ export function some(list, fun) {
 export function procure(list, fun) {
   validate(fun, isFunction)
   list = toList(list)
-  for (let i = -1; (i += 1) < list.length;) {
+  for (let i = 0; i < list.length; i += 1) {
     const result = fun.call(this, list[i], i)
     if (result) return result
   }
@@ -395,7 +410,7 @@ export function includes(list, value) {
 
 export function indexOf(list, value) {
   if (!isList(list)) return -1
-  for (let i = -1; (i += 1) < list.length;) if (is(list[i], value)) return i
+  for (let i = 0; i < list.length; i += 1) if (is(list[i], value)) return i
   return -1
 }
 
@@ -499,20 +514,22 @@ function toArray(value) {
   return isArray(value) ? value : isList(value) ? slice(value) : []
 }
 
-// Dict
+/**
+ * Dict
+ */
 
 export function get(value, key) {
   return value == null ? undefined : value[key]
 }
 
 export function scan(value) {
-  for (let i = 0; ++i < arguments.length;) value = get(value, arguments[i])
+  for (let i = 1; i < arguments.length; i += 1) value = get(value, arguments[i])
   return value
 }
 
 export function getIn(value, path) {
   validate(path, isList)
-  for (let i = -1; ++i < path.length;) value = get(value, path[i])
+  for (let i = 0; i < path.length; i += 1) value = get(value, path[i])
   return value
 }
 
@@ -537,7 +554,9 @@ export function mapKeys(dict, fun) {
   return out
 }
 
-// Coll
+/**
+ * Coll
+ */
 
 export function keys(value) {
   return isComplex(value) ? getKeys(value) : []
@@ -553,12 +572,19 @@ export function values(value) {
     : []
 }
 
-// Note we're not using isComplex here; function size is 0
+// Note: functions have a `.length` property that specifies the parameter count.
+// We consider their size to be 0.
 export function size(value) {
-  return isList(value) ? value.length : isObject(value) ? getKeys(value).length : 0
+  return isList(value)
+    ? value.length
+    : isObject(value)
+    ? getKeys(value).length
+    : 0
 }
 
-// Ops
+/**
+ * Ops
+ */
 
 export function add(a, b) {return a + b}
 export function sub(a, b) {return a - b}
@@ -572,7 +598,9 @@ export function gte(a, b) {return a >= b}
 export function inc(a)    {return a + 1}
 export function dec(a)    {return a - 1}
 
-// Misc
+/**
+ * Misc
+ */
 
 export function id(value) {
   return value
@@ -588,8 +616,8 @@ export function val(value) {
 
 export function noop() {}
 
-export function rethrow(val) {
-  throw val
+export function rethrow(value) {
+  throw value
 }
 
 export function maskBy(value, pattern) {
@@ -624,17 +652,19 @@ export function validate(value, test) {
 
 export function validateEach(list, test) {
   validate(list, isList)
-  for (let i = -1; (i += 1) < list.length;) {
+  for (let i = 0; i < list.length; i += 1) {
     if (!test(list[i])) {
       throw Error(`Expected ${show(list[i])} at index ${i} to satisfy test ${show(test)}`)
     }
   }
 }
 
-function show(value) {
-  return isFunction(value)
-    ? (value.name || value.toString())
+export function show(value) {
+  return (
+    isFunction(value) && value.name
+    ? value.name
     : isArray(value) || isDict(value)
     ? JSON.stringify(value)
     : String(value)
+  )
 }

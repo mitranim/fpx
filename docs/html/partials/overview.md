@@ -5,9 +5,9 @@
 Similar to Lodash, but more lightweight and specialised. Differences:
 
 * One small file (9 KB minified, compare with 67 KB in Lodash 4.0)
+* Extremely simple source code
 * Richer higher-order-function utils
 * Fewer data manipulation utils (partially relegated to Emerge, see below)
-* Emphasis on simplicity of source code
 
 See sibling libraries:
 
