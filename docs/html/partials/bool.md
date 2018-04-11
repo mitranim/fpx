@@ -357,10 +357,24 @@ isDate(new Date(NaN))  // true
 
 ### `isPromise(value)`
 
-True if the value
-<a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank">quacks</a>
-like an ES2015
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator" target="_blank">iterator</a>. _Iterators_, also called _generator objects_, are created by calling a _generator function_.
+True if the value <a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank">quacks</a> like an ES2015 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">`Promise`</a>. Works for non-native promise implementations.
+
+```js
+isPromise(Promise.resolve('test'))
+// true
+
+isPromise({then () {}, catch () {}})
+// true
+
+isPromise({then () {}})
+// false
+```
+
+---
+
+### `isIterator(value)`
+
+True if the value <a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank">quacks</a> like an ES2015 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator" target="_blank">iterator</a>. _Iterators_, also called _generator objects_, are created by calling a _generator function_.
 
 ```js
 function* myGenerator() {
@@ -373,27 +387,6 @@ isIterator(myGenerator())
 // true
 
 isIterator(myGenerator)
-// false
-```
-
----
-
-### `isIterator(value)`
-
-True if the value
-<a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank">quacks</a>
-like an ES2015
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">`Promise`</a>.
-Works for non-native promise implementations.
-
-```js
-isPromise(Promise.resolve('test'))
-// true
-
-isPromise({then () {}, catch () {}})
-// true
-
-isPromise({then () {}})
 // false
 ```
 

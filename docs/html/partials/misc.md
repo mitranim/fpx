@@ -106,7 +106,7 @@ ifthen(a, b) = ifelse(a, b, noop)
 
 ### `rethrow(value)`
 
-Same as `throw` but can be used as an expression or composed with other funs.
+Same as `throw` but can be used as an expression. Also sometimes useful with higher-order functions.
 
 ```js
 // Expression
@@ -120,7 +120,7 @@ Promise.reject(Error('fail')).catch(pipe(log, rethrow))
 
 ### `show(value)`
 
-Returns a string describing the value. To avoid the dreaded `[Object object]`, prints plain data structures as JSON. Convenient for interpolation into error messages. Used internally in [`validate`](#-validate-value-test-).
+Returns a string describing the value. Prints plain data as JSON to avoid the dreaded `[Object object]`. Convenient for interpolation into error messages. Used internally in [`validate`](#-validate-value-test-).
 
 ```js
 show(10)

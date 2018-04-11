@@ -3,11 +3,11 @@
 <base href="/fpx/">
 <meta charset="utf-8">
 <title>fpx</title>
-<link rel="stylesheet" href="styles/docs.css">
+<link rel="stylesheet" href="styles/docs.css?{{process.env.VERSION || ''}}">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,600,300italic,600italic&subset=latin" rel="stylesheet">
 <link rel="icon" href="data:;base64,=">
 
-<!-- Prevent index.html caching -->
+<!-- Prevent caching -->
 <meta http-equiv="cache-control" content="max-age=0" />
 <meta http-equiv="cache-control" content="no-cache" />
 <meta http-equiv="expires" content="0" />
@@ -32,5 +32,5 @@
   </article>
 </body>
 
-<script src="scripts/fpx.js"></script>
-<script src="scripts/docs.js"></script>
+<script src="scripts/fpx.js?{{process.env.VERSION || ''}}"></script>
+<script src="scripts/docs.js?{{process.env.VERSION || ''}}"></script>

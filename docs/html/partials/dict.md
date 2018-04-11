@@ -1,14 +1,12 @@
 ## Dict
 
-Utils for dealing with dictionaries (typically called "objects") and object properties. Like all other `fpx` functions, they treat their arguments as immutables and never modify them.
+Utils for dealing with dictionaries (usually called "objects") and object properties. Like all other `fpx` functions, they treat their arguments as immutables and never modify them.
 
 ---
 
 ### `get(value, key)`
 
-Reads property `key` from `value`. Similar to the bracket notation:
-`value[key]`. Advantages over the bracket notation: safe to use on `null` or
-`undefined` values, compatible with function composition.
+Same as `value[key]`, but safe to use on `null` or `undefined`.
 
 ```js
 get()
@@ -28,7 +26,7 @@ get('string', 'length')
 
 ### `scan(value, ...path)`
 
-Like `get` but takes many keys and reads a nested property at that path.
+Like `get` but takes many keys and reads a nested property at that path. Like `get`, is safe against `null` or `undefined`.
 
 ```js
 scan()
@@ -51,7 +49,7 @@ scan({one: {two: 2}}, 'one', 'two')
 
 ### `getIn(value, path)`
 
-Like `scan` but expects the entire `path` as the second argument.
+Like `scan` but expects the entire `path` as the second argument. Like `get`, is safe against `null` or `undefined`.
 
 ```js
 getIn(1, [])

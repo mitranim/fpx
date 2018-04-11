@@ -1,6 +1,6 @@
 ## Ops
 
-Operator-style functions. Sometimes useful with higher-order functions.
+Operator-style functions. Sometimes useful with higher-order functions. Like with regular JS operators, beware of implicit type coercions.
 
 ---
 

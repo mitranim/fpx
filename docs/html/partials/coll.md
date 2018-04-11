@@ -25,7 +25,7 @@ keys(keys)
 
 ### `values(value)`
 
-Returns the values of all properties of `value` as a list. Safe to use on primitives.
+Like `Object.values` but safe to use on primitives.
 
 Same as lodash's `_.values`.
 

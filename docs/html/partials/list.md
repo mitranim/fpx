@@ -333,7 +333,7 @@ toggle([10, 20, 30], 30)
 
 Concatenates lists, ignoring non-list arguments.
 
-This is intentionally **different** from <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat" target="_blank">`Array.prototype.concat`</a> and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of coercing non-list arguments to singleton lists, effectively appending them. This leads to abuse and surprise. `fpx`'s `concat` ignores non-lists, preventing this gotcha.
+This is intentionally **different** from <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat" target="_blank">`Array.prototype.concat`</a> and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of appending non-list values. This leads to surprising errors and/or intentional abuse. `fpx`'s `concat` ignores non-lists, preventing this gotcha.
 
 **Note**: for individual elements, use [`append`](#-append-list-value-) and
 [`prepend`](#-prepend-list-value-) instead.
@@ -365,7 +365,7 @@ flat([1, [2], [[3]]])
 
 ### `head(list)`
 
-Returns the first element of the given list.
+Returns the first element of the given list. Safe to call on non-lists: returns `undefined`.
 
 ```js
 head()

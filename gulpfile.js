@@ -10,7 +10,7 @@ const del = require('del')
 const gulp = require('gulp')
 const log = require('fancy-log')
 const {Transform} = require('stream')
-const {fork} = require('child_process')
+const cp = require('child_process')
 const statilConfig = require('./statil')
 
 /**
@@ -36,6 +36,8 @@ const outMainScriptFile = require('./package').main
 const testScriptFiles = 'test/**/*.js'
 
 const GulpErr = msg => ({showStack: false, toString: () => msg})
+
+process.env.VERSION = cp.execSync('git rev-parse --short HEAD').toString().trim()
 
 /**
  * Tasks
@@ -87,7 +89,7 @@ gulp.task('lib:test', done => {
     return
   }
 
-  testProc = fork('./test/test')
+  testProc = cp.fork('./test/test')
 
   testProc.once('exit', code => {
     done(code ? GulpErr(`Test failed with exit code ${code}`) : null)
