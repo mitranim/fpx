@@ -6,10 +6,11 @@ Similar to Lodash, but more lightweight and specialised. Differences:
 
 * One small file (9 KB minified, compare with 67 KB in Lodash 4.0)
 * Extremely simple source code
+* Space-efficient, minifies well
 * Richer higher-order-function utils
 * Fewer data manipulation utils (partially relegated to Emerge, see below)
 
-Written with ES2015 imports/exports. A module bundler such as Rollup or (properly configured) Webpack 4+ should be able to pick only the parts you actually use.
+Written with ES2015 imports/exports. Webpack 4+ or Rollup, in combination with UglifyJS, should strip out the unused parts, leaving only what you actually use.
 
 See sibling libraries:
 

@@ -1,11 +1,12 @@
 /* eslint-disable no-invalid-this, prefer-spread */
 
-const {getPrototypeOf, prototype: protoObject, keys: getKeys} = Object
-const {hasOwnProperty} = protoObject
-const {
-  slice: nslice, reduce: nreduce, reduceRight, map: nmap, find: nfind,
-  filter: nfilter, every: nevery, some: nsome,
-} = Array.prototype
+// These aliases are minifiable. At the time of writing, this saves us more than
+// 100 bytes in the full minified bundle, without tree shaking. It also reduces
+// the _minimum_ amount of garbage left after tree shaking.
+const Object_  = Object
+const OP       = Object_.prototype
+const Array_   = Array
+const AP       = Array_.prototype
 
 /**
  * Fun
@@ -142,7 +143,7 @@ export function juxt() {
   const funs = arguments
   validateEach(funs, isFunction)
   return function juxt_() {
-    return nmap.call(funs, applySelf, arguments)
+    return AP.map.call(funs, applySelf, arguments)
   }
 }
 
@@ -248,15 +249,15 @@ export function isObject(value) {
 
 export const isPlainObject = isDict
 export function isDict(value) {
-  return isObject(value) && isPlainPrototype(getPrototypeOf(value))
+  return isObject(value) && isPlainPrototype(Object_.getPrototypeOf(value))
 }
 
 function isPlainPrototype(value) {
-  return value === null || value === protoObject
+  return value === null || value === OP
 }
 
 export function isArray(value) {
-  return isInstance(value, Array)
+  return isInstance(value, Array_)
 }
 
 // Could be made much faster in V8 by retrieving the prototype before checking
@@ -264,7 +265,8 @@ export function isArray(value) {
 // optimizations.
 export function isList(value) {
   return isObject(value) && isNatural(value.length) && (
-    !isPlainPrototype(getPrototypeOf(value)) || hasOwnProperty.call(value, 'callee')
+    !isPlainPrototype(Object_.getPrototypeOf(value)) ||
+    OP.hasOwnProperty.call(value, 'callee')
   )
 }
 
@@ -306,7 +308,7 @@ export function testBy(value, pattern) {
     isFunction(pattern)  ? pattern(value) :
     isPrimitive(pattern) ? is(value, pattern) :
     isRegExp(pattern)    ? pattern.test(value) :
-    isList(pattern)      ? isList(value) && nevery.call(pattern, testByIndex, value) :
+    isList(pattern)      ? isList(value) && AP.every.call(pattern, testByIndex, value) :
     isComplex(pattern)   ? testComplex(value, pattern) :
     false
   )
@@ -357,11 +359,11 @@ export function list() {
 }
 
 export function foldl(list, init, fun) {
-  return nreduce.call(toList(list), fun, init, this)
+  return AP.reduce.call(toList(list), fun, init, this)
 }
 
 export function foldr(list, init, fun) {
-  return reduceRight.call(toList(list), fun, init, this)
+  return AP.reduceRight.call(toList(list), fun, init, this)
 }
 
 function foldlWith(list, acc, fun, a, b) {
@@ -371,27 +373,27 @@ function foldlWith(list, acc, fun, a, b) {
 
 export function map(list, fun) {
   validate(fun, isFunction)
-  return nmap.call(toList(list), fun, this)
+  return AP.map.call(toList(list), fun, this)
 }
 
 export function filter(list, fun) {
   validate(fun, isFunction)
-  return nfilter.call(toList(list), fun, this)
+  return AP.filter.call(toList(list), fun, this)
 }
 
 export function find(list, fun) {
   validate(fun, isFunction)
-  return nfind.call(toList(list), fun, this)
+  return AP.find.call(toList(list), fun, this)
 }
 
 export function every(list, fun) {
   validate(fun, isFunction)
-  return nevery.call(toList(list), fun, this)
+  return AP.every.call(toList(list), fun, this)
 }
 
 export function some(list, fun) {
   validate(fun, isFunction)
-  return nsome.call(toList(list), fun, this)
+  return AP.some.call(toList(list), fun, this)
 }
 
 export function procure(list, fun) {
@@ -415,7 +417,7 @@ export function indexOf(list, value) {
 }
 
 export function slice() {
-  return nslice.call.apply(nslice, arguments)
+  return AP.slice.call.apply(AP.slice, arguments)
 }
 
 export function append(list, value) {
@@ -559,7 +561,7 @@ export function mapKeys(dict, fun) {
  */
 
 export function keys(value) {
-  return isComplex(value) ? getKeys(value) : []
+  return isComplex(value) ? Object_.keys(value) : []
 }
 
 export function values(value) {
@@ -568,7 +570,7 @@ export function values(value) {
     : isList(value)
     ? slice(value)
     : isComplex(value)
-    ? getKeys(value).map(bind(get, value))
+    ? Object_.keys(value).map(bind(get, value))
     : []
 }
 
@@ -578,7 +580,7 @@ export function size(value) {
   return isList(value)
     ? value.length
     : isObject(value)
-    ? getKeys(value).length
+    ? Object_.keys(value).length
     : 0
 }
 
@@ -625,7 +627,7 @@ export function maskBy(value, pattern) {
     isFunction(pattern)  ? pattern(value) :
     isPrimitive(pattern) ? pattern :
     isRegExp(pattern)    ? pattern.test(value) :
-    isList(pattern)      ? nmap.call(pattern, maskByIndex, toList(value)) :
+    isList(pattern)      ? AP.map.call(pattern, maskByIndex, toList(value)) :
     isComplex(pattern)   ? maskDict(value, pattern) :
     undefined
   )
