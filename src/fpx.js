@@ -574,6 +574,35 @@ export function values(value) {
     : []
 }
 
+// export function keys(value) {
+//   return isObject(value) ? Object_.keys(value) : []
+// }
+
+// export function values(value) {
+//   if (!isObject(value)) return []
+//   if (isArray(value)) return value
+//   if (isList(value)) return slice(value)
+//   const out = Object_.keys(value)
+//   for (let i = 0; i < out.length; i += 1) out[i] = value[out[i]]
+//   return out
+// }
+
+// export function values(value) {
+//   return !isObject(value)
+//     ? []
+//     : isArray(value)
+//     ? value
+//     : isList(value)
+//     ? slice(value)
+//     : dictValues(value)
+// }
+
+// function dictValues(value) {
+//   const out = getKeys(value)
+//   for (let i = 0; i < out.length; i += 1) out[i] = value[out[i]]
+//   return out
+// }
+
 // Note: functions have a `.length` property that specifies the parameter count.
 // We consider their size to be 0.
 export function size(value) {
