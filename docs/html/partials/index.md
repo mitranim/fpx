@@ -81,6 +81,16 @@ So much better! Easy to type with editor autocompletion, produces good error mes
 
 To support this style of coding, Fpx provides [`validate`](#-validate-value-test-) and a bevy of boolean tests.
 
+### Simplicity
+
+> Programs must be written for people to read, and only incidentally for machines to execute.
+>
+> _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
+
+I believe that _all code_ should strive to be simple and educational. This applies _especially_ to libraries. This gives me a massive distaste for most code ever written, including my own. Reading Lodash's source might educate you in obfuscating code, but not much else. The same is true for most libraries, actually.
+
+In Fpx, I try to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
+
 ---
 
 ## Performance
