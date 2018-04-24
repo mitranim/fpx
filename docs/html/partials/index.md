@@ -37,7 +37,7 @@ On this page, Fpx is globally available as `f` or `fpx`. You can run the example
 
 ## Why
 
-Why a library: the built-ins are not enough; when programming [bottom-up](http://www.paulgraham.com/progbot.html), you create hundreds of small functions; they might as well be an NPM module you don't have to copy-paste around. (Although you _can_ easily copy-paste from Fpx, since it's just one file.)
+Why a library: the built-ins are not enough. When programming [bottom-up](http://www.paulgraham.com/progbot.html), you create hundreds of small functions. They might as well be an NPM module you don't have to copy-paste around. Incidentally, you _can_ easily copy-paste from Fpx, since it's just one file.
 
 ### Size
 
@@ -51,11 +51,9 @@ The current version of Lodash is incompatible with techniques like tree shaking 
 >
 > _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
 
-I believe that _all code_, the stuff we actually use, should strive to be simple and educational. This applies _especially_ to libraries. This gives me a massive distaste for most code ever written, including my own. Reading Lodash's source might educate you in obfuscating code, but not much else. The same is true for most libraries, actually.
+I believe that _all code_, including what we actually use, should strive to be simple and educational. This applies _especially_ to libraries. This gives me a massive distaste for most code ever written, including my own. Reading Lodash's source might educate you in obfuscating code, but not much else. The same is true for most libraries, actually.
 
 In Fpx, I try to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
-
-
 
 ### Strictness
 
