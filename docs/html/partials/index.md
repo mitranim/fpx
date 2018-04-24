@@ -45,6 +45,18 @@ Lodash is way, **way**, **WAY** too huge. You just want a few functions and BAM,
 
 The current version of Lodash is incompatible with techniques like tree shaking / dead code elimination / live code inclusion, which pick just the functions you actually use, dropping the rest. Fpx works perfectly with those. When using a module bundler that supports these techniques, such as Rollup or Webpack 4+, you automatically get a "custom version" of Fpx without any unused stuff.
 
+### Simplicity
+
+> Programs must be written for people to read, and only incidentally for machines to execute.
+>
+> _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
+
+I believe that _all code_, the stuff we actually use, should strive to be simple and educational. This applies _especially_ to libraries. This gives me a massive distaste for most code ever written, including my own. Reading Lodash's source might educate you in obfuscating code, but not much else. The same is true for most libraries, actually.
+
+In Fpx, I try to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
+
+
+
 ### Strictness
 
 Fpx collection functions work _either_ on lists ([`fold`](#-fold-list-init-fun-a-b-c-)) or dicts ([`foldVals`](#-foldvals-dict-init-fun-a-b-c-)), not both, and not on strings. They also always require an operator function, and there's no implicit identity function or magic conversion of patterns to functions. This is closer to JS builtins than to Lodash, and is better at preventing gotchas.
@@ -80,16 +92,6 @@ myFunction({one: 10})
 So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, and I consider that a good trade.
 
 To support this style of coding, Fpx provides [`validate`](#-validate-value-test-) and a bevy of boolean tests.
-
-### Simplicity
-
-> Programs must be written for people to read, and only incidentally for machines to execute.
->
-> _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
-
-I believe that _all code_ should strive to be simple and educational. This applies _especially_ to libraries. This gives me a massive distaste for most code ever written, including my own. Reading Lodash's source might educate you in obfuscating code, but not much else. The same is true for most libraries, actually.
-
-In Fpx, I try to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
 
 ---
 
