@@ -23,12 +23,11 @@ const srcDocStyleFiles = 'docs/styles/**/*.scss'
 const srcDocStyleMain = 'docs/styles/docs.scss'
 const srcDocScriptMain = 'docs/scripts/docs.js'
 
-const esDir = 'es'
-
+const outEsDir = 'es'
+const outDistDir = 'dist'
 const outDocDir = 'gh-pages'
 const outDocStyleDir = 'gh-pages/styles'
 const outDocScriptDir = 'gh-pages/scripts'
-const outRootDir = 'dist'
 const outEsFiles = 'es/**/*.js'
 const outDistScriptFiles = 'dist/**/*.js'
 const outMainScriptFile = require('./package').main
@@ -37,7 +36,7 @@ const testScriptFiles = 'test/**/*.js'
 
 const GulpErr = msg => ({showStack: false, toString: () => msg})
 
-process.env.VERSION = cp.execSync('git rev-parse --short HEAD').toString().trim()
+process.env.COMMIT = cp.execSync('git rev-parse --short HEAD').toString().trim()
 
 /**
  * Tasks
@@ -59,13 +58,13 @@ gulp.task('clear', () => (
 gulp.task('lib:build', () => (
   gulp.src(srcScriptFiles)
     .pipe($.babel())
-    .pipe(gulp.dest(esDir))
+    .pipe(gulp.dest(outEsDir))
     .pipe($.babel({
       plugins: [
-        'transform-es2015-modules-commonjs',
+        ['transform-es2015-modules-commonjs', {strict: true}],
       ],
     }))
-    .pipe(gulp.dest(outRootDir))
+    .pipe(gulp.dest(outDistDir))
     // Ensures ES5 compliance and lets us measure minified size
     .pipe($.uglify({
       mangle: {toplevel: true},
@@ -74,7 +73,7 @@ gulp.task('lib:build', () => (
     .pipe(new Transform({
       objectMode: true,
       transform(file, __, done) {
-        log(`Minified size: ${file._contents.length} bytes`)
+        log(`Minified size: ${file.relative} — ${file._contents.length} bytes`)
         done()
       },
     }))
@@ -137,12 +136,10 @@ gulp.task('docs:styles:watch', () => {
 gulp.task('docs:scripts:copy', () => (
   gulp.src(outMainScriptFile)
     .pipe($.wrap(
-`// Built version. See lib/fpx.js.
-!function (exports) {
+`// Transpiled version. See src/fpx.js.
+void function(exports) {
 <%= contents %>
-
-Object.assign(window, exports);
-}(window.fpx = {});`))
+}(window.fpx = window.f = {});`))
     .pipe(gulp.dest(outDocScriptDir))
 ))
 
@@ -150,7 +147,7 @@ gulp.task('docs:scripts:compile', () => (
   gulp.src(srcDocScriptMain)
     .pipe($.babel())
     .pipe($.wrap(
-`!function () {
+`void function() {
 'use strict';
 
 <%= contents %>

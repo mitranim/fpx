@@ -1,203 +1,184 @@
+@import './reset';
+@import './baselib';
+@import './node_modules/highlight.js/styles/tomorrow';
+
 /**
  * Vars
  */
 
-// http://brandcolors.net
-$color-github:  #4183c4;  // unverified
-$color-twitter: #55acee;  // verified
-
-$sf-font-weight: 300;
-$sf-body-max-width: none;
-
-$sf-rem: 18px;
-
-$column-max-width: 320px;
 $content-max-width: 1440px;
 
-// cornsilk
-// floralwhite
-// ivory
-// lemonchiffon
-// lightgoldenrodyellow
-// lightyellow
-// mintcream
+$color-pale: rgba(0, 0, 0, 0.20);
+
 $color-code-bg: floralwhite;
 
-/**
- * Code Theme
- */
+// http://brandcolors.net
+$color-github:  #4183c4;
+$color-twitter: #55acee;
 
-// Dark
-
-// @import './node_modules/highlight.js/styles/agate';
-// @import './node_modules/highlight.js/styles/ir-black';
-// @import './node_modules/highlight.js/styles/monokai-sublime';
-// @import './node_modules/highlight.js/styles/obsidian';
-
-// Light
-
-// @import './node_modules/highlight.js/styles/arduino-light';
-@import './node_modules/highlight.js/styles/tomorrow';
-// @import './node_modules/highlight.js/styles/solarized-light';
-// @import './node_modules/highlight.js/styles/github';
-// @import './node_modules/highlight.js/styles/idea';
-
-/**
- * Libs
- */
-
-@import './node_modules/stylific-lite/scss/stylific-lite';
-@import './node_modules/stylific-lite/scss/classes';
+$font-size-h1: 1.6rem;
+$font-size-h2: 1.4rem;
+$font-size-h3: 1.2rem;
 
 /**
  * Global
  */
 
 html {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Open Sans, sans-serif;
+  font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Segoe UI', Verdana, sans-serif;
+  font-size: 18px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // Tentative
+  letter-spacing: 0.1pt;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  @extend .flex-row;
-}
-
-body > :not(.main-column):not(.side-column) {
-  display: none;
-}
-
-.side-column {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 20vw;
-  // max-width: $column-max-width;
-
-  // Enables scroll
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: scroll;
 }
 
-.main-column {
-  @extend .flex-col;
-  padding: 1rem;
-  padding-left: calc(20vw + 1rem);
-  max-width: $content-max-width;
+code {
+  background-color: $color-code-bg;
 }
 
-p, ul {
-  margin-top: 0;
-  &:not(:last-child) {
-    margin-bottom: 1rem;
-  }
-}
-
-/**
- * Icons
- */
-
-.external-link::after {
-  // Icon
-  content: '';
-  display: inline-block;
-  width: 0.8em;
-  height: 0.8em;
-  // Feather icon: external-link.svg
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJmZWF0aGVyIGZlYXRoZXItZXh0ZXJuYWwtbGluayI+PHBhdGggZD0iTTE4IDEzdjZhMiAyIDAgMCAxLTIgMkg1YTIgMiAwIDAgMS0yLTJWOGEyIDIgMCAwIDEgMi0yaDYiPjwvcGF0aD48cG9seWxpbmUgcG9pbnRzPSIxNSAzIDIxIDMgMjEgOSI+PC9wb2x5bGluZT48bGluZSB4MT0iMTAiIHkxPSIxNCIgeDI9IjIxIiB5Mj0iMyI+PC9saW5lPjwvc3ZnPg==);
-  background-position: center;
-  background-size: cover;
-
-  // Cosmetic
-  margin-left: 0.2rem;
-  opacity: 0.5;
-}
-
-article a[target~=_blank] {
-  @extend .external-link;
-}
-
-svg.feather {
-  width: 0.8em;
-  height: 0.8em;
+.hljs {
+  background-color: $color-code-bg;
 }
 
 /**
  * Misc
  */
 
-article code {
-  background-color: $color-code-bg;
+.sidenav-column {
+  display: block;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 20vw;
+
+  // Enable scroll
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
-article .hljs {
-  background-color: $color-code-bg;
+.content-column {
+  @extend .col-start-stretch;
+  padding: 1rem;
+  padding-left: calc(20vw + 1rem);
+  max-width: $content-max-width;
 }
 
-.flex-row {
-  display: flex;
-  flex-direction: row;
+.hr {
+  color: $color-pale;
 }
 
-.flex-col {
-  display: flex;
-  flex-direction: column;
+.fancy-list > * {
+  position: relative;
+  padding-left: 1.5em;
 }
 
-.flex-between {
-  justify-content: space-between;
+.fancy-typography {
+  h1 {font-size: $font-size-h1}
+  h2 {font-size: $font-size-h2}
+  h3 {font-size: $font-size-h3}
+
+  h1, h2, h3, h4, h5, h6 {
+    &:not(:first-child) {
+      margin-top: 2rem;
+    }
+    margin-bottom: 1rem;
+  }
+
+  > p, > ul, > ol, > pre {
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  > ul, > ol {
+    @extend .fancy-list;
+  }
+
+  li {
+    &:not(:first-child) {
+      margin-top: 0.25rem;
+    }
+    &:not(:last-child) {
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  hr {
+    @extend .margin-2-v;
+    @extend .hr;
+  }
+
+  a:not(.undecorate) {
+    @extend .decorate-link;
+    &[target~=_blank] {
+      @extend .external-link;
+    }
+  }
 }
 
-.flex-stretch {
-  align-items: stretch;
+.heading-anchor {
+  font-size: 1rem;
+  @extend .margin-0x5-l;
+  @extend .undecorate;
+  &:hover, &:focus {
+    border-bottom: 1px solid;
+  }
 }
 
-.frb {
-  @extend .flex-row;
-  @extend .flex-between;
+.sidenav-list {
+  @extend .col-start-stretch;
+  @extend .gaps-0x25-v;
+  .sidenav-list {
+    @extend .margin-0x5-l;
+  }
 }
 
-.list {
-  display: flex;
-  flex-direction: column;
+.sidenav-link {
+  @extend .row-between-center;
+  > * {
+    border-bottom: 1px dotted;
+  }
+  &:hover > *, &:focus > * {
+    border-bottom: 1px solid;
+  }
+  &:hover, &[aria-current]:not([aria-current='']) {
+    &::after {
+      content: '→';
+    }
+  }
 }
 
-.list .list {
-  margin-left: $sf-space / 2;
-}
-
-.list a {
-  line-height: 1.6em;
-}
-
-.list a > * {
+.decorate-link {
   border-bottom: 1px dotted;
+  &:hover, &:focus {
+    border-bottom: 1px solid;
+  }
+  &[target~=_blank] {
+    @extend .external-link;
+  }
 }
 
-.list a:hover > *, .list a:focus > * {
-  border-bottom: 1px solid;
-}
+.external-link::after {
+  content: '↗︎';
+  margin-left: 0.2rem;
+  opacity: 0.5;
 
-.list .active::after, .list a:hover::after {
-  content: '→';
+  // Iffy, may be wrong for some fonts
+  position: relative;
+  top: 0.2ex;
 }
-
-.flex-1 {flex: 1}
-.flex-2 {flex: 2}
-.flex-3 {flex: 3}
-.flex-4 {flex: 4}
 
 .opacity-40 {
   opacity: 0.4;
-}
-
-.margin-left {
-  margin-left: 1rem;
-}
-
-a.heading-anchor {
-  color: gray;
-  margin-left: 0.2rem;
-  &, &:focus:not(:hover) {border: none}
 }

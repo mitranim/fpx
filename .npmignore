@@ -1,8 +1,5 @@
-# Files
-/*.js
-/*.md
-
-# Folders
-docs
-gh-pages
-test
+/*
+!/dist
+!/es
+!/src
+!/readme.md

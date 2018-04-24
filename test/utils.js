@@ -9,8 +9,20 @@ function eq(actual, expected) {
     throw new AssertionError({
       actual,
       expected,
-      operator: `equals`,
+      operator: `equal`,
       stackStartFunction: eq,
+    })
+  }
+}
+
+exports.is = is
+function is(actual, expected) {
+  if (!Object.is(actual, expected)) {
+    throw new AssertionError({
+      actual,
+      expected,
+      operator: `Object.is`,
+      stackStartFunction: is,
     })
   }
 }

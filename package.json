@@ -1,7 +1,7 @@
 {
   "name": "fpx",
-  "version": "0.4.6",
-  "description": "Functional programming extensions for JavaScript",
+  "version": "0.5.0",
+  "description": "Functional programming extensions for JavaScript. Lightweight replacement for Lodash.",
   "main": "dist/fpx.js",
   "module": "es/fpx.js",
   "scripts": {
@@ -11,7 +11,8 @@
   },
   "keywords": [
     "functional",
-    "fp"
+    "fp",
+    "lodash"
   ],
   "authors": [
     "Mitranim <me@mitranim.com>",
@@ -25,25 +26,21 @@
   "devDependencies": {
     "babel-eslint": "7.2.3",
     "babel-plugin-check-es2015-constants": "6.22.0",
-    "babel-plugin-transform-es2015-arrow-functions": "6.22.0",
     "babel-plugin-transform-es2015-block-scoping": "6.24.1",
     "babel-plugin-transform-es2015-destructuring": "6.23.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
-    "babel-plugin-transform-es2015-parameters": "6.24.1",
-    "babel-plugin-transform-es2015-spread": "6.22.0",
+    "babel-plugin-transform-es2015-shorthand-properties": "6.24.1",
     "babel-plugin-transform-es2015-template-literals": "6.22.0",
     "browser-sync": "2.18.12",
     "del": "3.0.0",
-    "emerge": "0.0.32",
+    "emerge": "0.3.0",
     "eslint_d": "4.2.5",
     "fancy-log": "1.3.2",
-    "feather-icons": "4.5.0",
-    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp": "4.0",
     "gulp-autoprefixer": "4.0.0",
     "gulp-babel": "6.1.2",
     "gulp-clean-css": "3.4.2",
     "gulp-load-plugins": "1.5.0",
-    "gulp-rename": "1.2.2",
     "gulp-sass": "3.1.0",
     "gulp-statil": "0.5.0",
     "gulp-uglify": "3.0.0",

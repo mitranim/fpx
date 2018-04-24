@@ -1,23 +1,136 @@
 ## Overview
 
-`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Similar
-to `lodash`, but more lightweight and specialised.
+`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 12 KiB minified.
+
+Uses ES2015 exports, compatible with tree shaking.
 
 Documentation: https://mitranim.com/fpx/.
 
 ## Installation and Usage
 
 ```sh
-npm i --save fpx
+npm i -E fpx
 ```
 
 ```js
-const {someFunction} = require('fpx')
+const f = require('fpx')
+// or
+import * as f from 'fpx'
 ```
 
 See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
+
+### 0.5.0
+
+Massive rework that makes Fpx a realistic replacement for Lodash. Breaking.
+
+  * removed 22 functions and 1 alias
+  * added 51 function
+  * renamed 3 functions
+  * greatly improved performance
+  * size went from 9 KiB to 12 KiB
+
+Removed most of the weyrd-ass function transforms like `and`, `or`, `juxt`, `alter`, etc. Years of practice have shown that they have significant drawbacks and questionable value. The best way to compose functions is to write functions that call functions. It's that simple.
+
+Added a ton of list and dict functions. See the documentation.
+
+All "iteration" functions now accept additional arguments for the operator.
+
+Breaking changes in existing functions:
+
+  * `flat` → `flattenDeep`
+  * `foldl` → `fold`
+  * `foldr` → `foldRight`
+  * removed the `isPlainObject` alias for `isDict`
+  * `keys` and `values` now only work on dicts
+  * removed handling of `this`; just pass it as an additional operator argument
+
+Approximate diff of the exports:
+
+```diff
+-alter
+-and
++assign
+-comp
+-compAnd
++compact
+-cond
++each
++eachVal
++findIndex
++findIndexRight
++findKey
++findMaxBy
++findMinBy
++findRight
++findVal
+-flat
+-foldl
+-foldr
++flatMap
++flatMapDeep
++flatten
++flattenDeep
++fold
++foldRight
++foldVals
+-getAt
++getter
++global
++groupBy
+-ifelse
+-ifexists
+-ifonly
+-ifthen
++intersection
++invert
++invertBy
++isEmpty
++isKey
+-isPlainObject
++isSomething
+-juxt
++keyBy
+-list
++lastIndexOf
++mapFilter
++mapValsSort
++max
++maxBy
++min
++minBy
+-or
+-pipe
+-pipeAnd
++omitBy
++omitKeys
++onlyDict
++onlyList
++onlyString
++partition
++pickBy
++pickKeys
++range
++reject
+-rest
+-seq
+-spread
++sort
++sortBy
++sum
++sumBy
+-testAnd
+-testArgsAnd
+-testArgsOr
+-testOr
++toArray
++uniq
++uniqBy
++vacate
++validateInstance
+```
 
 ### 0.4.5
 

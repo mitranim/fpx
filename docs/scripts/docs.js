@@ -1,10 +1,10 @@
-const f = window.fpx
+const {f} = window
 
 /**
  * Init
  */
 
-const scroller = throttle(updateLinksAndHash, {delay: 250})
+const scroller = throttle(updateLinksAndHash, {delay: 128})
 
 window.addEventListener('scroll', scroller.call)
 
@@ -25,7 +25,7 @@ function updateLinksAndHash() {
 }
 
 function updateSidenavLinks(id) {
-  f.slice(document.querySelectorAll('#sidenav a.active')).forEach(deactivate)
+  f.slice(document.querySelectorAll('#sidenav a[aria-current]')).forEach(deactivate)
   const link = document.querySelector(`#sidenav a[href*="#${id}"]`)
   if (link) {
     activate(link)
@@ -34,11 +34,11 @@ function updateSidenavLinks(id) {
 }
 
 function activate(elem) {
-  elem.classList.add('active')
+  elem.setAttribute('aria-current', 'true')
 }
 
 function deactivate(elem) {
-  elem.classList.remove('active')
+  elem.removeAttribute('aria-current')
 }
 
 /**
@@ -51,28 +51,39 @@ const PX_ERROR_MARGIN = 3
 
 function throttle(fun, options) {
   f.validate(fun, f.isFunction)
+  let active = true
   let timerId = null
   let tailPending = false
   const delay = options && options.delay
 
   function call() {
-    if (timerId) tailPending = true
-    else restartThrottle()
-  }
-
-  function deinit() {
-    clearTimeout(timerId)
-    timerId = null
+    if (!active) return
+    if (timerId) {
+      tailPending = true
+      return
+    }
+    try {fun()}
+    finally {restartThrottle()}
   }
 
   function restartThrottle() {
-    deinit()
+    if (!active) return
+
+    clearTimeout(timerId)
+    timerId = null
+
     timerId = setTimeout(function onThrottledTimer() {
       timerId = null
       if (tailPending) restartThrottle()
       tailPending = false
-      fun(...arguments)
+      fun()
     }, delay)
+  }
+
+  function deinit() {
+    active = false
+    clearTimeout(timerId)
+    timerId = null
   }
 
   return {call, deinit}
@@ -103,6 +114,16 @@ function isWithinViewport(elem) {
   )
 }
 
+// Not good enough; we should probably scroll an element into view unless it's
+// MOSTLY visible, not just partially visible.
+function isKindaVisible(elem) {
+  const {top, bottom} = elem.getBoundingClientRect()
+  return (
+    (bottom > PX_ERROR_MARGIN && bottom < window.innerHeight) ||
+    (top > PX_ERROR_MARGIN && top < (window.innerHeight - PX_ERROR_MARGIN))
+  )
+}
+
 function setHash(id) {
   window.history.replaceState(null, '', `#${id}`)
 }
@@ -112,7 +133,7 @@ function unsetHash() {
 }
 
 function scrollIntoViewIfNeeded(elem) {
-  if (!isWithinViewport(elem)) elem.scrollIntoView()
+  if (!isKindaVisible(elem)) elem.scrollIntoView()
 }
 
 function shouldPreventSpill(elem) {

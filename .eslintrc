@@ -182,7 +182,7 @@
     "object-shorthand": "error",
     "prefer-const": "error",
     "prefer-numeric-literals": "error",
-    "prefer-spread": "error",
+    // "prefer-spread": "error",
     // "prefer-template": "error",
     // "require-yield": "error",
     "rest-spread-spacing": "error",

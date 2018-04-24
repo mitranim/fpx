@@ -1,10 +1,12 @@
 'use strict'
 
-const {eq} = require('./utils')
+const {eq, is} = require('./utils')
 const f = require('../dist/fpx')
 
 function double (a) {return a * 2}
 function args   ()  {return arguments}
+
+is(f.global, global)
 
 eq(f.id(),       undefined)
 eq(f.id(10),     10)

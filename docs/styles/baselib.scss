@@ -1,0 +1,463 @@
+// https://github.com/Mitranim/style-base
+
+// /**
+//  * position
+//  */
+
+// .relative {position: relative}
+// .absolute {position: absolute}
+// .static   {position: static}
+// .fixed    {position: fixed}
+
+// /**
+//  * display
+//  */
+
+// .block        {display: block}
+// .inline       {display: inline}
+// .inline-block {display: inline-block}
+// .inline-table {display: inline-table}
+// .table        {display: table}
+// .table-row    {display: table-row}
+// .table-column {display: table-column}
+// .table-cell   {display: table-cell}
+// .list-item    {display: list-item}
+// .flex         {display: flex}
+// .inline-flex  {display: inline-flex}
+
+// /**
+//  * width and height
+//  */
+
+// .width-25p    {width: 25%}
+// .width-50p    {width: 50%}
+// .width-75p    {width: 75%}
+// .width-100p   {width: 100%}
+// .width-100vw  {width: 100vw}
+// .height-100p  {height: 100%}
+// .height-100vh {height: 100vh}
+
+// .width-1    {width: 1rem}
+// .height-1   {height: 1rem}
+// .width-2    {width: 2rem}
+// .height-2   {height: 2rem}
+
+/**
+ * flex
+ */
+
+@mixin flex-layout($flex-direction, $justify-content, $align-items: none) {
+  display:         flex;
+  flex-direction:  $flex-direction;
+  justify-content: $justify-content;
+  @if $align-items {
+    align-items: $align-items;
+  }
+}
+
+// .row-start   {@include flex-layout(row,    flex-start);}
+// .row-center  {@include flex-layout(row,    center);}
+// .row-end     {@include flex-layout(row,    flex-end);}
+// .row-around  {@include flex-layout(row,    space-around);}
+// .row-between {@include flex-layout(row,    space-between);}
+// .col-start   {@include flex-layout(column, flex-start);}
+// .col-center  {@include flex-layout(column, center);}
+// .col-end     {@include flex-layout(column, flex-end);}
+// .col-around  {@include flex-layout(column, space-around);}
+// .col-between {@include flex-layout(column, space-between);}
+
+// .row-start-start     {@include flex-layout(row,    flex-start,    flex-start);}
+// .row-start-center    {@include flex-layout(row,    flex-start,    center);}
+// .row-start-end       {@include flex-layout(row,    flex-start,    flex-end);}
+.row-start-stretch   {@include flex-layout(row,    flex-start,    stretch);}
+// .row-center-start    {@include flex-layout(row,    center,        flex-start);}
+// .row-center-center   {@include flex-layout(row,    center,        center);}
+// .row-center-end      {@include flex-layout(row,    center,        flex-end);}
+// .row-center-stretch  {@include flex-layout(row,    center,        stretch);}
+// .row-end-start       {@include flex-layout(row,    flex-end,      flex-start);}
+// .row-end-center      {@include flex-layout(row,    flex-end,      center);}
+// .row-end-end         {@include flex-layout(row,    flex-end,      flex-end);}
+// .row-end-stretch     {@include flex-layout(row,    flex-end,      stretch);}
+// .row-around-start    {@include flex-layout(row,    space-around,  flex-start);}
+// .row-around-center   {@include flex-layout(row,    space-around,  center);}
+// .row-around-end      {@include flex-layout(row,    space-around,  flex-end);}
+// .row-around-stretch  {@include flex-layout(row,    space-around,  stretch);}
+// .row-between-start   {@include flex-layout(row,    space-between, flex-start);}
+.row-between-center  {@include flex-layout(row,    space-between, center);}
+// .row-between-end     {@include flex-layout(row,    space-between, flex-end);}
+// .row-between-stretch {@include flex-layout(row,    space-between, stretch);}
+// .col-start-start     {@include flex-layout(column, flex-start,    flex-start);}
+// .col-start-center    {@include flex-layout(column, flex-start,    center);}
+// .col-start-end       {@include flex-layout(column, flex-start,    flex-end);}
+.col-start-stretch   {@include flex-layout(column, flex-start,    stretch);}
+// .col-center-start    {@include flex-layout(column, center,        flex-start);}
+// .col-center-center   {@include flex-layout(column, center,        center);}
+// .col-center-end      {@include flex-layout(column, center,        flex-end);}
+// .col-center-stretch  {@include flex-layout(column, center,        stretch);}
+// .col-end-start       {@include flex-layout(column, flex-end,      flex-start);}
+// .col-end-center      {@include flex-layout(column, flex-end,      center);}
+// .col-end-end         {@include flex-layout(column, flex-end,      flex-end);}
+// .col-end-stretch     {@include flex-layout(column, flex-end,      stretch);}
+// .col-around-start    {@include flex-layout(column, space-around,  flex-start);}
+// .col-around-center   {@include flex-layout(column, space-around,  center);}
+// .col-around-end      {@include flex-layout(column, space-around,  flex-end);}
+// .col-around-stretch  {@include flex-layout(column, space-around,  stretch);}
+// .col-between-start   {@include flex-layout(column, space-between, flex-start);}
+// .col-between-center  {@include flex-layout(column, space-between, center);}
+// .col-between-end     {@include flex-layout(column, space-between, flex-end);}
+// .col-between-stretch {@include flex-layout(column, space-between, stretch);}
+
+// .inline-flex {display: inline-flex}
+// .flex-wrap   {flex-wrap: wrap}
+// .flex-nowrap {flex-wrap: nowrap}
+
+// .flex-0  {flex: 0}
+// .flex-1  {flex: 1}
+// .flex-2  {flex: 2}
+// .flex-3  {flex: 3}
+// .flex-4  {flex: 4}
+// .flex-5  {flex: 5}
+// .flex-6  {flex: 6}
+// .flex-7  {flex: 7}
+// .flex-8  {flex: 8}
+// .flex-9  {flex: 9}
+// .flex-10 {flex: 10}
+// .flex-11 {flex: 11}
+// .flex-12 {flex: 12}
+
+// .flex-self-start   {align-self: flex-start}
+// .flex-self-center  {align-self: center}
+// .flex-self-end     {align-self: flex-end}
+// .flex-self-stretch {align-self: stretch}
+// .flex-shrink-none  {flex-shrink: 0}
+
+// /**
+//  * order
+//  */
+
+// .order-0  {order: 0}
+// .order-1  {order: 1}
+// .order-2  {order: 2}
+// .order-3  {order: 3}
+// .order-4  {order: 4}
+// .order-5  {order: 5}
+// .order-6  {order: 6}
+// .order-7  {order: 7}
+// .order-8  {order: 8}
+// .order-9  {order: 9}
+// .order-10 {order: 10}
+// .order-11 {order: 11}
+// .order-12 {order: 12}
+
+/**
+ * spacing
+ */
+
+// .center-by-margins {margin: auto;}
+
+.gaps-0x25-v > :not(:last-child) {margin-bottom: 0.25rem}
+.gaps-0x5-v  > :not(:last-child) {margin-bottom: 0.5rem}
+.gaps-1-v    > :not(:last-child) {margin-bottom: 1rem}
+.gaps-2-v    > :not(:last-child) {margin-bottom: 2rem}
+// .gaps-4-v    > :not(:last-child) {margin-bottom: 4rem}
+// .gaps-6-v    > :not(:last-child) {margin-bottom: 6rem}
+// .gaps-8-v    > :not(:last-child) {margin-bottom: 8rem}
+
+// .gaps-0x25-h > :not(:last-child) {margin-right: 0.25rem}
+// .gaps-0x5-h  > :not(:last-child) {margin-right: 0.5rem}
+// .gaps-1-h    > :not(:last-child) {margin-right: 1rem}
+// .gaps-2-h    > :not(:last-child) {margin-right: 2rem}
+// .gaps-4-h    > :not(:last-child) {margin-right: 4rem}
+// .gaps-6-h    > :not(:last-child) {margin-right: 6rem}
+// .gaps-8-h    > :not(:last-child) {margin-right: 8rem}
+
+// .margin-0x25 {margin: 0.25rem}
+// .margin-0x5  {margin: 0.5rem}
+// .margin-0x75 {margin: 0.5rem}
+// .margin-1    {margin: 1rem}
+// .margin-2    {margin: 2rem}
+// .margin-4    {margin: 4rem}
+// .margin-6    {margin: 6rem}
+// .margin-8    {margin: 8rem}
+
+// .margin-0x25-v {margin-top: 0.25rem; margin-bottom: 0.25rem}
+// .margin-0x5-v  {margin-top: 0.5rem;  margin-bottom: 0.5rem}
+// .margin-0x75-v {margin-top: 0.75rem; margin-bottom: 0.75rem}
+// .margin-1-v    {margin-top: 1rem;    margin-bottom: 1rem}
+.margin-2-v    {margin-top: 2rem;    margin-bottom: 2rem}
+// .margin-4-v    {margin-top: 4rem;    margin-bottom: 4rem}
+// .margin-6-v    {margin-top: 6rem;    margin-bottom: 6rem}
+// .margin-8-v    {margin-top: 8rem;    margin-bottom: 8rem}
+
+// .margin-0x25-h {margin-left: 0.25rem; margin-right: 0.25rem}
+// .margin-0x5-h  {margin-left: 0.5rem;  margin-right: 0.5rem}
+// .margin-0x75-h {margin-left: 0.75rem; margin-right: 0.75rem}
+// .margin-1-h    {margin-left: 1rem;    margin-right: 1rem}
+// .margin-2-h    {margin-left: 2rem;    margin-right: 2rem}
+// .margin-4-h    {margin-left: 4rem;    margin-right: 4rem}
+// .margin-6-h    {margin-left: 6rem;    margin-right: 6rem}
+// .margin-8-h    {margin-left: 8rem;    margin-right: 8rem}
+
+// .margin-0x25-t {margin-top: 0.25rem;}
+// .margin-0x5-t  {margin-top: 0.5rem;}
+// .margin-0x75-t {margin-top: 0.75rem;}
+// .margin-1-t    {margin-top: 1rem;}
+// .margin-2-t    {margin-top: 2rem;}
+// .margin-4-t    {margin-top: 4rem;}
+// .margin-6-t    {margin-top: 6rem;}
+// .margin-8-t    {margin-top: 8rem;}
+
+// .margin-0x25-r {margin-right: 0.25rem}
+// .margin-0x5-r  {margin-right: 0.5rem}
+// .margin-0x75-r {margin-right: 0.75rem}
+// .margin-1-r    {margin-right: 1rem}
+// .margin-2-r    {margin-right: 2rem}
+// .margin-4-r    {margin-right: 4rem}
+// .margin-6-r    {margin-right: 6rem}
+// .margin-8-r    {margin-right: 8rem}
+
+// .margin-0x25-b {margin-bottom: 0.25rem}
+// .margin-0x5-b  {margin-bottom: 0.5rem}
+// .margin-0x75-b {margin-bottom: 0.75rem}
+// .margin-1-b    {margin-bottom: 1rem}
+// .margin-2-b    {margin-bottom: 2rem}
+// .margin-4-b    {margin-bottom: 4rem}
+// .margin-6-b    {margin-bottom: 6rem}
+// .margin-8-b    {margin-bottom: 8rem}
+
+// .margin-0x25-l {margin-left: 0.25rem;}
+.margin-0x5-l  {margin-left: 0.5rem;}
+// .margin-0x75-l {margin-left: 0.75rem;}
+.margin-1-l    {margin-left: 1rem;}
+// .margin-2-l    {margin-left: 2rem;}
+// .margin-4-l    {margin-left: 4rem;}
+// .margin-6-l    {margin-left: 6rem;}
+// .margin-8-l    {margin-left: 8rem;}
+
+// .padding-0x25 {padding: 0.25rem}
+// .padding-0x5  {padding: 0.5rem}
+.padding-1    {padding: 1rem}
+// .padding-2    {padding: 2rem}
+// .padding-4    {padding: 4rem}
+
+// .padding-0x25-v {padding-top: 0.25rem; padding-bottom: 0.25rem}
+// .padding-0x5-v  {padding-top: 0.5rem;  padding-bottom: 0.5rem}
+// .padding-0x75-v {padding-top: 0.75rem; padding-bottom: 0.75rem}
+// .padding-1-v    {padding-top: 1rem;    padding-bottom: 1rem}
+// .padding-2-v    {padding-top: 2rem;    padding-bottom: 2rem}
+// .padding-4-v    {padding-top: 4rem;    padding-bottom: 4rem}
+
+// .padding-0x25-h {padding-left: 0.25rem; padding-right: 0.25rem}
+// .padding-0x5-h  {padding-left: 0.5rem;  padding-right: 0.5rem}
+// .padding-0x75-h {padding-left: 0.75rem; padding-right: 0.75rem}
+// .padding-1-h    {padding-left: 1rem;    padding-right: 1rem}
+// .padding-2-h    {padding-left: 2rem;    padding-right: 2rem}
+// .padding-4-h    {padding-left: 4rem;    padding-right: 4rem}
+
+// .padding-0x25-t {padding-top: 0.25rem;}
+// .padding-0x5-t  {padding-top: 0.5rem;}
+// .padding-0x75-t {padding-top: 0.75rem;}
+// .padding-1-t    {padding-top: 1rem;}
+// .padding-2-t    {padding-top: 2rem;}
+// .padding-4-t    {padding-top: 4rem;}
+// .padding-6-t    {padding-top: 6rem;}
+// .padding-8-t    {padding-top: 8rem;}
+
+// .padding-0x25-r {padding-right: 0.25rem}
+// .padding-0x5-r  {padding-right: 0.5rem}
+// .padding-0x75-r {padding-right: 0.75rem}
+// .padding-1-r    {padding-right: 1rem}
+// .padding-2-r    {padding-right: 2rem}
+// .padding-4-r    {padding-right: 4rem}
+// .padding-6-r    {padding-right: 6rem}
+// .padding-8-r    {padding-right: 8rem}
+
+// .padding-0x25-b {padding-bottom: 0.25rem}
+// .padding-0x5-b  {padding-bottom: 0.5rem}
+// .padding-0x75-b {padding-bottom: 0.75rem}
+// .padding-1-b    {padding-bottom: 1rem}
+// .padding-2-b    {padding-bottom: 2rem}
+// .padding-4-b    {padding-bottom: 4rem}
+// .padding-6-b    {padding-bottom: 6rem}
+// .padding-8-b    {padding-bottom: 8rem}
+
+// .padding-0x25-l {padding-left: 0.25rem;}
+// .padding-0x5-l  {padding-left: 0.5rem;}
+// .padding-0x75-l {padding-left: 0.75rem;}
+// .padding-1-l    {padding-left: 1rem;}
+// .padding-2-l    {padding-left: 2rem;}
+// .padding-4-l    {padding-left: 4rem;}
+// .padding-6-l    {padding-left: 6rem;}
+// .padding-8-l    {padding-left: 8rem;}
+
+// /**
+//  * overflow
+//  */
+
+// .overflow-hidden {
+//   overflow: hidden;
+// }
+
+// .overflow-x-scroll {
+//   overflow-x: scroll;
+//   overflow-y: hidden;
+// }
+
+// .overflow-y-scroll {
+//   overflow-x: hidden;
+//   overflow-y: scroll;
+// }
+
+// /**
+//  * cursor
+//  */
+
+// .cursor-auto        {cursor: auto}
+// .cursor-move        {cursor: move}
+// .cursor-text        {cursor: text}
+// .cursor-wait        {cursor: wait}
+// .cursor-help        {cursor: help}
+// .cursor-default     {cursor: default}
+// .cursor-pointer     {cursor: pointer}
+// .cursor-zoom-in     {cursor: zoom-in}
+// .cursor-progress    {cursor: progress}
+// .cursor-crosshair   {cursor: crosshair}
+// .cursor-not-allowed {cursor: not-allowed}
+// .no-pointer-styles  {pointer-events: none}
+// .no-pointer-events  {pointer-events: none}
+
+// /**
+//  * visibility
+//  */
+
+// .visibility-hidden   {visibility: hidden}
+// .visibility-visible  {visibility: visible}
+// .visibility-collapse {visibility: collapse}
+
+// /**
+//  * tables
+//  */
+
+// .table-fixed {table-layout: fixed}
+
+// /**
+//  * text-align
+//  */
+
+// .text-left    {text-align: left}
+// .text-right   {text-align: right}
+// .text-center  {text-align: center}
+// .text-justify {text-align: justify}
+
+// /**
+//  * vertical-align
+//  */
+
+// .valign-top         {vertical-align: top}
+// .valign-middle      {vertical-align: middle}
+// .valign-bottom      {vertical-align: bottom}
+// .valign-baseline    {vertical-align: baseline}
+// .valign-sub         {vertical-align: sub}
+// .valign-super       {vertical-align: super}
+// .valign-text-top    {vertical-align: text-top}
+// .valign-text-bottom {vertical-align: text-bottom}
+
+// /**
+//  * text-decoration
+//  */
+
+// .text-decoration-none {text-decoration: none}
+// .text-overline        {text-decoration: overline}
+// .text-underline       {text-decoration: underline}
+// .text-line-through    {text-decoration: line-through}
+
+// /**
+//  * text-transform
+//  */
+
+// .text-transform-none {text-transform: none}
+// .text-uppercase      {text-transform: uppercase}
+// .text-lowercase      {text-transform: lowercase}
+// .text-capitalize     {text-transform: capitalize}
+
+// /**
+//  * white-space
+//  */
+
+// .wspace-pre      {white-space: pre}
+// .wspace-normal   {white-space: normal}
+// .wspace-nowrap   {white-space: nowrap}
+// .wspace-pre-wrap {white-space: pre-wrap}
+// .wspace-pre-line {white-space: pre-line}
+
+// /**
+//  * text-overflow
+//  */
+
+// .text-ellipsis {
+//   text-overflow: ellipsis;
+//   @extend .wspace-nowrap;
+//   @extend .overflow-hidden;
+//   * {@extend .text-ellipsis;}
+// }
+
+// /**
+//  * font-weight
+//  */
+
+// .weight-normal   {font-weight: normal}
+// .weight-bold     {font-weight: bold}
+// .weight-semibold {font-weight: 500}
+// .weight-bolder   {font-weight: bolder}
+// .weight-light    {font-weight: light}
+// .weight-lighter  {font-weight: lighter}
+// .weight-100      {font-weight: 100}
+// .weight-200      {font-weight: 200}
+// .weight-300      {font-weight: 300}
+// .weight-400      {font-weight: 400}
+// .weight-500      {font-weight: 500}
+// .weight-600      {font-weight: 600}
+// .weight-700      {font-weight: 700}
+// .weight-800      {font-weight: 800}
+// .weight-900      {font-weight: 900}
+
+// /**
+//  * font-style
+//  */
+
+// .font-style-normal {font-style: normal}
+// .text-italic       {font-style: italic}
+// .text-oblique      {font-style: oblique}
+
+// /**
+//  * Misc
+//  */
+
+// @mixin rounding($radius) {
+//   .rounded     {border-radius: $radius;}
+//   .rounded-t   {border-radius: $radius $radius 0 0;}
+//   .rounded-t-l {border-radius: $radius 0 0 0;}
+//   .rounded-t-r {border-radius: 0 $radius 0 0;}
+//   .rounded-b   {border-radius: 0 0 $radius $radius;}
+//   .rounded-b-l {border-radius: 0 0 0 $radius;}
+//   .rounded-b-r {border-radius: 0 0 $radius 0;}
+//   .rounded-l   {border-radius: $radius 0 0 $radius;}
+//   .rounded-r   {border-radius: 0 $radius $radius 0;}
+// }
+
+// .circle {border-radius: 50%}
+
+// .bg-center {
+//   background-position: center center;
+//   background-repeat: no-repeat;
+// }
+
+// .bg-cover {
+//   @extend .bg-center;
+//   background-size: cover;
+// }
+
+// .bg-contain {
+//   @extend .bg-center;
+//   background-size: contain;
+// }

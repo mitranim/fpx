@@ -1,6 +1,7 @@
 'use strict'
 
 require('./test-bool')
+require('./test-casts')
 require('./test-coll')
 require('./test-dict')
 require('./test-fun')
