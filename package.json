@@ -14,15 +14,11 @@
     "fp",
     "lodash"
   ],
-  "authors": [
-    "Mitranim <me@mitranim.com>",
-    "Yury Egorenkov <yury.egorenkov@gmail.com>"
-  ],
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Mitranim/fpx.git"
   },
+  "license": "WTFPL",
   "devDependencies": {
     "babel-eslint": "7.2.3",
     "babel-plugin-check-es2015-constants": "6.22.0",
