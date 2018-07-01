@@ -22,6 +22,10 @@ See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
 
+### 0.5.1
+
+`show` now adds quotes around a string.
+
 ### 0.5.0
 
 Massive rework that makes Fpx a realistic replacement for Lodash. Breaking.
