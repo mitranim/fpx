@@ -930,6 +930,8 @@ export function show(value) {
     ? value.name
     : isArray(value) || isDict(value)
     ? JSON.stringify(value)
+    : isString(value)
+    ? `"${value}"`
     : String(value)
   )
 }

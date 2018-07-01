@@ -27,14 +27,14 @@ See the API reference: https://mitranim.com/fpx/.
 Massive rework that makes Fpx a realistic replacement for Lodash. Breaking.
 
   * removed 22 functions and 1 alias
-  * added 51 function
+  * added 51 functions
   * renamed 3 functions
   * greatly improved performance
   * size went from 9 KiB to 12 KiB
 
-Removed most of the weyrd-ass function transforms like `and`, `or`, `juxt`, `alter`, etc. Years of practice have shown that they have significant drawbacks and questionable value. The best way to compose functions is to write functions that call functions. It's that simple.
+Removed most weyrd-ass function transforms like `and`, `or`, `juxt`, `alter`, etc. Years of practice have revealed major drawbacks and questionable value. The best way to compose functions is to write functions that call functions. It's that simple.
 
-Added a ton of list and dict functions. See the documentation.
+Added tons of new list and dict functions. See the documentation.
 
 All "iteration" functions now accept additional arguments for the operator.
 
