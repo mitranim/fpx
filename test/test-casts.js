@@ -1,6 +1,6 @@
 'use strict'
 
-const {eq, is} = require('./utils')
+const {eq, is, throws} = require('./utils')
 const f = require('../dist/fpx')
 
 function args() {return arguments}
@@ -34,11 +34,10 @@ eq(f.onlyDict(Object.create(null)), {})
 eq(f.onlyDict(Object.create({one: 1})), {})
 
 eq(f.toArray(), [])
-eq(f.toArray({one: 10}), [])
-eq(f.toArray('blah'), [])
 {
   const input = [10, 20, 30]
   is(f.toArray(input), input)
 }
-// Converts args to array
 eq(f.toArray(args(10, 20, 30)), [10, 20, 30])
+throws(f.toArray, 'not list')
+throws(f.toArray, {'not list': true})

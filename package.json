@@ -1,6 +1,6 @@
 {
   "name": "fpx",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Functional programming extensions for JavaScript. Lightweight replacement for Lodash.",
   "main": "dist/fpx.js",
   "module": "es/fpx.js",
@@ -43,7 +43,6 @@
     "gulp-watch": "4.3.11",
     "gulp-wrap": "0.13.0",
     "highlight.js": "9.12.0",
-    "marked": "0.3.12",
-    "stylific-lite": "0.0.1"
+    "marked": "0.3.12"
   }
 }

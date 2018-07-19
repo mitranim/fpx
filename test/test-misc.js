@@ -1,6 +1,6 @@
 'use strict'
 
-const {eq, is} = require('./utils')
+const {eq, is, throws} = require('./utils')
 const f = require('../dist/fpx')
 
 function double (a) {return a * 2}
@@ -18,6 +18,14 @@ eq(f.di(10, 20, 30), 20)
 
 eq(f.val()(2),  undefined)
 eq(f.val(1)(2), 1)
+
+{
+  const target = {}
+  is(f.assign(target, undefined, {one: 10}, null, {two: 20}), undefined)
+  eq(target, {one: 10, two: 20})
+}
+throws(f.assign)
+throws(f.assign, 'not object')
 
 eq(f.maskBy(1, undefined),           undefined)
 eq(f.maskBy(undefined, 1),           1)

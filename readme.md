@@ -1,6 +1,6 @@
 ## Overview
 
-`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 12 KiB minified.
+`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 13 KiB minified.
 
 Uses ES2015 exports, compatible with tree shaking.
 
@@ -21,6 +21,16 @@ import * as f from 'fpx'
 See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
+
+### 0.6.0
+
+Breaking change: strictness.
+
+* List functions accept `null`, `undefined`, and lists, rejecting other arguments with an exception. This includes list-specific getters such as `head` and `tail`.
+
+* Dict functions accept `null`, `undefined`, and non-list objects, rejecting other arguments with an exception.
+
+This change does not affect generic getters such as `get` and `size`.
 
 ### 0.5.1
 

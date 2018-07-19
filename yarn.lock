@@ -4584,10 +4584,6 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-stylific-lite@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/stylific-lite/-/stylific-lite-0.0.1.tgz#34df7b0e3ac92641183be56cde04b645520d5d90"
-
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"

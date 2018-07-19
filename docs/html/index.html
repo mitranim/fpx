@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>fpx</title>
 <link rel="stylesheet" href="styles/docs.css?{{process.env.COMMIT || ''}}">
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,300italic,400italic,500italic,600italic&subset=latin" rel="stylesheet">
 <link rel="icon" href="data:;base64,=">
 
 <!-- Prevent caching -->
@@ -39,6 +38,8 @@
     </div>
 
     <a href="#performance" class="sidenav-link"><span>Performance</span></a>
+
+    <a href="#bonus-arguments" class="sidenav-link"><span>Bonus Arguments</span></a>
 
     <div class="col-start-stretch gaps-0x5-v">
       <a href="#fun" class="sidenav-link"><span>Fun</span></a>
@@ -220,6 +221,7 @@
         <a href="#-val-value-" class="sidenav-link"><code>val</code></a>
         <a href="#-noop-" class="sidenav-link"><code>noop</code></a>
         <a href="#-rethrow-value-" class="sidenav-link"><code>rethrow</code></a>
+        <a href="#-assign-target-sources-" class="sidenav-link"><code>assign</code></a>
         <a href="#-maskby-value-pattern-" class="sidenav-link"><code>maskBy</code></a>
         <a href="#-mask-pattern-" class="sidenav-link"><code>mask</code></a>
         <a href="#-validate-value-test-" class="sidenav-link"><code>validate</code></a>
@@ -233,7 +235,7 @@
   </div>
 </div>
 
-<section id="main" class="content-column padding-1">
+<section id="main" class="content-column">
   <article class="fancy-typography">
 {{md(include('partials/index.md'))}}
   </article>

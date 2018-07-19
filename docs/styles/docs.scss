@@ -25,8 +25,7 @@ $font-size-h3: 1.2rem;
  */
 
 html {
-  font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Segoe UI', Verdana, sans-serif;
-  font-size: 18px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Segoe UI', Verdana, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -51,13 +50,16 @@ code {
  * Misc
  */
 
+$sidenav-width: 20vw;
+
 .sidenav-column {
   display: block;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
-  width: 20vw;
+  width: $sidenav-width;
+  padding: 2rem 1rem;
 
   // Enable scroll
   overflow-x: hidden;
@@ -66,8 +68,8 @@ code {
 
 .content-column {
   @extend .col-start-stretch;
-  padding: 1rem;
-  padding-left: calc(20vw + 1rem);
+  padding: 2rem 1rem;
+  padding-left: calc(#{$sidenav-width} + 1rem);
   max-width: $content-max-width;
 }
 
@@ -164,10 +166,13 @@ code {
   &:hover > *, &:focus > * {
     border-bottom: 1px solid;
   }
+  &::after {
+    content: '→';
+    margin-left: 1rem;
+    visibility: hidden;
+  }
   &:hover, &[aria-current]:not([aria-current='']) {
-    &::after {
-      content: '→';
-    }
+    &::after {visibility: visible;}
   }
 }
 

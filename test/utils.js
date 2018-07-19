@@ -26,3 +26,19 @@ function is(actual, expected) {
     })
   }
 }
+
+exports.throws = throws
+function throws(fun, ...args) {
+  if (typeof fun !== 'function') {
+    throw Error(`Expected a function, got ${fun}`)
+  }
+
+  try {
+    fun(...args)
+  }
+  catch (_err) {
+    return
+  }
+
+  throw Error(`Expected function "${fun.name || fun}" to throw`)
+}

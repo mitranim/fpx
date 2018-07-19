@@ -37,11 +37,11 @@ On this page, Fpx is globally available as `f` or `fpx`. You can run the example
 
 ## Why
 
-Why a library: the built-ins are not enough. When programming [bottom-up](http://www.paulgraham.com/progbot.html), you create hundreds of small functions. They might as well be an NPM module you don't have to copy-paste around. Incidentally, you _can_ easily copy-paste from Fpx, since it's just one file.
+Why a library: the built-ins are not sufficient. Fpx replaces some common code patterns with small functions, significantly reducing the code size. It also enables assertions that are desired but missing from most JS code.
 
 ### Size
 
-Lodash is way, **way**, **WAY** too huge. You just want a few functions and BAM, you get ≈ 73 KiB minified. You could make a custom bundle, but most folks just import the whole thing. For a web developer, shipping so much useless code to your users is irresponsible. It's also space-inefficient, bloated with avoidable code, and judging by the source, this seems unlikely to change. If you care about size, you need a replacement.
+Why not just use Lodash? It's way, **way**, **WAY** too huge. You just want a few functions and BAM, you get ≈ 73 KiB minified. You could make a custom bundle, but most folks just import the whole thing. For a web developer, shipping so much useless code to your users is irresponsible. It's also space-inefficient, bloated with avoidable code, and judging by the source, this seems unlikely to change. If you care about size, you need a replacement.
 
 The current version of Lodash is incompatible with techniques like tree shaking / dead code elimination / live code inclusion, which pick just the functions you actually use, dropping the rest. Fpx works perfectly with those. When using a module bundler that supports these techniques, such as Rollup or Webpack 4+, you automatically get a "custom version" of Fpx without any unused stuff.
 
@@ -51,43 +51,43 @@ The current version of Lodash is incompatible with techniques like tree shaking 
 >
 > _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
 
-I believe that _all code_, including what we actually use, should strive to be simple and educational. This applies _especially_ to libraries. This gives me a massive distaste for most code ever written, including my own. Reading Lodash's source might educate you in obfuscating code, but not much else. The same is true for most libraries, actually.
+I believe that _all code_ should strive to be simple and educational. This gives me a massive distaste for most code ever written. For example, reading Lodash's source might teach you code obfuscation, but not much else.
 
-In Fpx, I try to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
+In Fpx, I strive to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
 
 ### Strictness
 
-Fpx collection functions work _either_ on lists ([`fold`](#-fold-list-init-fun-a-b-c-)) or dicts ([`foldVals`](#-foldvals-dict-init-fun-a-b-c-)), not both, and not on strings. They also always require an operator function, and there's no implicit identity function or magic conversion of patterns to functions. This is closer to JS builtins than to Lodash, and is better at preventing gotchas.
+Fpx collection functions work _either_ on lists ([`fold`](#-fold-list-init-fun-a-b-c-)) or dicts ([`foldVals`](#-foldvals-dict-init-fun-a-b-c-)), not both, and not on strings. They always require an operator function; there's no implicit "default" operator like in Lodash. There's also no implicit conversion of data patterns into functions. This is closer to JS builtins than to Lodash, and is better at preventing gotchas.
 
 ### Minifiable Assertions
 
-Assertions go a **long** way in debugging. They help you catch bugs early or fail fast when the program goes off the rails. In asynchronous code, validating inputs as early as possible, instead of letting it fail mysteriously later, can save you hours of debugging.
+Assertions go a **long** way in debugging. Catch bugs early and fail fast. In asynchronous code, validating inputs as early as possible, instead of letting it fail mysteriously later, can save you hours of debugging.
 
 Here's the traditional way of doing assertions:
 
 ```js
-function myFunction(operator) {
-  if (typeof operator !== 'function') throw Error(`Expected a function, got ${operator}`)
+function someFunction(input) {
+  if (typeof input !== 'function') throw Error(`Expected a function, got ${input}`)
 }
 
-myFunction({one: 10})
+someFunction({one: 10})
 // Error: Expected a function, got [object Object]
 ```
 
-Extremely annoying to type and **really** bad for browser bundles, as strings can't be minified. Some folks strip assertions from production builds, but I find the idea flawed. Even in production, failing fast is better than failing mysteriously, and assertions help with debugging when it inevitably fails.
+Annoying to type and **really** bad for minification. Some folks strip assertions from production builds, but I find the idea flawed. Even in production, failing fast is better than failing mysteriously, and assertions help with debugging when it inevitably fails.
 
-Fpx has a much better alternative:
+Fpx provides a much better alternative:
 
 ```js
-function myFunction(operator) {
-  validate(operator, isFunction)
+function someFunction(input) {
+  f.validate(input, f.isFunction)
 }
 
-myFunction({one: 10})
+someFunction({one: 10})
 // Error: Expected {"one":10} to satisfy test isFunction
 ```
 
-So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, and I consider that a good trade.
+So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, and I consider this a good tradeoff.
 
 To support this style of coding, Fpx provides [`validate`](#-validate-value-test-) and a bevy of boolean tests.
 
@@ -101,6 +101,43 @@ For now, Fpx makes no bold performance claims, other than:
   * it doesn't do anything outlandishly slow and shouldn't be your bottleneck
 
 There's potential for improvement, but I don't have infinite spare time for microbenchmark contests. Suggestions are welcome.
+
+---
+
+## Bonus Arguments
+
+In Fpx, all collection functions, such as [`map`](#-map-list-fun-a-b-c-), pass up to 3 additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
+
+```js
+// local context
+const a = 1
+const b = 2
+const c = 3
+
+
+// bonus args (recommended)
+
+function add5(value, key, a, b, c) {
+  return value + key + a + b + c
+}
+f.map([10, 20, 30], add5, a, b, c)
+// [16, 27, 38]
+
+
+// closure (not recommended)
+
+function add5(value, key) {
+  return value + key + a + b + c
+}
+f.map([10, 20, 30], add5)
+// [16, 27, 38]
+```
+
+Broadly speaking, closures have a cost; defining functions statically avoids that cost.
+
+Note: this doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures can accidentally enable optimizations like function specialization. However, you can't _rely_ on such optimizations. As a rule of thumb, memory allocation beats all other costs. Avoiding closure allocation is more reliable and predictable at improving performance.
+
+(This may change with future JS advancements.)
 
 ---
 
@@ -781,9 +818,15 @@ f.toArray(function args() {}(10, 20))
 
 List manipulation utils.
 
-These functions treat their arguments as immutable and don't modify them.
+Common rules:
 
-_Strings are not considered lists_ and are treated as `undefined` or `[]`.
+  * accept `null` and `undefined`, treating them as `[]`
+  * accept inputs that satisfy [`isList`](#-islist-value-): `arguments`, Node buffers, DOM lists, etc.
+  * reject other inputs with an exception
+  * don't modify the input; return a new version instead
+  * accept [bonus arguments](#bonus-arguments) for the operator function
+
+Note that _strings are not considered lists_.
 
 ---
 
@@ -791,11 +834,7 @@ _Strings are not considered lists_ and are treated as `undefined` or `[]`.
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach), but works on `null`, `undefined`, and array-likes.
 
 ```js
 function report(value, index, a, b, c) {
@@ -815,24 +854,13 @@ where `fun: ƒ(accumulator, value, index, a, b, c)`
 
 Like [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), with the following differences:
 
-  * works on a non-array list
-  * safe to call on a non-list; returns `init`
+  * works on `null`, `undefined`, and array-likes
   * the argument order is `list, init, fun` rather than `this=list, fun, init`
   * the init argument is mandatory
-  * accepts bonus arguments for the operator
 
 ```js
 f.fold([10, 20], 5, f.add)
 // 5 + 10 + 20 = 35
-```
-
-When the operator needs more than just its arguments, instead of using an inline function define it statically and use the bonus arguments:
-
-```js
-function addWith(a, b, _i, c, d) {return a + b + c + d}
-
-f.fold([10, 20], 5, addWith, 3, 7)
-// 5 + 10 + 3 + 7 + 20 + 3 + 7 = 55
 ```
 
 ---
@@ -843,11 +871,9 @@ where `fun: ƒ(accumulator, value, index, a, b, c)`
 
 Like [`Array.prototype.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight), with the following differences:
 
-  * works on a non-array list
-  * safe to call on a non-list; returns `init`
+  * works on `null`, `undefined`, and array-likes
   * the argument order is `list, init, fun` rather than `this=list, fun, init`
   * the init argument is mandatory
-  * accepts bonus arguments for the operator
 
 ```js
 f.foldRight([1, 5, 20], 100, f.sub)
@@ -860,11 +886,7 @@ f.foldRight([1, 5, 20], 100, f.sub)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `[]`
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map), but works on `null`, `undefined`, and array-likes.
 
 ```js
 function double(num) {return num * 2}
@@ -873,11 +895,18 @@ f.map([10, 20, 30], double)
 // [20, 40, 60]
 ```
 
-In Lodash, `_.map` and related functions support magic shortcuts, like passing a string instead of a function, which is converted to a getter. Fpx doesn't have that, arguing that strictness helps to catch errors early, and that this is a performance malpractice.
+Note: coming from Lodash, you might miss the string shortcut:
 
-  * try to define your operators statically rather than inline
-  * hardcode property names; avoid string-based getters if possible
-  * use the bonus arguments to avoid defining a closure
+```js
+_.map([{value: 10}, {value: 20}], 'value')
+// [10, 20]
+```
+
+Fpx considers this a hazardous malpractice. Just use a function:
+
+```js
+f.map([{value: 10}, {value: 20}], x => x.value)
+```
 
 ---
 
@@ -885,7 +914,7 @@ In Lodash, `_.map` and related functions support magic shortcuts, like passing a
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Similar to `map`, but flattens any lists returned by `fun` into the output array. Equivalent to `flatten(map(...arguments))`. Accepts bonus arguments for the operator.
+Similar to `map`, but flattens any lists returned by `fun` into the output array. Equivalent to `flatten(map(...arguments))`.
 
 ```js
 f.flatMap([10, [20], [[30]]], x => x)
@@ -898,7 +927,7 @@ f.flatMap([10, [20], [[30]]], x => x)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Similar to `map`, but deeply flattens any lists returned by `fun`, returning a completely flat array. Equivalent to `flattenDeep(map(...arguments))`. Accepts bonus arguments for the operator.
+Similar to `map`, but deeply flattens any lists returned by `fun`, returning a completely flat array. Equivalent to `flattenDeep(map(...arguments))`.
 
 ```js
 f.flatMapDeep([10, [20], [[[30]]]], x => x)
@@ -911,7 +940,7 @@ f.flatMapDeep([10, [20], [[[30]]]], x => x)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Similar to `map`, but drops any "falsy" values from the output. Equivalent to `compact(map(...arguments))`. Accepts bonus arguments for the operator.
+Similar to `map`, but drops any "falsy" values from the output. Equivalent to `compact(map(...arguments))`.
 
 ```js
 f.mapFilter([10, 0, 20, 0], x => x * 2)
@@ -924,23 +953,28 @@ f.mapFilter([10, 0, 20, 0], x => x * 2)
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `[]`
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), but works on `null`, `undefined`, and array-likes.
 
 ```js
 f.filter([10, 20, true, false], f.isBoolean)
 // [true, false]
 ```
 
-For Lodash-esque pattern matching, use [`test`](#-test-pattern-), but be wary that it's slower than a hand-coded test.
+Note: coming from Lodash, you might miss the magic pattern shortcut:
 
 ```js
-f.filter([{val: 0}, null, {val: 1}], f.test({val: id}))
-// [{val: 1}]
+_.filter([{val: 10}, {val: 20}], {val: 10})
+// [{val: 10}]
 ```
+
+Fpx provides [`test`](#-test-pattern-):
+
+```js
+f.filter([{val: 10}, {val: 20}], f.test({val: 10}))
+// [{val: 10}]
+```
+
+Be wary that it's slower than a hand-coded test.
 
 ---
 
@@ -972,22 +1006,11 @@ f.compact([10, 0, 20, NaN, 30, undefined])
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `undefined`
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find), but works on `null`, `undefined`, and array-likes.
 
 ```js
 f.find([10, true, 20, false, 30], f.isBoolean)
 // true
-```
-
-For Lodash-esque pattern matching, use [`test`](#-test-pattern-), but be wary that it's slower than a hand-coded test.
-
-```js
-f.find([{val: 0}, null, {val: 1}], f.test({val: id}))
-// {val: 1}
 ```
 
 ---
@@ -996,7 +1019,7 @@ f.find([{val: 0}, null, {val: 1}], f.test({val: id}))
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like `find`, but iterates from the _end_ of the list. Returns the rightmost element that satisfies `test`, or `undefined` if none do. Accepts bonus arguments for the operator.
+Like `find`, but iterates from the _end_ of the list. Returns the rightmost element that satisfies `test`, or `undefined` if none do.
 
 ```js
 f.findRight([10, true, 20, false, 30], f.isBoolean)
@@ -1009,11 +1032,7 @@ f.findRight([10, true, 20, false, 30], f.isBoolean)
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.findIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `undefined`
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.findIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex), but works on `null`, `undefined`, and array-likes.
 
 ```js
 f.findIndex([10, true, 20, false, 30], f.isBoolean)
@@ -1026,7 +1045,7 @@ f.findIndex([10, true, 20, false, 30], f.isBoolean)
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like `findIndex`, but iterates from the _end_ of the list. Returns the index of the rightmost element that satisfies `test`, or `-1` if none do. Accepts bonus arguments for the operator.
+Like `findIndex`, but iterates from the _end_ of the list. Returns the index of the rightmost element that satisfies `test`, or `-1` if none do.
 
 ```js
 f.findIndexRight([10, true, 20, false, 30], f.isBoolean)
@@ -1039,8 +1058,7 @@ f.findIndexRight([10, true, 20, false, 30], f.isBoolean)
 
 Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf), with the following differences:
 
-  * works on a non-array list
-  * safe to call on a non-list; returns `-1`
+  * works on `null`, `undefined`, and array-likes
   * uses [`is`](#-is-one-other-) rather than `===` and therefore detects `NaN`
 
 ```js
@@ -1054,8 +1072,7 @@ f.indexOf([10, NaN, NaN, 20], NaN)
 
 Like [`Array.prototype.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf), with the following differences:
 
-  * works on a non-array list
-  * safe to call on a non-list; returns `-1`
+  * works on `null`, `undefined`, and array-likes
   * uses [`is`](#-is-one-other-) rather than `===` and therefore detects `NaN`
 
 ```js
@@ -1067,10 +1084,7 @@ f.lastIndexOf([10, NaN, NaN, 20], NaN)
 
 ### `includes(list, value)`
 
-Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `false`
+Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes), but works on `null`, `undefined`, and array-likes.
 
 ```js
 f.includes([10, 20, 30], NaN)
@@ -1086,7 +1100,7 @@ f.includes([10, 20, NaN], NaN)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Similar to [`find`](#-find-list-test-a-b-c-), but returns the first truthy result of calling `fun`, rather than the corresponding list element. Accepts bonus arguments for the operator.
+Similar to [`find`](#-find-list-test-a-b-c-), but returns the first truthy result of calling `fun`, rather than the corresponding list element.
 
 ```js
 function double(num) {return num * 2}
@@ -1101,11 +1115,7 @@ f.procure([0, 0, 10, 100], double)
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `true`
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every), but works on `null`, `undefined`, and array-likes.
 
 ```js
 f.every([], f.isBoolean)
@@ -1124,11 +1134,7 @@ f.every([true, false, 10, 20], f.isBoolean)
 
 where `test: ƒ(value, index, a, b, c)`
 
-Like [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some), with the following differences:
-
-  * works on a non-array list
-  * safe to call on a non-list; returns `false`
-  * accepts bonus arguments for the operator
+Like [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some), but works on `null`, `undefined`, and array-likes.
 
 ```js
 f.some([], f.isBoolean)
@@ -1145,9 +1151,7 @@ f.some([true, false, 10, 20], f.isBoolean)
 
 ### `slice(list, start, end)`
 
-Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice), but with the sliceable as the first argument. `start` and `end` can be missing or negative; see the linked documentation.
-
-Safe to call on a non-list; returns `[]`.
+Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice), but also accepts `null` and `undefined`. `start` and `end` can be missing or negative; see the linked documentation.
 
 ```js
 f.slice([10, 20, 30, 40, 50], 1, -1)
@@ -1158,7 +1162,7 @@ f.slice([10, 20, 30, 40, 50], 1, -1)
 
 ### `append(list, value)`
 
-Returns a version of `list` with `value` appended at the end. Safe to call on a non-list, substitutes `[]`.
+Returns a version of `list` with `value` appended at the end.
 
 ```js
 f.append([10, 20], 30)
@@ -1169,7 +1173,7 @@ f.append([10, 20], 30)
 
 ### `prepend(list, value)`
 
-Returns a version of `list` with `value` prepended at the start. Safe to call on a non-list, substitutes `[]`.
+Returns a version of `list` with `value` prepended at the start.
 
 ```js
 f.prepend([20, 30], 10)
@@ -1181,7 +1185,7 @@ f.prepend([20, 30], 10)
 ### `remove(list, value)`
 
 Returns a version of `list` with one occurrence of `value` removed. May return
-the original list. Safe to call on a non-list, substitutes `[]`.
+the original list.
 
 ```js
 f.remove(['one', 'two', 'three'], 'two')
@@ -1195,7 +1199,7 @@ f.remove(['one', 'two', 'one'], 'one')
 
 ### `insertAtIndex(list, index, value)`
 
-Returns a version of `list` with `value` inserted at `index`, moving subsequent elements to the end. Safe to call on a non-list, substitutes `[]`. `index` must be an integer within list bounds + 1, otherwise throws.
+Returns a version of `list` with `value` inserted at `index`, moving subsequent elements to the end. `index` must be an integer within list bounds + 1, otherwise throws.
 
 ```js
 f.insertAtIndex(undefined, 0, 'zero')
@@ -1212,7 +1216,7 @@ f.insertAtIndex(['zero', 'one', 'two'], 2, '...')
 
 ### `removeAtIndex(list, index)`
 
-Returns a version of `list` with the value at `index` removed, if within bounds. Safe to call on a non-list, substitutes `[]`. `index` must be an integer, otherwise throws.
+Returns a version of `list` with the value at `index` removed, if within bounds. `index` must be an integer, otherwise throws.
 
 ```js
 f.removeAtIndex(['zero', 'one', 'two'], 0)
@@ -1229,7 +1233,7 @@ f.removeAtIndex(['zero', 'one', 'two'], 10)
 
 ### `adjoin(list, value)`
 
-Appends `value` to `list`, duplicate-free. Returns the same `list` if it already [`includes`](#-includes-list-value-) `value`. Safe to call on a non-list, substitutes `[]`. Always returns an `Array`, converting the input from a non-array list.
+Appends `value` to `list`, duplicate-free. Returns the same `list` if it already [`includes`](#-includes-list-value-) `value`. Always returns an `Array`, converting the input from a non-array list.
 
 ```js
 f.adjoin([10, 20], 30)
@@ -1243,7 +1247,7 @@ f.adjoin([10, 20, 30], 20)
 
 ### `toggle(list, value)`
 
-Appends or removes `value`, depending on whether it's already [`included`](#-includes-list-value-). Safe to call on a non-list, substitutes `[]`.
+Appends or removes `value`, depending on whether it's already [`included`](#-includes-list-value-).
 
 ```js
 f.toggle([10, 20], 30)
@@ -1259,9 +1263,9 @@ f.toggle([10, 20, 30], 30)
 
 Concatenates lists, ignoring non-list arguments.
 
-This is intentionally **different** from [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of appending non-list values. This leads to surprising errors and/or intentional abuse. `fpx`'s `concat` ignores non-lists, preventing this gotcha.
+**Different** from [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of appending non-list inputs while flattening list inputs. This leads to surprising errors and/or intentional abuse. `fpx`'s `concat` rejects non-lists, preventing this gotcha.
 
-**Note**: for individual elements, use [`append`](#-append-list-value-) and
+Note: for individual elements, use [`append`](#-append-list-value-) and
 [`prepend`](#-prepend-list-value-) instead.
 
 ```js
@@ -1272,15 +1276,14 @@ f.concat([10], [20], [30])
 // [10, 20, 30]
 
 f.concat([10, 20], 30)
-// [10, 20]
-// non-list argument is ignored
+// Error: expected 30 to satisfy test isList
 ```
 
 ---
 
 ### `flatten(list)`
 
-Returns a version of `list` flattened one level down. Safe to call on a non-list, substitutes `[]`.
+Returns a version of `list` flattened one level down.
 
 ```js
 f.flatten([10, [20], [[30]]])
@@ -1291,7 +1294,7 @@ f.flatten([10, [20], [[30]]])
 
 ### `flattenDeep(list)`
 
-Returns a version of `list` with all nested lists flattened into one result. Safe to call on a non-list: returns `[]`.
+Returns a version of `list` with all nested lists flattened into one result.
 
 ```js
 f.flattenDeep([10, [20], [[[30]]]])
@@ -1302,7 +1305,7 @@ f.flattenDeep([10, [20], [[[30]]]])
 
 ### `head(list)`
 
-Returns the first element of the given list. Safe to call on a non-list: returns `undefined`.
+Returns the first element of the given list.
 
 ```js
 f.head()
@@ -1310,16 +1313,13 @@ f.head()
 
 f.head([10, 20, 30])
 // 10
-
-f.head('string')
-// undefined
 ```
 
 ---
 
 ### `tail(list)`
 
-Returns all but first element of the given list. Safe to call on a non-list: returns `[]`.
+Returns all but first element of the given list.
 
 ```js
 f.tail()
@@ -1327,16 +1327,13 @@ f.tail()
 
 f.tail([10, 20, 30])
 // [20, 30]
-
-f.tail('string')
-// []
 ```
 
 ---
 
 ### `init(list)`
 
-Returns all but last element of the given list. Safe to call on a non-list: returns `[]`.
+Returns all but last element of the given list.
 
 ```js
 f.init()
@@ -1344,9 +1341,6 @@ f.init()
 
 f.init([10, 20, 30])
 // [10, 20]
-
-f.init('string')
-// []
 ```
 
 ---
@@ -1361,16 +1355,13 @@ f.last()
 
 f.last([10, 20, 30])
 // 30
-
-f.last('string')
-// undefined
 ```
 
 ---
 
 ### `take(list, count)`
 
-Returns a sub-`list` with `count` elements taken from the start. Equivalent to `slice(list, count)`. Safe to call on a non-list: returns `[]`.
+Returns a sub-`list` with `count` elements taken from the start. Equivalent to `slice(list, count)`.
 
 ```js
 f.take(undefined, 0)
@@ -1387,7 +1378,7 @@ f.take([10, 20, 30, 40], Infinity)
 
 ### `drop(list, count)`
 
-Returns a sub-`list` with `count` elements removed from the start. Equivalent to `slice(list, 0, count)`. Safe to call on a non-list: returns `[]`.
+Returns a sub-`list` with `count` elements removed from the start. Equivalent to `slice(list, 0, count)`.
 
 ```js
 f.drop(undefined, 0)
@@ -1404,7 +1395,10 @@ f.drop([10, 20, 30, 40], Infinity)
 
 ### `reverse(list)`
 
-Returns a version of `list` with the elements reversed. Safe to call on a non-list: returns `[]`.
+Like [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse), with the following differences:
+
+  * works on `null`, `undefined`, and array-likes
+  * returns a new version instead of mutating the list
 
 ```js
 f.reverse()
@@ -1412,9 +1406,6 @@ f.reverse()
 
 f.reverse([10, 20, 30])
 // [30, 20, 10]
-
-f.reverse('string')
-// []
 ```
 
 ---
@@ -1423,8 +1414,7 @@ f.reverse('string')
 
 Like [`Array.prototype.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort), with the following differences:
 
-  * works on a non-array list
-  * safe to call on a non-list; returns `undefined`
+  * works on `null`, `undefined`, and array-likes
   * returns a new version instead of mutating the list
 
 ```js
@@ -1447,7 +1437,7 @@ Returns a version of `list` sorted by the order of values returned by `fun`, whi
 
 The "virtual elements" are sorted the same way as in `.sort()`, i.e. by the Unicode code order of its stringified elements; see the relevant [part of the spec](https://tc39.github.io/ecma262/#sec-sortcompare). `sortBy` currently doesn't accept a custom comparator, although this could be changed if needed.
 
-Works on a non-array list. Safe to call on a non-list: substitutes `[]`. Note that `fun` doesn't receive an element index.
+Works on array-likes. Note that `fun` doesn't receive an element index.
 
 ```js
 function getId({id}) {return id}
@@ -1461,8 +1451,6 @@ f.sortBy([{id: 3}, {id: 22}, {id: 111}], getId)
 ### `intersection(left, right)`
 
 Returns a list representing a [set intersection](https://en.wikipedia.org/wiki/Set_intersection) of the two lists. It contains only the elements that occur in both lists, tested via [`is`](#-is-one-other-), without any duplicates.
-
-Treats non-list inputs as `[]`.
 
 ```js
 f.intersection([10, 20, 20, 30], [20, 30, 30, 40])
@@ -1482,8 +1470,6 @@ Returns a dict where `list`'s values are assigned to the keys created by `fun`.
 
 Major difference from Lodash's `_.keyBy`: keys must pass the [`isKey`](#-iskey-value-) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
 
-Safe to call on a non-list: returns `{}`. Accepts bonus arguments for the operator.
-
 ```js
 function double(value) {return value * 2}
 
@@ -1501,8 +1487,6 @@ Similar to `keyBy`: returns a dict where keys have been created by calling `fun`
 
 Just like `keyBy`, and unlike Lodash's `_.groupBy`, keys must pass the [`isKey`](#-iskey-value-) test or be ignored. This helps avoid accidental garbage in the output.
 
-Safe to call on a non-list: returns `{}`. Accepts bonus arguments for the operator.
-
 ```js
 function oddness(value) {return value % 2}
 
@@ -1514,7 +1498,7 @@ f.groupBy([10, 13, 16, 19], oddness)
 
 ### `uniq(list)`
 
-Returns a version of `list` without duplicate elements, compared via [`is`](#-is-one-other-). Safe to call on a non-list: returns `[]`.
+Returns a version of `list` without duplicate elements, compared via [`is`](#-is-one-other-).
 
 ```js
 f.uniq([10, 20, NaN, 20, NaN, 30])
@@ -1527,7 +1511,7 @@ f.uniq([10, 20, NaN, 20, NaN, 30])
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Returns a version of `list` where no two elements have produced the same result when `fun` was called on them. The results are compared via [`is`](#-is-one-other-). Safe to call on a non-list: returns `[]`. Accepts bonus arguments for the operator.
+Returns a version of `list` where no two elements have produced the same result when `fun` was called on them. The results are compared via [`is`](#-is-one-other-).
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1542,7 +1526,7 @@ f.uniqBy([10, 13, 16, 19], isOdd)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Splits `list` into two: "accepted" and "rejected". The accepted group contains elements for which `fun` returned something truthy, and the rejected group contains the rest. Safe to call on a non-list: returns `[[], []]`. Accepts bonus arguments for the operator.
+Splits `list` into "accepted" and "rejected" groups. The accepted group contains elements for which `fun` returned something truthy, and the rejected group contains the rest.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1555,7 +1539,7 @@ f.partition([10, 13, 16, 19], isOdd)
 
 ### `sum(list)`
 
-Sums all elements of `list` that satisfy [`isFinite`](#-isfinite-value-), ignoring the rest. Safe to call on a non-list: returns `0`.
+Sums all elements of `list` that satisfy [`isFinite`](#-isfinite-value-), ignoring the rest.
 
 ```js
 f.sum([10, NaN, 20, '5'])
@@ -1568,7 +1552,7 @@ f.sum([10, NaN, 20, '5'])
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and sums the results. Like `sum`, ignores values that don't satisfy [`isFinite`](#-isfinite-value-). Safe to call on a non-list: returns `0`. Accepts bonus arguments for the operator.
+Calls `fun` on every element of the list and sums the results. Like `sum`, ignores values that don't satisfy [`isFinite`](#-isfinite-value-).
 
 ```js
 f.sumBy([10, undefined, '20'], Number)
@@ -1579,7 +1563,7 @@ f.sumBy([10, undefined, '20'], Number)
 
 ### `min(list)`
 
-Finds the smallest value in `list` that also satisfies [`isFinite`](#-isfinite-value-), or `undefined`. Note that it ignores `±Infinity`. Safe to call on a non-list: returns `undefined`.
+Finds the smallest value in `list` that also satisfies [`isFinite`](#-isfinite-value-), or `undefined`. Note that it ignores `±Infinity`.
 
 ```js
 f.min([])
@@ -1593,7 +1577,7 @@ f.min(['10', 20, '30', -Infinity, NaN])
 
 ### `max(list)`
 
-Finds the largest value in `list` that also satisfies [`isFinite`](#-isfinite-value-), or `undefined`. Note that it ignores `±Infinity`. Safe to call on a non-list: returns `undefined`.
+Finds the largest value in `list` that also satisfies [`isFinite`](#-isfinite-value-), or `undefined`. Note that it ignores `±Infinity`.
 
 ```js
 f.max([])
@@ -1609,7 +1593,7 @@ f.max(['10', 20, '30', Infinity, NaN])
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the smallest result, using the same rules as [`min`](#-min-list-). Safe to call on a non-list: returns `undefined`. Accepts bonus arguments for the operator.
+Calls `fun` on every element of the list and returns the smallest result, using the same rules as [`min`](#-min-list-).
 
 Note a major difference from Lodash's `_.minBy`: this returns the smallest value returned by `fun`, not its corresponding list element. I find this far more intuitive. See `findMinBy` for the counterpart to `_.minBy`.
 
@@ -1626,7 +1610,7 @@ f.minBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the largest result, using the same rules as [`max`](#-max-list-). Safe to call on a non-list: returns `undefined`. Accepts bonus arguments for the operator.
+Calls `fun` on every element of the list and returns the largest result, using the same rules as [`max`](#-max-list-).
 
 Note a major difference from Lodash's `_.maxBy`: this returns the smallest value returned by `fun`, not its corresponding list element. I find this far more intuitive. See `findMaxBy` for the counterpart to `_.maxBy`.
 
@@ -1643,7 +1627,7 @@ f.maxBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the element for which `fun` returned the smallest value, using the same rules as [`min`](#-min-list-). Safe to call on a non-list: returns `undefined`. Accepts bonus arguments for the operator.
+Calls `fun` on every element of the list and returns the element for which `fun` returned the smallest value, using the same rules as [`min`](#-min-list-).
 
 Similar to Lodash's `_.minBy`.
 
@@ -1660,7 +1644,7 @@ f.findMinBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the element for which `fun` returned the largest value, using the same rules as [`max`](#-max-list-). Safe to call on a non-list: returns `undefined`. Accepts bonus arguments for the operator.
+Calls `fun` on every element of the list and returns the element for which `fun` returned the largest value, using the same rules as [`max`](#-max-list-).
 
 Similar to Lodash's `_.maxBy`.
 
@@ -1688,7 +1672,15 @@ f.range(5, 10)
 
 Utils for dealing with objects and dictionaries.
 
-These functions treat their arguments as immutable and don't modify them.
+Common rules:
+
+  * accept `null` and `undefined`, treating them as `{}`
+  * don't modify the input; return a new version instead
+  * accept [bonus arguments](#bonus-arguments) for the operator function
+
+Getter functions like `get` or `keys` accept any input, ignoring non-objects.
+
+Iteration functions accept `null`, `undefined`, and non-list objects, rejecting any other input with an exception.
 
 ---
 
@@ -1807,7 +1799,7 @@ f.values([10, 20])
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Iterates over each property in the dict for side effects. Safe to call on a non-dict. Accepts bonus arguments for the operator. Returns `undefined`.
+Iterates for side effects, calling `fun` with every property and key. Returns `undefined`.
 
 ```js
 function report(value, key, a, b, c) {
@@ -1825,7 +1817,7 @@ f.eachVal({one: 10, two: 20}, report, 10, 20, 30)
 
 where `fun: ƒ(accumulator, value, key, a, b, c)`
 
-Similar to [`fold`](#-fold-list-init-fun-a-b-c-), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end. Safe to call on a non-dict; returns `init`. Accepts bonus arguments for the operator.
+Similar to [`fold`](#-fold-list-init-fun-a-b-c-), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.
 
 ```js
 f.foldVals({one: 10, two: 20}, 5, f.add)
@@ -1838,7 +1830,7 @@ f.foldVals({one: 10, two: 20}, 5, f.add)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`map`](#-map-list-fun-a-b-c-), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`. Safe to call on a non-dict; returns `{}`. Accepts bonus arguments for the operator.
+Similar to [`map`](#-map-list-fun-a-b-c-), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`.
 
 ```js
 function bang(value) {return value + '!'}
@@ -1859,8 +1851,6 @@ Major difference from Lodash's `_.mapKeys`: keys must pass the [`isKey`](#-iskey
 
 Another major difference from Lodash's `_.mapKeys`: the operator receives `key, value, a, b, c` rather than `value, key, dict`.
 
-Safe to call on a non-dict; returns `{}`. Accepts bonus arguments for the operator.
-
 ```js
 f.mapKeys({one: 10, two: 20}, f.head)
 // {o: 10, t: 20}
@@ -1872,7 +1862,7 @@ f.mapKeys({one: 10, two: 20}, f.head)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Converts `dict` to a _list_, ordered by sorting the keys, where values are replaced by calling `fun`. Safe to call on a non-dict; returns `[]`. Accepts bonus arguments for the operator.
+Maps `dict` to a _list_, sorted by key order.
 
 Note the difference: Lodash's `_.map` works on dicts, but since object key/iteration order is unspecified, the output is unsorted and therefore unstable. `mapValsSort` avoids this issue, always producing the same output for a given dict.
 
@@ -1887,7 +1877,7 @@ f.mapValsSort({3: 'three', 22: 'two', 111: 'one'}, f.id)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`filter`](#-filter-list-test-a-b-c-), but for dicts. Returns a version of `dict` with properties for which `fun` returned something truthy. Safe to call on a non-dict; returns `{}`. Accepts bonus arguments for the operator.
+Similar to [`filter`](#-filter-list-test-a-b-c-), but for dicts. Returns a version of `dict` with properties for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1902,7 +1892,7 @@ f.pickBy({one: 10, two: 13, three: 16, four: 19}, isOdd)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`reject`](#-reject-list-test-a-b-c-), but for dicts. Returns a version of `dict` without properties for which `fun` returned something truthy. Safe to call on a non-dict; returns `{}`. Accepts bonus arguments for the operator.
+Similar to [`reject`](#-reject-list-test-a-b-c-), but for dicts. Returns a version of `dict` without properties for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1915,7 +1905,7 @@ f.omitBy({one: 10, two: 13, three: 16, four: 19}, isOdd)
 
 ### `pickKeys(dict, keys)`
 
-Returns a version of `dict` with only the properties whitelisted in `keys`. The keys must satisfy [`isKey`](#-iskey-value-). Safe to call on a non-dict; returns `{}`.
+Returns a version of `dict` with only the properties whitelisted in `keys`. The keys must satisfy [`isKey`](#-iskey-value-).
 
 Same as Lodash's `_.pick`.
 
@@ -1928,7 +1918,7 @@ f.pickKeys({one: 10, two: 20}, ['one'])
 
 ### `omitKeys(dict, keys)`
 
-Returns a version of `dict` without any properties blacklisted in `keys`. The keys must satisfy [`isKey`](#-iskey-value-). Safe to call on a non-dict; returns `{}`.
+Returns a version of `dict` without any properties blacklisted in `keys`. The keys must satisfy [`isKey`](#-iskey-value-).
 
 Same as Lodash's `_.omit`.
 
@@ -1943,7 +1933,7 @@ f.omitKeys({one: 10, two: 20}, ['one'])
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`find`](#-find-list-test-a-b-c-), but for dicts. Returns the first value for which `fun` returned something truthy. Safe to call on a non-dict; returns `undefined`. Accepts bonus arguments for the operator.
+Similar to [`find`](#-find-list-test-a-b-c-), but for dicts. Returns the first value for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1958,7 +1948,7 @@ f.findVal({one: 10, two: 13}, isOdd)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`findIndex`](#-findindex-list-test-a-b-c-), but for dicts. Returns the first key for which `fun` returned something truthy. Safe to call on a non-dict; returns `undefined`. Accepts bonus arguments for the operator.
+Similar to [`findIndex`](#-findindex-list-test-a-b-c-), but for dicts. Returns the first key for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1971,7 +1961,7 @@ f.findKey({one: 10, two: 13}, isOdd)
 
 ### `invert(dict)`
 
-Returns a version of `dict` with keys and values swapped. Values must satisfy [`isKey`](#-iskey-value-) to become keys; ones that don't are silently dropped from the output. Safe to call on a non-dict; returns `{}`.
+Returns a version of `dict` with keys and values swapped. Values must satisfy [`isKey`](#-iskey-value-) to become keys; ones that don't are silently dropped from the output.
 
 ```js
 f.invert({one: 10, two: 20})
@@ -1984,7 +1974,7 @@ f.invert({one: 10, two: 20})
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to `invert`, but calls `fun` on each value to produce a key. The resulting keys must satisfy [`isKey`](#-iskey-value-); ones that don't are silently dropped from the output. Safe to call on a non-dict; returns `{}`. Accepts bonus arguments for the operator.
+Similar to `invert`, but calls `fun` on each value to produce a key. The resulting keys must satisfy [`isKey`](#-iskey-value-) or be silently dropped from the output.
 
 ```js
 function double(value) {return value * 2}
@@ -2028,7 +2018,7 @@ Also see [`isEmpty`](#-isempty-value-) for a pure boolean version.
 
 ### `vacate(value)`
 
-Returns `value` unchanged when `size(value) > 0`, otherwise `undefined`.
+If `size(value) > 0`, returns `value` unchanged, otherwise returns `undefined`.
 
 ```js
 f.vacate([])
@@ -2250,6 +2240,23 @@ Same as `throw` but can be used as an expression. Also sometimes useful with hig
 ```js
 // Can be used where the regular `throw` can't
 const x = someTest ? someValue : f.rethrow(Error('unreachable'))
+```
+
+---
+
+### `assign(target, ...sources)`
+
+Like [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), but stricter:
+
+  * `target` must be a mutable object
+  * each source must be an object, `null`, or `undefined`
+  * returns `undefined`
+
+```js
+const target = {}
+f.assign(target, {one: 10}, {two: 20})
+target
+// {one: 10, two: 20}
 ```
 
 ---
