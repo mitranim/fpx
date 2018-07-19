@@ -3,7 +3,7 @@
 <base href="/fpx/">
 <meta charset="utf-8">
 <title>fpx</title>
-<link rel="stylesheet" href="styles/docs.css?{{process.env.COMMIT || ''}}">
+<link rel="stylesheet" href="docs.css?{{$.COMMIT || ''}}">
 <link rel="icon" href="data:;base64,=">
 
 <!-- Prevent caching -->
@@ -237,9 +237,9 @@
 
 <section id="main" class="content-column">
   <article class="fancy-typography">
-{{md(include('partials/index.md'))}}
+{{$.content}}
   </article>
 </section>
 
-<script src="scripts/fpx.js?{{process.env.COMMIT || ''}}"></script>
-<script src="scripts/docs.js?{{process.env.COMMIT || ''}}"></script>
+<script src="fpx.js?{{$.COMMIT || ''}}"></script>
+<script src="docs.js?{{$.COMMIT || ''}}"></script>

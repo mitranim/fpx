@@ -4,7 +4,7 @@
 
 Lightweight replacement for Lodash, Underscore, etc. Differences:
 
-  * One small file (≈ 12 KiB minified, versus ≈ 73 KiB in Lodash 4+)
+  * One small file (≈ 13 KiB minified, versus ≈ 73 KiB in Lodash 4+)
   * Extremely simple source code
   * Relatively space-efficient, minifies well
 
@@ -17,7 +17,7 @@ See sibling libraries:
   * Emerge: https://github.com/Mitranim/emerge. Efficient patching and merging of plain JS data.
   * Espo: https://mitranim.com/espo/. Reactive and stateful programming: observables, implicit reactivity, automatic resource cleanup.
 
-Install from NPM. Current version: `{{VERSION}}`.
+Install from NPM. Current version: `{{$.VERSION}}`.
 
 ```sh
 npm i -E fpx

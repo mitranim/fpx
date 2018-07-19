@@ -1,9 +1,9 @@
 {
   "plugins": [
-    "check-es2015-constants",
-    "transform-es2015-block-scoping",
-    ["transform-es2015-destructuring", {"loose": true}],
-    "transform-es2015-shorthand-properties",
-    "transform-es2015-template-literals"
+    ["@babel/plugin-check-constants",                {"loose": true}],
+    ["@babel/plugin-transform-block-scoping",        {"loose": true}],
+    ["@babel/plugin-transform-destructuring",        {"loose": true}],
+    ["@babel/plugin-transform-shorthand-properties", {"loose": true}],
+    ["@babel/plugin-transform-template-literals",    {"loose": true}]
   ]
 }

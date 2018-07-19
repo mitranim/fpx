@@ -4,39 +4,46 @@
  * Dependencies
  */
 
-const $ = require('gulp-load-plugins')()
-const bs = require('browser-sync').create()
-const del = require('del')
-const gulp = require('gulp')
-const log = require('fancy-log')
-const {Transform} = require('stream')
-const cp = require('child_process')
-const statilConfig = require('./statil')
+const $                 = require('gulp-load-plugins')()
+const bs                = require('browser-sync').create()
+const cp                = require('child_process')
+const del               = require('del')
+const fs                = require('fs')
+const gulp              = require('gulp')
+const log               = require('fancy-log')
+const {compileTemplate} = require('statil')
+const {promisify}       = require('util')
+const {Transform}       = require('stream')
+const {md}              = require('./md')
+
+const readFile = promisify(fs.readFile)
+const writeFile = promisify(fs.writeFile)
 
 /**
  * Globals
  */
 
-const srcScriptFiles = 'src/**/*.js'
-const srcDocHtmlFiles = 'docs/html/**/*'
-const srcDocStyleFiles = 'docs/styles/**/*.scss'
-const srcDocStyleMain = 'docs/styles/docs.scss'
-const srcDocScriptMain = 'docs/scripts/docs.js'
+const SRC_SCRIPT_FILES      = 'src/**/*.js'
+const SRC_DOC_HTML          = 'docs/templates/index.html'
+const SRC_DOC_MD            = 'docs/templates/index.md'
+const SRC_DOC_STYLE_FILES   = 'docs/styles/**/*.scss'
+const SRC_DOC_STYLE_MAIN    = 'docs/styles/docs.scss'
+const SRC_DOC_SCRIPT_MAIN   = 'docs/scripts/docs.js'
 
-const outEsDir = 'es'
-const outDistDir = 'dist'
-const outDocDir = 'gh-pages'
-const outDocStyleDir = 'gh-pages/styles'
-const outDocScriptDir = 'gh-pages/scripts'
-const outEsFiles = 'es/**/*.js'
-const outDistScriptFiles = 'dist/**/*.js'
-const outMainScriptFile = require('./package').main
+const OUT_ES_DIR            = 'es'
+const OUT_DIST_DIR          = 'dist'
+const OUT_DOC_DIR           = 'gh-pages'
+const OUT_DOC_HTML_FILE     = 'gh-pages/index.html'
+const OUT_ES_FILES          = 'es/**/*.js'
+const OUT_DIST_SCRIPT_FILES = 'dist/**/*.js'
+const OUT_SCRIPT_MAIN       = require('./package').main
 
-const testScriptFiles = 'test/**/*.js'
+const TEST_SCRIPT_FILES     = 'test/**/*.js'
 
 const GulpErr = msg => ({showStack: false, toString: () => msg})
 
-process.env.COMMIT = cp.execSync('git rev-parse --short HEAD').toString().trim()
+const COMMIT = cp.execSync('git rev-parse --short HEAD').toString().trim()
+const {version: VERSION} = require('./package.json')
 
 /**
  * Tasks
@@ -46,25 +53,25 @@ process.env.COMMIT = cp.execSync('git rev-parse --short HEAD').toString().trim()
 
 gulp.task('clear', () => (
   del([
-    outDistScriptFiles,
-    outEsFiles,
+    OUT_DIST_SCRIPT_FILES,
+    OUT_ES_FILES,
     // Skips dotfiles like `.git` and `.gitignore`
-    `${outDocDir}/*`,
+    `${OUT_DOC_DIR}/*`,
   ]).catch(console.error.bind(console))
 ))
 
 /* ---------------------------------- Lib -----------------------------------*/
 
 gulp.task('lib:build', () => (
-  gulp.src(srcScriptFiles)
+  gulp.src(SRC_SCRIPT_FILES)
     .pipe($.babel())
-    .pipe(gulp.dest(outEsDir))
+    .pipe(gulp.dest(OUT_ES_DIR))
     .pipe($.babel({
       plugins: [
-        ['transform-es2015-modules-commonjs', {strict: true}],
+        ['@babel/plugin-transform-modules-commonjs', {strict: true}],
       ],
     }))
-    .pipe(gulp.dest(outDistDir))
+    .pipe(gulp.dest(OUT_DIST_DIR))
     // Ensures ES5 compliance and lets us measure minified size
     .pipe($.uglify({
       mangle: {toplevel: true},
@@ -96,26 +103,31 @@ gulp.task('lib:test', done => {
 })
 
 gulp.task('lib:watch', () => {
-  $.watch(srcScriptFiles, gulp.series('lib:build', 'lib:test'))
-  $.watch(testScriptFiles, gulp.series('lib:test'))
+  $.watch(SRC_SCRIPT_FILES, gulp.series('lib:build', 'lib:test'))
+  $.watch(TEST_SCRIPT_FILES, gulp.series('lib:test'))
 })
 
 /* --------------------------------- HTML -----------------------------------*/
 
-gulp.task('docs:html:build', () => (
-  gulp.src(srcDocHtmlFiles)
-    .pipe($.statil(statilConfig))
-    .pipe(gulp.dest(outDocDir))
-))
+gulp.task('docs:templates:build', async () => {
+  const mdInput = await readFile(SRC_DOC_MD, 'utf8')
+  const mdOut = md(compileTemplate(mdInput)({VERSION}))
 
-gulp.task('docs:html:watch', () => {
-  $.watch(srcDocHtmlFiles, gulp.series('docs:html:build'))
+  const htmlInput = await readFile(SRC_DOC_HTML, 'utf8')
+  const htmlOut = compileTemplate(htmlInput)({COMMIT, content: mdOut})
+
+  await writeFile(OUT_DOC_HTML_FILE, htmlOut)
+})
+
+gulp.task('docs:templates:watch', () => {
+  $.watch(SRC_DOC_HTML, gulp.series('docs:templates:build'))
+  $.watch(SRC_DOC_MD, gulp.series('docs:templates:build'))
 })
 
 /* -------------------------------- Styles ----------------------------------*/
 
 gulp.task('docs:styles:build', () => (
-  gulp.src(srcDocStyleMain)
+  gulp.src(SRC_DOC_STYLE_MAIN)
     .pipe($.sass())
     .pipe($.autoprefixer())
     .pipe($.cleanCss({
@@ -124,42 +136,56 @@ gulp.task('docs:styles:build', () => (
       advanced: false,
       compatibility: {properties: {colors: false}},
     }))
-    .pipe(gulp.dest(outDocStyleDir))
+    .pipe(gulp.dest(OUT_DOC_DIR))
 ))
 
 gulp.task('docs:styles:watch', () => {
-  $.watch(srcDocStyleFiles, gulp.series('docs:styles:build'))
+  $.watch(SRC_DOC_STYLE_FILES, gulp.series('docs:styles:build'))
 })
 
 /* ------------------------------- Scripts ----------------------------------*/
 
 gulp.task('docs:scripts:copy', () => (
-  gulp.src(outMainScriptFile)
-    .pipe($.wrap(
-`// Transpiled version. See src/fpx.js.
+  gulp.src(OUT_SCRIPT_MAIN)
+    .pipe(new Transform({
+      objectMode: true,
+      transform(file, __, done) {
+        file.contents = Buffer.from(`
+// Transpiled version. See src/fpx.js.
 void function(exports) {
-<%= contents %>
-}(window.fpx = window.f = {});`))
-    .pipe(gulp.dest(outDocScriptDir))
+${String(file.contents)}
+}(window.fpx = window.f = {});
+`.trim())
+        done(undefined, file)
+      },
+    }))
+    .pipe(gulp.dest(OUT_DOC_DIR))
 ))
 
 gulp.task('docs:scripts:compile', () => (
-  gulp.src(srcDocScriptMain)
+  gulp.src(SRC_DOC_SCRIPT_MAIN)
     .pipe($.babel())
-    .pipe($.wrap(
-`void function() {
+    .pipe(new Transform({
+      objectMode: true,
+      transform(file, __, done) {
+        file.contents = Buffer.from(`
+void function() {
 'use strict';
 
-<%= contents %>
-}();`))
-    .pipe(gulp.dest(outDocScriptDir))
+${String(file.contents)}
+}();
+`.trim())
+        done(undefined, file)
+      },
+    }))
+    .pipe(gulp.dest(OUT_DOC_DIR))
 ))
 
 gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:copy', 'docs:scripts:compile'))
 
 gulp.task('docs:scripts:watch', () => {
-  $.watch(outMainScriptFile, gulp.series('docs:scripts:copy'))
-  $.watch(srcDocScriptMain, gulp.series('docs:scripts:compile'))
+  $.watch(OUT_SCRIPT_MAIN, gulp.series('docs:scripts:copy'))
+  $.watch(SRC_DOC_SCRIPT_MAIN, gulp.series('docs:scripts:compile'))
 })
 
 /* -------------------------------- Server ----------------------------------*/
@@ -190,13 +216,13 @@ gulp.task('docs:server', () => (
 
 gulp.task('buildup', gulp.parallel(
   gulp.series('lib:build', 'docs:scripts:build'),
-  'docs:html:build',
+  'docs:templates:build',
   'docs:styles:build'
 ))
 
 gulp.task('watch', gulp.parallel(
   'lib:watch',
-  'docs:html:watch',
+  'docs:templates:watch',
   'docs:styles:watch',
   'docs:scripts:watch',
   'docs:server'
