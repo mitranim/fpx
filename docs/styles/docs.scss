@@ -46,6 +46,10 @@ code {
   background-color: $color-code-bg;
 }
 
+pre, code {
+  font-family: Menlo, Monaco, Consolas, monospace;
+}
+
 /**
  * Misc
  */
