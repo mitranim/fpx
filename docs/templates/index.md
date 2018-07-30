@@ -1,16 +1,17 @@
 ## Overview
 
-`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. [Source on GitHub](https://github.com/Mitranim/fpx/blob/master/src/fpx.js).
+`fpx`: Functional Programming eXtensions for JavaScript. [Source on GitHub](https://github.com/Mitranim/fpx/blob/master/src/fpx.js).
 
 Lightweight replacement for Lodash, Underscore, etc. Differences:
 
-  * One small file (≈ 13 KiB minified, versus ≈ 73 KiB in Lodash 4+)
+  * One small file (≈ 12 KiB minified, versus ≈ 73 KiB in Lodash 4+)
   * Extremely simple source code
   * Relatively space-efficient, minifies well
+  * Compatible with tree shaking
 
-Doesn't have complete feature parity with Lodash, and probably never will. More functions will be added on demand. Open a GitHub issue or a pull request if something useful is missing.
+Doesn't have complete feature parity with Lodash, and probably never will. More functions may be added on demand. Open a GitHub issue or a pull request if something useful is missing.
 
-Written with ES2015 exports. When building a browser bundle, Webpack 4+ or Rollup, in combination with UglifyJS, should strip out the unused code, leaving only what you actually use. In Node.js, you automatically get the CommonJS version.
+Written as an ES2015 module for compatibility with tree shaking. When building a browser bundle, Webpack 4+ or Rollup automatically pick the ES2015 version. In Node.js, you automatically get the CommonJS version. A properly configured bundler should strip out the unused code, leaving only what you actually use.
 
 See sibling libraries:
 
@@ -43,7 +44,7 @@ Why a library: the built-ins are not sufficient. Fpx replaces some common code p
 
 Why not just use Lodash? It's way, **way**, **WAY** too huge. You just want a few functions and BAM, you get ≈ 73 KiB minified. You could make a custom bundle, but most folks just import the whole thing. For a web developer, shipping so much useless code to your users is irresponsible. It's also space-inefficient, bloated with avoidable code, and judging by the source, this seems unlikely to change. If you care about size, you need a replacement.
 
-The current version of Lodash is incompatible with techniques like tree shaking / dead code elimination / live code inclusion, which pick just the functions you actually use, dropping the rest. Fpx works perfectly with those. When using a module bundler that supports these techniques, such as Rollup or Webpack 4+, you automatically get a "custom version" of Fpx without any unused stuff.
+The current version of Lodash is incompatible with techniques like tree shaking / dead code elimination / live code inclusion, which pick just the functions you actually use, dropping the rest. These techniques work perfectly on Fpx. When using a module bundler that supports them, such as Rollup or Webpack 4+, you automatically get a "custom version" of Fpx without any unused stuff.
 
 ### Simplicity
 
@@ -57,11 +58,15 @@ In Fpx, I strive to keep the code and the algorithms dead simple, with as few un
 
 ### Strictness
 
-Fpx collection functions work _either_ on lists ([`fold`](#-fold-list-init-fun-a-b-c-)) or dicts ([`foldVals`](#-foldvals-dict-init-fun-a-b-c-)), not both, and not on strings. They always require an operator function; there's no implicit "default" operator like in Lodash. There's also no implicit conversion of data patterns into functions. This is closer to JS builtins than to Lodash, and is better at preventing gotchas.
+Fpx functions tend to be somewhat stricter than their built-in counterparts, and _much_ stricter than the Lodash counterparts. They tend to work _either_ on lists ([`fold`](#-fold-list-init-fun-a-b-c-)) _or_ dicts ([`foldVals`](#-foldvals-dict-init-fun-a-b-c-)), not both. List functions also don't accept strings. This prevents subtle gotchas.
+
+On the other hand, collection functions accept `null` and `undefined`, which is very useful in practice. This would not be possible with methods, since methods must be invoked on an object.
+
+Unlike Lodash, higher-order functions always require an operator function. There's no implicit fallback on the identity function, and no implicit conversion of data patterns into functions.
 
 ### Minifiable Assertions
 
-Assertions go a **long** way in debugging. Catch bugs early and fail fast. In asynchronous code, validating inputs as early as possible, instead of letting it fail mysteriously later, can save you hours of debugging.
+Assertions go a **long** way in debugging. Fail fast, catch bugs early. In asynchronous code, validating inputs as early as possible, instead of letting it fail mysteriously later, can save you hours of debugging.
 
 Here's the traditional way of doing assertions:
 
@@ -87,7 +92,7 @@ someFunction({one: 10})
 // Error: Expected {"one":10} to satisfy test isFunction
 ```
 
-So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, and I consider this a good tradeoff.
+So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, which I consider a good tradeoff.
 
 To support this style of coding, Fpx provides [`validate`](#-validate-value-test-) and a bevy of boolean tests.
 
@@ -135,9 +140,9 @@ f.map([10, 20, 30], add5)
 
 Broadly speaking, closures have a cost; defining functions statically avoids that cost.
 
-Note: this doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures can accidentally enable optimizations like function specialization. However, you can't _rely_ on such optimizations. As a rule of thumb, memory allocation beats all other costs. Avoiding closure allocation is more reliable and predictable at improving performance.
+This doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures can accidentally enable optimizations like function specialization. However, you can't _rely_ on such optimizations. As a rule of thumb, memory allocation beats all other costs. Avoiding closure allocation is more reliable and predictable at improving performance.
 
-(This may change with future JS advancements.)
+This may change with future advancements in JS engines.
 
 ---
 
@@ -212,9 +217,7 @@ different(10, 20)
 // !eq(10, 20) = true
 
 // equivalent:
-function different() {
-  return !eq(...arguments)
-}
+function different(a, b) {return !eq(a, b)}
 ```
 
 ---
@@ -259,9 +262,11 @@ f.falsy(1)
 
 ### `is(one, other)`
 
-Same as ES2015's [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is). Like `===` but considers `NaN` equal to itself.
+Identity test: same as `===`, but considers `NaN` equal to `NaN`. Equivalent to [_SameValueZero_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero) as defined by the language spec.
 
-Used by `fpx` for all identity tests. Use this instead of `===`.
+Note that [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) implements [_SameValue_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevalue), which treats `-0` and `+0` as _distinct values_. This is typically undesirable. As a result, you should prefer `f.is` over `===` or `Object.is`.
+
+Used internally in `fpx` for all identity tests.
 
 ```js
 f.is(1, '1')
@@ -345,7 +350,7 @@ f.isNatural('1')
 
 ### `isNaN(value)`
 
-Same as ES2015's [`Number.isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN). True if `value` is _really_, strictly `NaN`. Unlike the old global `isNaN`, doesn't coerce non-numbers.
+Same as ES2015's [`Number.isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN). True if `value` is _actually_ `NaN`. Doesn't coerce non-numbers to numbers, unlike `global.isNaN` / `window.isNaN`.
 
 ```js
 f.isNaN(NaN)
@@ -404,7 +409,7 @@ f.isSymbol(Symbol('blah'))
 
 ### `isKey(value)`
 
-True if `value` could, with some suspension of disbelief, claim an ambition to being a dict key. Must satisfy either of:
+True if `value` could, with some suspension of disbelief, claim to be usable as a dict key. Must satisfy either of:
 
   * `isString`
   * `isSymbol`
@@ -451,13 +456,15 @@ function isComplex(value) {
 }
 ```
 
-This covers all "objects" in the true JavaScript sense, including functions.
+This covers all mutable objects in the true JavaScript sense, including functions.
 
 ---
 
 ### `isInstance(value, Class)`
 
-Same as `instanceof` but avoids unnecessary allocations. `instanceof` has a problem: when the left operand is a primitive, even though `instanceof` is guaranteed to return `false`, it creates a temporary wrapper object, wasting resources. `isInstance` avoids this mistake.
+Same as `instanceof` but more efficient for primitives.
+
+When the left operand to `instanceof` is a primitive, it creates a temporary wrapper object, wasting CPU cycles on allocation and garbage collection, even though `false` was guaranteed. `isInstance` avoids this mistake. At the time of writing, the improvement is measurable in V8.
 
 ```js
 f.isInstance([], Array)          // true
@@ -479,9 +486,11 @@ f.isFunction(isFunction)
 
 ### `isObject(value)`
 
-True if `value` has the type `'object'` and isn't `null`. This includes plain dicts, arrays, regexes, user-defined "classes", built-in classes, and so on. Doesn't count functions as objects, even though _technically_ they are.
+True if `value` is a non-`null` object. This includes plain dicts, arrays, regexps, user-defined "classes", built-in classes, and so on. Doesn't count functions as objects, even though _technically_ they are.
 
 Note: this is _not_ equivalent to lodash's `_.isObject`, which counts functions as objects. See [`isComplex`](#-iscomplex-value-) for that.
+
+For plain objects used as dictionaries, see [`isDict`](#-isdict-value-). For fancy non-list objects, see [`isStruct`](#-isstruct-value-).
 
 ```js
 f.isObject('blah')
@@ -527,6 +536,28 @@ f.isDict(new class {}())
 
 ---
 
+### `isStruct(value)`
+
+True if `value` is a non-list object. In Fpx lingo, such objects are called "structs". There's an entire [category](#struct) of functions dedicated to them, similar to "object" functions in Lodash.
+
+Note that anything that satisfies `isDict` automatically satisfies `isStruct`, but not vice versa.
+
+```js
+f.isStruct({})
+// true
+
+f.isStruct(new RegExp())
+// true
+
+f.isStruct([])
+// false
+
+f.isStruct(f.isStruct)
+// false
+```
+
+---
+
 ### `isArray(value)`
 
 True if `value` inherits from `Array.prototype`.
@@ -540,7 +571,15 @@ f.isArray([])
 
 ### `isList(value)`
 
-True if `value` looks like a linear, ordered list. This includes `arguments`, `NodeList`s, and so on. Used internally for most list checks. Note that _strings are not considered lists_.
+True if `value` looks array-like, such as:
+
+  * `[]`
+  * `arguments`
+  * `TypedArray`
+  * `NodeList`
+  * etc.
+
+Used internally for most list checks. Note that _strings are not considered lists_.
 
 ```js
 f.isList([])
@@ -548,6 +587,9 @@ f.isList([])
 
 function args() {return arguments}
 f.isList(args())
+// true
+
+f.isList(new Uint8Array())
 // true
 
 f.isList(document.querySelectorAll('div'))
@@ -597,16 +639,16 @@ f.isDate(new Date(NaN))  // true
 
 ### `isPromise(value)`
 
-True if the value [quacks](https://en.wikipedia.org/wiki/Duck_test) like an ES2015 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). Works for non-native promise implementations.
+True if the value [quacks](https://en.wikipedia.org/wiki/Duck_test) like an ES2015 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). Not limited to built-in promises.
 
 ```js
-f.isPromise(Promise.resolve('test'))
+f.isPromise(new Promise(() => {}))
 // true
 
-f.isPromise({then () {}, catch () {}})
+f.isPromise({then() {}, catch() {}})
 // true
 
-f.isPromise({then () {}})
+f.isPromise({then() {}})
 // false
 ```
 
@@ -634,7 +676,9 @@ f.isIterator(myGenerator)
 
 ### `isNil(value)`
 
-True for `null` and `undefined`.
+True for `null` and `undefined`. Same as `value == null`.
+
+Incidentally, these are the only values that produce an exception when attempting to read a property: `null.someProperty`.
 
 ```js
 // Definition
@@ -642,13 +686,13 @@ function isNil(value) {return value == null}
 
 f.isNil(null)
 // true
+
 f.isNil(undefined)
 // true
+
 f.isNil(false)
 // false
 ```
-
-These are the only things in JS that produce an exception when attempting to read a property, i.e. `null.someProperty`.
 
 ---
 
@@ -694,41 +738,40 @@ f.isEmpty({one: 10, two: 20})
 
 Limited form of pattern testing. Together with ES2015 destructuring, it lets you crudely approximate pattern matching, a feature common in functional languages but missing from JavaScript.
 
-Tests `value` against `pattern`. The nature of the test depends on the provided pattern.
-
-Rules:
+Tests `value` against `pattern`, using the following rules:
 
 ```js
-// function -> apply as-is
+// Function pattern: call it, convert result to boolean
 
-f.testBy(10, inc)  =  11
+f.testBy(10, f.inc)  ≡  !!f.inc(10)
 
-// primitive -> test for identity via `f.is`
+// Primitive pattern: test for identity via `f.is`
 
-f.testBy(x, null)  =  f.is(x, null)
-f.testBy(x, 1)     =  f.is(x, 1)
-f.testBy(x, NaN)   =  f.is(x, NaN)
+f.testBy(x, null)  ≡  f.is(x, null)
+f.testBy(x, 10)    ≡  f.is(x, 10)
+f.testBy(x, NaN)   ≡  f.is(x, NaN)
 
-// regex -> call `RegExp.prototype.test`
+// Regexp pattern:
+//   input must be a string
+//   use `RegExp.prototype.test`
 
-f.testBy(x, /blah/)  =  /blah/.test(x)
+f.testBy(x, /blah/)  ≡  f.isString(x) && /blah/.test(x)
 
-// list ->
-//   checks that input is a list
-//   each property tests the corresponding input property
+// List pattern:
+//   input must be a list
+//   recursively apply sub-patterns
 
-f.testBy(x, [])             =  f.isList(x)
-f.testBy(x, [/blah/])       =  f.isList(x) && /blah/.test(x[0])
-f.testBy(x, [/blah/, 'c'])  =  f.isList(x) && /blah/.test(x[0]) && f.is(x[1], 'c')
+f.testBy(x, [])             ≡  f.isList(x)
+f.testBy(x, [/blah/])       ≡  f.isList(x) && f.testBy(x[0], /blah/)
+f.testBy(x, [/blah/, 'c'])  ≡  f.isList(x) && f.testBy(x[0], /blah/) && f.testBy(x[1], 'c')
 
-// dictionary ->
-//   checks that input is an object (possibly a list)
-//   each property tests the corresponding input property
+// Struct pattern:
+//   input must a struct (a non-list object)
+//   recursively apply sub-patterns
 
-f.testBy(x, {})                =  f.isObject(x)
-f.testBy(x, {one: /blah/})     =  f.isObject(x) && /blah/.test(x.one)
-f.testBy(x, {two: f.isArray})  =  f.isObject(x) && f.isArray(x.two)
-f.testBy(x, {a: {b: 'c'}})     =  f.isObject(x) && f.isObject(x.a) && f.is(x.a.b, 'c')
+f.testBy(x, {})             ≡  f.isStruct(x)
+f.testBy(x, {one: /blah/})  ≡  f.isStruct(x) && f.testBy(x.one, /blah/)
+f.testBy(x, {a: {b: 'c'}})  ≡  f.isStruct(x) && f.testBy(x.a, {b: 'c'})
 ```
 
 ### `test(pattern)`
@@ -737,7 +780,10 @@ Takes a pattern and returns a version of [`testBy`](#-testby-value-pattern-) bou
 
 ```js
 f.test(pattern)
-// Same as: x => f.testBy(x, pattern)
+// ≡ function(x) {return f.testBy(x, pattern)}
+
+f.test(pattern)(input)
+// ≡ f.testBy(input, pattern)
 ```
 
 ---
@@ -748,58 +794,75 @@ Type coercions and replacements.
 
 ### `onlyString(value)`
 
-Returns `value` when `isString`, otherwise replaces with `''`.
+Nil-tolerant string assertion. Replaces `null` or `undefined` with `''`, otherwise asserts [`isString`](#-isstring-value-) and returns `value`.
 
 ```js
-f.onlyString('blah')
-// 'blah'
-
 f.onlyString()
 // ''
 
-f.onlyString([])
-// ''
+f.onlyString('blah')
+// 'blah'
+
+f.onlyString(['not string'])
+// Error: Expected ["not string"] to satisfy test isString
 ```
 
 ---
 
 ### `onlyList(value)`
 
-Returns `value` when `isList`, otherwise replaces with `[]`.
+Nil-tolerant list assertion. Replaces `null` or `undefined` with `[]`, otherwise asserts [`isList`](#-islist-value-) and returns `value`. Used internally in [list functions](#list).
 
 ```js
-f.onlyList([10, 20])
-// [10, 20]
-
 f.onlyList()
 // []
 
-f.onlyList('blah')
-// []
+f.onlyList([10, 20])
+// [10, 20]
+
+f.onlyList('not list')
+// Error: Expected "not list" to satisfy test isList
 ```
 
 ---
 
 ### `onlyDict(value)`
 
-Returns `value` when `isDict`, otherwise replaces with `{}`.
+Nil-tolerant dict assertion. Replaces `null` or `undefined` with `{}`, otherwise asserts [`isDict`](#-isdict-value-) and returns `value`.
 
 ```js
-f.onlyDict({one: 10})
-// {one: 10}
-
 f.onlyDict()
 // {}
 
-f.onlyDict([10, 20])
+f.onlyDict({one: 10})
+// {one: 10}
+
+f.onlyDict('not dict')
+// Error: Expected "not dict" to satisfy test isDict
+```
+
+---
+
+### `onlyStruct(value)`
+
+Nil-tolerant struct assertion. Replaces `null` or `undefined` with `{}`, otherwise asserts [`isStruct`](#-isstruct-value-) and returns `value`. Used internally in [struct functions](#struct).
+
+```js
+f.onlyStruct()
 // {}
+
+f.onlyStruct({one: 10})
+// {one: 10}
+
+f.onlyStruct('not struct')
+// Error: Expected "not struct" to satisfy test isDict
 ```
 
 ---
 
 ### `toArray(value)`
 
-Returns `value` when `isArray`. If `value` is a non-array list, converts it to an `Array`. Otherwise replaces with `[]`. Sometimes useful for converting `arguments` or DOM node lists to arrays.
+Returns `value` when `isArray`. If `value` is a non-array list, converts it to an `Array`. Otherwise replaces with `[]`. Sometimes useful for converting `arguments` or other non-array lists to arrays.
 
 ```js
 f.toArray([10, 20])
@@ -821,7 +884,7 @@ List manipulation utils.
 Common rules:
 
   * accept `null` and `undefined`, treating them as `[]`
-  * accept inputs that satisfy [`isList`](#-islist-value-): `arguments`, Node buffers, DOM lists, etc.
+  * accept inputs that satisfy [`isList`](#-islist-value-): `arguments`, typed arrays, Node buffers, DOM lists, etc.
   * reject other inputs with an exception
   * don't modify the input; return a new version instead
   * accept [bonus arguments](#bonus-arguments) for the operator function
@@ -1276,7 +1339,7 @@ f.concat([10], [20], [30])
 // [10, 20, 30]
 
 f.concat([10, 20], 30)
-// Error: expected 30 to satisfy test isList
+// Error: Expected 30 to satisfy test isList
 ```
 
 ---
@@ -1668,9 +1731,9 @@ f.range(5, 10)
 
 ---
 
-## Dict
+## Struct
 
-Utils for dealing with objects and dictionaries.
+Utils for dealing with non-list objects, called "structs" or "dictionaries" in Fpx.
 
 Common rules:
 
@@ -1678,7 +1741,7 @@ Common rules:
   * don't modify the input; return a new version instead
   * accept [bonus arguments](#bonus-arguments) for the operator function
 
-Getter functions like `get` or `keys` accept any input, ignoring non-objects.
+Getter functions like `get` accept any input, ignoring non-objects.
 
 Iteration functions accept `null`, `undefined`, and non-list objects, rejecting any other input with an exception.
 
@@ -1763,24 +1826,30 @@ f.map([{value: 10}, {value: 20}], getValue)
 
 ### `keys(dict)`
 
-Same as `Object.keys`, but only for non-list objects. Returns `[]` for anything else, even for lists, to prevent gotchas.
+Like `Object.keys`, with the following differences:
+
+  * works on `null` and `undefined`
+  * rejects list inputs with an exception
 
 ```js
 f.keys()
 // []
 
-f.keys({one: 1, two: 2})
+f.keys({one: 10, two: 20})
 // ['one', 'two']
 
 f.keys([10, 20])
-// []
+// Error: Expected [10,20] to satisfy test isStruct
 ```
 
 ---
 
 ### `values(dict)`
 
-Like `Object.values`, but only for non-list objects. Returns `[]` for anything else, even for lists, to prevent gotchas.
+Like `Object.values`, with the following differences:
+
+  * works on `null` and `undefined`
+  * rejects list inputs with an exception
 
 ```js
 f.values()
@@ -1790,7 +1859,27 @@ f.values({one: 10, two: 20})
 // [10, 20]
 
 f.values([10, 20])
+// Error: Expected [10,20] to satisfy test isStruct
+```
+
+---
+
+### `entries(dict)`
+
+Like `Object.entries`, with the following differences:
+
+  * works on `null` and `undefined`
+  * rejects list inputs with an exception
+
+```js
+f.entries()
 // []
+
+f.entries({one: 10, two: 20})
+// [['one', 10], ['two', 20]]
+
+f.entries([10, 20])
+// Error: Expected [10,20] to satisfy test isStruct
 ```
 
 ---
@@ -2002,7 +2091,7 @@ Depends on `value`'s type:
 f.size([10, 20])
 // 2
 
-f.size({one: 1, two: 2})
+f.size({one: 10, two: 20})
 // 2
 
 f.size()
@@ -2249,7 +2338,7 @@ const x = someTest ? someValue : f.rethrow(Error('unreachable'))
 Like [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), but stricter:
 
   * `target` must be a mutable object
-  * each source must be an object, `null`, or `undefined`
+  * each source must be a non-list object, `null`, or `undefined`
   * returns `undefined`
 
 ```js
@@ -2263,38 +2352,40 @@ target
 
 ### `maskBy(value, pattern)`
 
-Overlays `pattern` on `value`. The nature of the result depends on the provided
-pattern.
-
-Rules:
+Overlays `pattern` on `value`, using the following rules:
 
 ```js
-// function -> apply as-is
+// Function pattern: call as-is
 
-f.maskBy(x, f.isNumber)  =  f.isNumber(x)
+f.maskBy(x, f.inc)  ≡  f.inc(x)
 
-// primitive -> replace value
+// Primitive pattern: replace input
 
-f.maskBy(x, null)  =  null
-f.maskBy(x, 1)     =  1
-f.maskBy(x, NaN)   =  NaN
+f.maskBy(x, null)   ≡  null
+f.maskBy(x, 10)     ≡  10
+f.maskBy(x, NaN)    ≡  NaN
 
-// regex -> call `RegExp.prototype.test`
+// Regexp pattern:
+//   input must be nil or string
+//   call `.match(regexp)`
 
-f.maskBy(x, /blah/)  =  /blah/.test(x)
+f.maskBy(x, /blah/)  ≡  f.onlyString(x).match(/blah/)
 
-// list -> map to corresponding input properties, masking them
+// List pattern:
+//   input must be nil or list
+//   recursively apply sub-patterns
 
-f.maskBy(x, [])             =  []
-f.maskBy(x, [/blah/])       =  [/blah/.test(f.get(x, 0))]
-f.maskBy(x, [/blah/, 'c'])  =  [/blah/.test(f.get(x, 0)), 'c']
+f.maskBy(x, [])             ≡  f.onlyList(x)
+f.maskBy(x, [/blah/])       ≡  [f.maskBy(x[0], /blah/)]
+f.maskBy(x, [/blah/, 'c'])  ≡  [f.maskBy(x[0], /blah/), f.maskBy(x[1], 'c')]
 
-// dict -> create an extended version, masking known properties
+// Struct pattern:
+//   input must be nil or struct
+//   recursively apply sub-patterns
 
-f.maskBy(x, {})                =  {}
-f.maskBy(x, {a: {b: 'c'}})     =  {a: {b: 'c'}}
-f.maskBy(x, {one: /blah/})     =  {one: /blah/.test(f.get(x, 'one'))}
-f.maskBy(x, {two: f.isArray})  =  {two: f.isArray(f.get(x, 'two'))}
+f.maskBy(x, {})             ≡  f.onlyStruct(x)
+f.maskBy(x, {one: /blah/})  ≡  {one: f.maskBy(x.one, /blah/)}
+f.maskBy(x, {a: {b: 'c'}})  ≡  {a: f.maskBy(x.a, {b: 'c'})}
 ```
 
 ### `mask(pattern)`
@@ -2303,7 +2394,11 @@ Takes a pattern and returns a version of [`maskBy`](#-maskby-value-pattern-) bou
 
 ```js
 f.mask(pattern)
-// Same as: x => f.maskBy(x, pattern)
+// ≡ function(x) {return f.maskBy(x, pattern)}
+
+f.mask(pattern)(input)
+// ≡ f.maskBy(input, pattern)
+
 ```
 
 ---
@@ -2363,8 +2458,8 @@ f.show(10)
 f.show(f.show)
 // 'show'
 
-f.show({one: 1, two: 2})
-// '{"one":1,"two":2}'
+f.show({one: 10, two: 20})
+// '{"one":10,"two":20}'
 ```
 
 ---

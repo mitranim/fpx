@@ -5,39 +5,59 @@ const f = require('../dist/fpx')
 
 function args() {return arguments}
 
-eq(f.onlyString(), '')
-eq(f.onlyString(10), '')
-eq(f.onlyString('blah'), 'blah')
-eq(f.onlyString(true), '')
-eq(f.onlyString({}), '')
+eq(f.onlyString(null),       '')
+eq(f.onlyString(undefined),  '')
+eq(f.onlyString('string'),   'string')
+throws(f.onlyString, 10)
+throws(f.onlyString, ['not string'])
+throws(f.onlyString, new String('not string'))
 
-eq(f.onlyList(), [])
-eq(f.onlyList({one: 10}), [])
-eq(f.onlyList('blah'), [])
+eq(f.onlyList(null),         [])
+eq(f.onlyList(undefined),    [])
+eq(f.onlyList(['list']),     ['list'])
 {
-  const input = [10, 20, 30]
+  const input = []
   is(f.onlyList(input), input)
 }
 {
-  const input = args(10, 20, 30)
+  const input = args()
   is(f.onlyList(input), input)
 }
+throws(f.onlyList, 'not list')
+throws(f.onlyList, {length: 0})
 
-eq(f.onlyDict(), {})
-eq(f.onlyDict([10]), {})
-eq(f.onlyDict({one: 10}), {one: 10})
+eq(f.onlyDict(null),                  {})
+eq(f.onlyDict(undefined),             {})
+eq(f.onlyDict({dict: true}),          {dict: true})
+eq(f.onlyDict(Object.create(null)),   {})
 {
-  const input = {one: 10}
+  const input = {}
   is(f.onlyDict(input), input)
 }
-eq(f.onlyDict(Object.create(null)), {})
-eq(f.onlyDict(Object.create({one: 1})), {})
+throws(f.onlyDict, 'not dict')
+throws(f.onlyDict, ['not dict'])
+throws(f.onlyDict, Object.create({}))
+
+eq(f.onlyStruct(null),                {})
+eq(f.onlyStruct(undefined),           {})
+eq(f.onlyStruct({struct: true}),      {struct: true})
+{
+  const input = {}
+  is(f.onlyStruct(input), input)
+}
+{
+  const input = Object.create({})
+  is(f.onlyStruct(input), input)
+}
+throws(f.onlyStruct, 'not struct')
+throws(f.onlyStruct, ['not struct'])
 
 eq(f.toArray(), [])
+eq(f.toArray([10, 20, 30]), [10, 20, 30])
+eq(f.toArray(args(10, 20, 30)), [10, 20, 30])
 {
-  const input = [10, 20, 30]
+  const input = []
   is(f.toArray(input), input)
 }
-eq(f.toArray(args(10, 20, 30)), [10, 20, 30])
 throws(f.toArray, 'not list')
-throws(f.toArray, {'not list': true})
+throws(f.toArray, {length: 0})

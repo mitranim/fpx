@@ -3,21 +3,21 @@
 const {eq, is, throws} = require('./utils')
 const f = require('../dist/fpx')
 
-function double (a) {return a * 2}
-function args   ()  {return arguments}
+function dupe (a) {return a + a}
+function args ()  {return arguments}
 
 is(f.global, global)
 
-eq(f.id(),       undefined)
-eq(f.id(10),     10)
-eq(f.id(10, 20), 10)
+eq(f.id(),           undefined)
+eq(f.id(10),         10)
+eq(f.id(10, 20),     10)
 
 eq(f.di(),           undefined)
 eq(f.di(10, 20),     20)
 eq(f.di(10, 20, 30), 20)
 
-eq(f.val()(2),  undefined)
-eq(f.val(1)(2), 1)
+eq(f.val()(2),       undefined)
+eq(f.val(1)(2),      1)
 
 {
   const target = {}
@@ -27,15 +27,40 @@ eq(f.val(1)(2), 1)
 throws(f.assign)
 throws(f.assign, 'not object')
 
-eq(f.maskBy(1, undefined),           undefined)
-eq(f.maskBy(undefined, 1),           1)
-eq(f.maskBy({}, 1),                  1)
-eq(f.maskBy(1, double),              2)
-eq(f.maskBy({}, double),             NaN)
+/** maskBy **/
 
-eq(f.maskBy(undefined, [/text/, 1]),       [false, 1])
-eq(f.maskBy(['text', 2], [/text/, 1]),     [true, 1])
-eq(f.maskBy(args('text', 2), [/text/, 1]), [true, 1])
 
-eq(f.maskBy(undefined, {text: /text/, one: 1}),              {text: false, one: 1})
-eq(f.maskBy({text: 'text', one: 2}, {text: /text/, one: 1}), {text: true,  one: 1})
+// Function: call with operand
+eq(f.maskBy(10,    dupe),               20)
+eq(f.maskBy('one', dupe),               'oneone')
+
+// Primitive: replace
+eq(f.maskBy(),                          undefined)
+eq(f.maskBy(undefined, null),           null)
+eq(f.maskBy(10,        NaN),            NaN)
+eq(f.maskBy({},        'one'),          'one')
+
+// Regexp: only nil or string, use `String.prototype.match`
+eq(f.maskBy('one',             /./),    ['o'])
+eq(f.maskBy('one',             /./g),   ['o', 'n', 'e'])
+eq(f.maskBy(undefined,         /./),    null)
+throws(f.maskBy, new String('not string'), /./)
+
+// List: only nil or list, apply masks recursively, drop remainder
+eq(f.maskBy(undefined,       []),           [])
+eq(f.maskBy([10, 'one'],     [dupe, dupe]), [20, 'oneone'])
+eq(f.maskBy(args(10, 'one'), [dupe, dupe]), [20, 'oneone'])
+eq(f.maskBy([10],            [dupe, 30]),   [20, 30])
+eq(f.maskBy([10, 30],        [dupe]),       [20])
+throws(f.maskBy, f.maskBy, [])
+throws(f.maskBy, {}, [])
+throws(f.maskBy, 'not list', [])
+
+// Struct: only nil or non-list object, apply masks recursively, drop other properties
+eq(f.maskBy(undefined,             {}),                     {})
+eq(f.maskBy({one: 10, two: 'one'}, {one: dupe, two: dupe}), {one: 20, two: 'oneone'})
+eq(f.maskBy({one: 10},             {one: dupe, two: 30}),   {one: 20, two: 30})
+eq(f.maskBy({one: 10, two: 'one'}, {one: dupe}),            {one: 20})
+throws(f.maskBy, f.maskBy, {})
+throws(f.maskBy, [], {})
+throws(f.maskBy, 'not dict', {})

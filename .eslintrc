@@ -58,7 +58,7 @@
     "no-loop-func": "error",
     "no-new": "error",
     "no-new-func": "error",
-    "no-new-wrappers": "error",
+    // "no-new-wrappers": "error",
     "no-octal": "error",
     "no-octal-escape": "error",
     "no-proto": "error",

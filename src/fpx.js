@@ -114,8 +114,8 @@ export function isDict(value) {
   return proto === null || proto === NOP
 }
 
-function isNonListObject(value) {
-  return isComplex(value) && !isList(value)
+export function isStruct(value) {
+  return isObject(value) && !isList(value)
 }
 
 export function isArray(value) {
@@ -173,11 +173,11 @@ export function isEmpty(value) {
 
 export function testBy(value, pattern) {
   return (
-    isFunction(pattern)  ? pattern(value) :
+    isFunction(pattern)  ? bool(pattern(value)) :
     isPrimitive(pattern) ? is(value, pattern) :
-    isRegExp(pattern)    ? pattern.test(value) :
+    isRegExp(pattern)    ? isString(value) && pattern.test(value) :
     isList(pattern)      ? isList(value) && every(pattern, testAt, value) :
-    isDict(pattern)      ? isComplex(value) && everyVal(pattern, testAt, value) :
+    isStruct(pattern)    ? isStruct(value) && everyVal(pattern, testAt, value) :
     false
   )
 }
@@ -186,9 +186,9 @@ function testAt(pattern, key, value) {
   return testBy(value[key], pattern)
 }
 
-function everyVal(dict, fun, a, b, c, d, e) {
-  for (const key in dict) {
-    if (!fun(dict[key], key, a, b, c, d, e)) return false
+function everyVal(struct, fun, a, b, c, d, e) {
+  for (const key in struct) {
+    if (!fun(struct[key], key, a, b, c, d, e)) return false
   }
   return true
 }
@@ -200,15 +200,27 @@ export function test(pattern) {
 /** Casts **/
 
 export function onlyString(value) {
-  return isString(value) ? value : ''
+  if (value == null) return ''
+  validate(value, isString)
+  return value
 }
 
 export function onlyList(value) {
-  return isList(value) ? value : []
+  if (value == null) return []
+  validate(value, isList)
+  return value
 }
 
 export function onlyDict(value) {
-  return isDict(value) ? value : {}
+  if (value == null) return {}
+  validate(value, isDict)
+  return value
+}
+
+export function onlyStruct(value) {
+  if (value == null) return {}
+  validate(value, isStruct)
+  return value
 }
 
 export function toArray(value) {
@@ -218,35 +230,28 @@ export function toArray(value) {
 /** List **/
 
 export function each(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) fun(list[i], i, a, b, c, d, e)
-  }
+  for (let i = 0; i < list.length; i += 1) fun(list[i], i, a, b, c, d, e)
 }
 
 export function fold(list, acc, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) acc = fun(acc, list[i], i, a, b, c, d, e)
-  }
+  for (let i = 0; i < list.length; i += 1) acc = fun(acc, list[i], i, a, b, c, d, e)
   return acc
 }
 
 export function foldRight(list, acc, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = list.length - 1; i >= 0; i -= 1) acc = fun(acc, list[i], i, a, b, c, d, e)
-  }
+  for (let i = list.length - 1; i >= 0; i -= 1) acc = fun(acc, list[i], i, a, b, c, d, e)
   return acc
 }
 
 export function map(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list == null) return []
-  validate(list, isList)
   const out = Array_(list.length)
   for (let i = 0; i < list.length; i += 1) out[i] = fun(list[i], i, a, b, c, d, e)
   return out
@@ -265,13 +270,11 @@ export function mapFilter(list, fun, a, b, c, d, e) {
 }
 
 export function filter(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
   const out = []
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      if (fun(list[i], i, a, b, c, d, e)) out.push(list[i])
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    if (fun(list[i], i, a, b, c, d, e)) out.push(list[i])
   }
   return out
 }
@@ -290,35 +293,31 @@ export function compact(list) {
 }
 
 export function find(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list == null) return undefined
   return list[findIndex(list, fun, a, b, c, d, e)]
 }
 
 export function findRight(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list == null) return undefined
   return list[findIndexRight(list, fun, a, b, c, d, e)]
 }
 
 export function findIndex(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      if (fun(list[i], i, a, b, c, d, e)) return i
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    if (fun(list[i], i, a, b, c, d, e)) return i
   }
   return -1
 }
 
 export function findIndexRight(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = list.length; --i >= 0;) {
-      if (fun(list[i], i, a, b, c, d, e)) return i
-    }
+  for (let i = list.length; --i >= 0;) {
+    if (fun(list[i], i, a, b, c, d, e)) return i
   }
   return -1
 }
@@ -340,43 +339,35 @@ export function includes(list, value) {
 }
 
 export function procure(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      const result = fun(list[i], i, a, b, c, d, e)
-      if (result) return result
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    const result = fun(list[i], i, a, b, c, d, e)
+    if (result) return result
   }
   return undefined
 }
 
 export function every(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      if (!fun(list[i], i, a, b, c, d, e)) return false
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    if (!fun(list[i], i, a, b, c, d, e)) return false
   }
   return true
 }
 
 export function some(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      if (fun(list[i], i, a, b, c, d, e)) return true
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    if (fun(list[i], i, a, b, c, d, e)) return true
   }
   return false
 }
 
 export function slice(list, start, end) {
-  if (list == null) return []
-  validate(list, isList)
-  return NAP.slice.call(list, start, end)
+  return NAP.slice.call(onlyList(list), start, end)
 }
 
 export function append(list, value) {
@@ -402,8 +393,7 @@ export function insertAtIndex(list, index, value) {
 }
 
 export function removeAtIndex(list, index) {
-  if (list == null) list = []
-  else validate(list, isList)
+  list = onlyList(list)
   validate(index, isInteger)
   if (isNatural(index) && index < list.length) {
     list = map(list, id)
@@ -454,9 +444,7 @@ function pushFlatDeep(value, _key, out) {
 
 export const first = head
 export function head(list) {
-  if (list == null) return undefined
-  validate(list, isList)
-  return list[0]
+  return onlyList(list)[0]
 }
 
 export function tail(list) {
@@ -464,30 +452,27 @@ export function tail(list) {
 }
 
 export function init(list) {
-  if (list == null) return []
-  validate(list, isList)
+  list = onlyList(list)
   return slice(list, 0, list.length - 1)
 }
 
 export function last(list) {
-  if (list == null) return undefined
-  validate(list, isList)
+  list = onlyList(list)
   return list[list.length - 1]
 }
 
 export function take(list, count) {
-  validate(count, isInteger)
+  validate(count, isNatural)
   return slice(list, 0, count)
 }
 
 export function drop(list, count) {
-  validate(count, isInteger)
+  validate(count, isNatural)
   return slice(list, count)
 }
 
 export function reverse(list) {
-  if (list == null) return []
-  validate(list, isList)
+  list = onlyList(list)
   const len = list.length
   const out = Array_(len)
   for (let i = len; --i >= 0;) out[len - i - 1] = list[i]
@@ -518,15 +503,13 @@ function sortCompare(left, right) {
 }
 
 export function intersection(left, right) {
+  left = onlyList(left)
+  right = onlyList(right)
+  const lr = left.length <= right.length
+  const lesser = lr ? left : right
+  const greater = lr ? right : left
   const out = []
-  if (left != null && right != null) {
-    validate(left, isList)
-    validate(right, isList)
-    const lr = left.length <= right.length
-    const lesser = lr ? left : right
-    const greater = lr ? right : left
-    each(greater, intersectionAdd, out, lesser)
-  }
+  each(greater, intersectionAdd, out, lesser)
   return out
 }
 
@@ -535,31 +518,27 @@ function intersectionAdd(value, _key, out, control) {
 }
 
 export function keyBy(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
   const out = {}
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      const value = list[i]
-      const key = fun(value, i, a, b, c, d, e)
-      if (isKey(key)) out[key] = value
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    const value = list[i]
+    const key = fun(value, i, a, b, c, d, e)
+    if (isKey(key)) out[key] = value
   }
   return out
 }
 
 export function groupBy(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
   const out = {}
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      const value = list[i]
-      const groupKey = fun(value, i, a, b, c, d, e)
-      if (isKey(groupKey)) {
-        if (!has.call(out, groupKey)) out[groupKey] = []
-        out[groupKey].push(value)
-      }
+  for (let i = 0; i < list.length; i += 1) {
+    const value = list[i]
+    const groupKey = fun(value, i, a, b, c, d, e)
+    if (isKey(groupKey)) {
+      if (!has.call(out, groupKey)) out[groupKey] = []
+      out[groupKey].push(value)
     }
   }
   return out
@@ -570,34 +549,30 @@ export function uniq(list) {
 }
 
 export function uniqBy(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
   const out = []
-  if (list != null) {
-    validate(list, isList)
-    const attrs = []
-    for (let i = 0; i < list.length; i += 1) {
-      const value = list[i]
-      const attr = fun(value, i, a, b, c, d, e)
-      if (!includes(attrs, attr)) {
-        attrs.push(attr)
-        out.push(value)
-      }
+  const attrs = []
+  for (let i = 0; i < list.length; i += 1) {
+    const value = list[i]
+    const attr = fun(value, i, a, b, c, d, e)
+    if (!includes(attrs, attr)) {
+      attrs.push(attr)
+      out.push(value)
     }
   }
   return out
 }
 
 export function partition(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
   const accepted = []
   const rejected = []
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      const value = list[i]
-      if (fun(value, i, a, b, c, d, e)) accepted.push(value)
-      else rejected.push(value)
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    const value = list[i]
+    if (fun(value, i, a, b, c, d, e)) accepted.push(value)
+    else rejected.push(value)
   }
   return [accepted, rejected]
 }
@@ -607,14 +582,12 @@ export function sum(list) {
 }
 
 export function sumBy(list, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(fun, isFunction)
   let acc = 0
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      const value = fun(list[i], i, a, b, c, d, e)
-      if (isFinite(value)) acc += value
-    }
+  for (let i = 0; i < list.length; i += 1) {
+    const value = fun(list[i], i, a, b, c, d, e)
+    if (isFinite(value)) acc += value
   }
   return acc
 }
@@ -658,19 +631,17 @@ export function findMaxBy(list, fun, a, b, c, d, e) {
 
 // WTF too large
 function findNumBy(list, compare, fun, a, b, c, d, e) {
+  list = onlyList(list)
   validate(compare, isFunction)
   validate(fun, isFunction)
   let winningValue = undefined
   let winningAttr = undefined
-  if (list != null) {
-    validate(list, isList)
-    for (let i = 0; i < list.length; i += 1) {
-      const value = list[i]
-      const attr = fun(value, i, a, b, c, d, e)
-      if (isFinite(attr) && (winningAttr == null || compare(attr, winningAttr))) {
-        winningValue = value
-        winningAttr = attr
-      }
+  for (let i = 0; i < list.length; i += 1) {
+    const value = list[i]
+    const attr = fun(value, i, a, b, c, d, e)
+    if (isFinite(attr) && (winningAttr == null || compare(attr, winningAttr))) {
+      winningValue = value
+      winningAttr = attr
     }
   }
   return winningValue
@@ -686,7 +657,7 @@ export function range(start, end) {
 }
 
 /**
- * Dict
+ * Struct
  */
 
 export function get(value, key) {
@@ -710,11 +681,8 @@ export function getter(key) {
 }
 
 // Like `Object.keys`, but only for non-list objects.
-//
-// Note: at the moment of writing, other parts of Fpx expect this function to
-// produce empty results for other inputs.
 export function keys(value) {
-  return isNonListObject(value) ? Object_.keys(value) : []
+  return Object_.keys(onlyStruct(value))
 }
 
 // Like `Object.values`, but only for non-list objects.
@@ -724,89 +692,94 @@ export function values(value) {
   return out
 }
 
-export function eachVal(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+// Like `Object.entries`, but only for non-list objects.
+export function entries(value) {
+  const out = keys(value)
+  for (let i = 0; i < out.length; i += 1) out[i] = [out[i], value[out[i]]]
+  return out
+}
+
+export function eachVal(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    fun(dict[key], key, a, b, c, d, e)
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    fun(struct[key], key, a, b, c, d, e)
   }
 }
 
-export function foldVals(dict, acc, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function foldVals(struct, acc, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    acc = fun(acc, dict[key], key, a, b, c, d, e)
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    acc = fun(acc, struct[key], key, a, b, c, d, e)
   }
   return acc
 }
 
-export function mapVals(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function mapVals(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    out[key] = fun(dict[key], key, a, b, c, d, e)
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    out[key] = fun(struct[key], key, a, b, c, d, e)
   }
   return out
 }
 
-export function mapKeys(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function mapKeys(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    const value = dict[key]
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    const value = struct[key]
     const newKey = fun(key, value, a, b, c, d, e)
     if (isKey(newKey)) out[newKey] = value
   }
   return out
 }
 
-export function mapValsSort(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function mapValsSort(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
-  const out = keys(dict).sort()
+  const out = keys(struct).sort()
   for (let i = -1; ++i < out.length;) {
     const key = out[i]
-    out[i] = fun(dict[key], key, a, b, c, d, e)
+    out[i] = fun(struct[key], key, a, b, c, d, e)
   }
   return out
 }
 
-export function pickBy(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function pickBy(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    const value = dict[key]
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    const value = struct[key]
     if (fun(value, key, a, b, c, d, e)) out[key] = value
   }
   return out
 }
 
-export function omitBy(dict, fun, a, b, c, d, e) {
+export function omitBy(struct, fun, a, b, c, d, e) {
   validate(fun, isFunction)
-  return pickBy(dict, notBy, fun, a, b, c, d, e)
+  return pickBy(struct, notBy, fun, a, b, c, d, e)
 }
 
-export function pickKeys(dict, keys) {
+export function pickKeys(struct, keys) {
+  struct = onlyStruct(struct)
   validateEach(keys, isKey)
   const out = {}
-  if (dict != null) {
-    validate(dict, isNonListObject)
-    each(keys, pickKnown, dict, out)
-  }
+  each(keys, pickKnown, struct, out)
   return out
 }
 
@@ -814,10 +787,10 @@ function pickKnown(key, _i, src, out) {
   if (has.call(src, key)) out[key] = src[key]
 }
 
-export function omitKeys(dict, keys) {
+export function omitKeys(struct, keys) {
   validateEach(keys, isKey)
   const out = {}
-  assign(out, dict)
+  assign(out, struct)
   each(keys, deleteAt, out)
   return out
 }
@@ -826,41 +799,41 @@ function deleteAt(key, _i, out) {
   delete out[key]
 }
 
-export function findVal(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function findVal(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    const value = dict[key]
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    const value = struct[key]
     if (fun(value, key, a, b, c, d, e)) return value
   }
   return undefined
 }
 
-export function findKey(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function findKey(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    if (fun(dict[key], key, a, b, c, d, e)) return key
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    if (fun(struct[key], key, a, b, c, d, e)) return key
   }
   return undefined
 }
 
-export function invert(dict) {
-  return invertBy(dict, id)
+export function invert(struct) {
+  return invertBy(struct, id)
 }
 
-export function invertBy(dict, fun, a, b, c, d, e) {
-  if (dict != null) validate(dict, isNonListObject)
+export function invertBy(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
-  const dictKeys = keys(dict)
-  for (let i = 0; i < dictKeys.length; i += 1) {
-    const key = dictKeys[i]
-    const newKey = fun(dict[key], key, a, b, c, d, e)
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    const newKey = fun(struct[key], key, a, b, c, d, e)
     if (isKey(newKey)) out[newKey] = key
   }
   return out
@@ -869,9 +842,13 @@ export function invertBy(dict, fun, a, b, c, d, e) {
 /** Coll **/
 
 // Only collections (lists and objects) have a size. Functions and primitives,
-// including strings, are considered empty. Also, see `isEmpty`.
+// including strings, are considered empty.
 export function size(value) {
-  return isList(value) ? value.length : keys(value).length
+  return isList(value)
+    ? value.length
+    : isObject(value)
+    ? keys(value).length
+    : 0
 }
 
 export function vacate(value) {
@@ -930,9 +907,9 @@ export function maskBy(value, pattern) {
   return (
     isFunction(pattern)  ? pattern(value) :
     isPrimitive(pattern) ? pattern :
-    isRegExp(pattern)    ? pattern.test(value) :
+    isRegExp(pattern)    ? onlyString(value).match(pattern) :
     isList(pattern)      ? map(pattern, maskAt, onlyList(value)) :
-    isDict(pattern)      ? mapVals(pattern, maskAt, value || {}) :
+    isStruct(pattern)    ? mapVals(pattern, maskAt, onlyStruct(value)) :
     undefined
   )
 }

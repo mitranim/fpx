@@ -1,6 +1,6 @@
 ## Overview
 
-`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 13 KiB minified.
+`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 12 KiB minified.
 
 Uses ES2015 exports, compatible with tree shaking.
 
@@ -21,6 +21,42 @@ import * as f from 'fpx'
 See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
+
+### 0.7.0
+
+New term: non-list objects are now called "structs". All object-related functions in Fpx validate their inputs via `onlyStruct`.
+
+New functions:
+
+  * `isStruct`
+  * `onlyStruct`
+  * `entries`
+
+Breaking: `keys` and `values` are stricter; they're now consistent with all other object-related functions.
+
+  * `keys` now accepts only `null`, `undefined`, and non-list objects, rejecting other inputs with an exception
+  * `values` now accepts only `null`, `undefined`, and non-list objects, rejecting other inputs with an exception
+
+Breaking: cast functions now serve as nil-tolerant assertions.
+
+  * `onlyString` now accepts only `null`, `undefined`, and strings, rejecting other inputs with an exception
+  * `onlyList` now accepts only `null`, `undefined`, and lists, rejecting other inputs with an exception
+  * `onlyDict` now accepts only `null`, `undefined`, and dicts, rejecting other inputs with an exception
+
+Breaking `testBy` changes:
+
+  * function pattern: always convert result to boolean
+  * regexp pattern: apply only to string input; no implicit conversion
+  * object pattern: apply only to non-list object; ignore list and function inputs
+
+Breaking `maskBy` changes:
+
+  * regexp pattern: use `onlyString` to validate input
+  * regexp pattern: use `String.prototype.match` instead of `RegExp.prototype.test`
+  * list pattern: use `onlyList` to validate input
+  * object pattern: use `onlyStruct` to validate input
+
+Breaking: `take` and `drop` now accept only natural numbers as the second argument, rejecting negative integers and other inputs.
 
 ### 0.6.0
 
