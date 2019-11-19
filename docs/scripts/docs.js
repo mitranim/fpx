@@ -11,7 +11,7 @@ window.addEventListener('scroll', scroller.call)
 window.addEventListener('wheel', function preventSpill(event) {
   const node = findAncestor(event.target, shouldPreventSpill)
   if (node) preventScrollSpill(node, event)
-})
+}, {passive: false})
 
 function updateLinksAndHash() {
   const id = f.procure(document.querySelectorAll('#main [id]'), getVisibleId)
