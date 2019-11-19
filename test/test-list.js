@@ -345,8 +345,8 @@ eq(
   f.sortBy([{id: 3}, {id: 22}, {id: 111}], x => x.id),
   [{id: 111}, {id: 22}, {id: 3}]
 )
-f.sortBy(['one', 'two'], stash, 10, 20, 30)
-eq(unstash(), [['one', 10, 20, 30, undefined], ['two', 10, 20, 30, undefined]])
+f.sortBy(['arg', 'arg'], stash, 10, 20, 30)
+eq(unstash(), [['arg', 10, 20, 30, undefined], ['arg', 10, 20, 30, undefined]])
 throws(f.sortBy)
 throws(f.sortBy, [])
 throws(f.sortBy, 'not list', id)

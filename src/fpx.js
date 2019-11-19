@@ -9,7 +9,7 @@ const NAP     = Array_.prototype
 
 /** Fun **/
 
-// Tries to avoid `arguments` allocation to minimize the performance overhead.
+// Tries to avoid allocation of `arguments` to minimize performance overhead.
 // As a side effect, the function is called with `this = fun`.
 export function call(fun) {
   return fun.call.apply(fun, arguments)
@@ -20,7 +20,7 @@ export function apply(fun, args) {
   return fun.apply(fun, args)
 }
 
-// Tries to avoid `arguments` allocation to minimize the performance overhead.
+// Tries to avoid allocation of `arguments` to minimize performance overhead.
 // As a side effect, the function is called with `this = fun`.
 export function bind(fun) {
   return fun.bind.apply(fun, arguments)
@@ -923,8 +923,12 @@ export function mask(pattern) {
 }
 
 export function validate(value, test) {
-  if (!isFunction(test)) throw Error(`Expected validator function, got ${show(test)}`)
-  if (!test(value)) throw Error(`Expected ${show(value)} to satisfy test ${show(test)}`)
+  if (!isFunction(test)) {
+    throw Error(`Expected validator function, got ${show(test)}`)
+  }
+  if (!test(value)) {
+    throw Error(`Expected ${show(value)} to satisfy test ${show(test)}`)
+  }
 }
 
 export function validateEach(list, test) {

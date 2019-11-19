@@ -2,7 +2,6 @@
   "plugins": [
     ["@babel/plugin-check-constants",                {"loose": true}],
     ["@babel/plugin-transform-block-scoping",        {"loose": true}],
-    ["@babel/plugin-transform-destructuring",        {"loose": true}],
     ["@babel/plugin-transform-shorthand-properties", {"loose": true}],
     ["@babel/plugin-transform-template-literals",    {"loose": true}]
   ]

@@ -1,6 +1,6 @@
 ## Overview
 
-`fpx`: Functional Programming eXtensions for JavaScript. [Source on GitHub](https://github.com/Mitranim/fpx/blob/master/src/fpx.js).
+`fpx`: Functional Programming eXtensions for JavaScript. [Source on GitHub](https://github.com/mitranim/fpx/blob/master/src/fpx.js).
 
 Lightweight replacement for Lodash, Underscore, etc. Differences:
 
@@ -15,15 +15,13 @@ Written as an ES2015 module for compatibility with tree shaking. When building a
 
 See sibling libraries:
 
-  * Emerge: https://github.com/Mitranim/emerge. Efficient patching and merging of plain JS data.
+  * Emerge: https://github.com/mitranim/emerge. Efficient patching and merging of plain JS data.
   * Espo: https://mitranim.com/espo/. Reactive and stateful programming: observables, implicit reactivity, automatic resource cleanup.
 
 Install from NPM. Current version: `{{$.VERSION}}`.
 
 ```sh
 npm i -E fpx
-# or
-yarn add -E fpx
 ```
 
 All examples on this page imply an import:
@@ -862,14 +860,16 @@ f.onlyStruct('not struct')
 
 ### `toArray(value)`
 
-Returns `value` when `isArray`. If `value` is a non-array list, converts it to an `Array`. Otherwise replaces with `[]`. Sometimes useful for converting `arguments` or other non-array lists to arrays.
+Nil-tolerant cast. Converts any array-like into an `Array`. If the input is
+already an `Array`, it's returned as-is. Converts `null` and `undefined` to
+`[]`.
 
 ```js
-f.toArray([10, 20])
-// [10, 20]
-
 f.toArray()
 // []
+
+f.toArray([10, 20])
+// [10, 20]
 
 f.toArray(function args() {}(10, 20))
 // [10, 20]
@@ -1738,12 +1738,11 @@ Utils for dealing with non-list objects, called "structs" or "dictionaries" in F
 Common rules:
 
   * accept `null` and `undefined`, treating them as `{}`
+  * accept non-list objects; reject lists and all other inputs with an exception
   * don't modify the input; return a new version instead
   * accept [bonus arguments](#bonus-arguments) for the operator function
 
-Getter functions like `get` accept any input, ignoring non-objects.
-
-Iteration functions accept `null`, `undefined`, and non-list objects, rejecting any other input with an exception.
+Property getters `get`, `scan`, `getIn` and `getter` work on _any_ input, even primitives.
 
 ---
 
@@ -1806,7 +1805,7 @@ f.getIn({one: {two: 2}}, ['one', 'two'])
 
 ### `getter(key)`
 
-Delayed `get`. Equivalent to `value => get(value, key)`.
+Delayed `get`. Equivalent to this function: `x => get(x, key)`.
 
 ```js
 f.map([{value: 10}, {value: 20}], f.getter('value'))
@@ -2082,10 +2081,13 @@ Functions that work on both lists and dicts.
 
 ### `size(value)`
 
-Depends on `value`'s type:
+Collection size:
+
   * [`isList`](#-islist-value-) → length
   * [`isObject`](#-isobject-value-) → number of [`keys`](#-keys-dict-)
   * primitive or function → `0`
+
+Note that since strings are not considered collections, this function returns `0` for a string.
 
 ```js
 f.size([10, 20])
@@ -2093,6 +2095,9 @@ f.size([10, 20])
 
 f.size({one: 10, two: 20})
 // 2
+
+f.size('string')
+// 0
 
 f.size()
 // 0
@@ -2466,4 +2471,4 @@ f.show({one: 10, two: 20})
 
 ## Miscellanious
 
-I'm receptive to suggestions. If this library _almost_ satisfies you but needs changes, open an issue on [GitHub](https://github.com/Mitranim/fpx/issues) or chat me up. Contacts: https://mitranim.com/#contacts.
+I'm receptive to suggestions. If this library _almost_ satisfies you but needs changes, open an issue on [GitHub](https://github.com/mitranim/fpx/issues) or chat me up. Contacts: https://mitranim.com/#contacts.

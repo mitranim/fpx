@@ -117,7 +117,7 @@
     "indent": ["error", 2, {
       "SwitchCase": 1,
       "flatTernaryExpressions": true,
-      "ignoredNodes": ["ConditionalExpression"]
+      "ignoredNodes": ["ConditionalExpression"],
     }],
     "keyword-spacing": "error",
     // "lines-around-comment": "error",

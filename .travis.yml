@@ -1,7 +1,7 @@
 language: node_js
 node_js: node
-script: yarn run compile
-cache: yarn
+script: npm run compile
+cache: npm
 deploy:
   provider: pages
   github_token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard

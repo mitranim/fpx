@@ -29,4 +29,4 @@ HOF/FCF indirection may cause significant deoptimization and should be internall
 
 Example of HOF/FCF deoptimization in V8. In an iteration function like `groupBy`, we branch on `isList` into `each` or `eachVal`. Branching into direct calls rather than assigning `each` or `eachVal` to a shared variable and calling it appears to run slightly faster, but costs us 18 bytes in the minified version. I'm not sure if it's actually faster in real code rather than microbenchmarks.
 
-In modern JS engines, `.apply(nil, arguments)` is often said to be "special" and equivalent to directly calling the function with the arguments. There are cases where this doesn't hold, at least in V8. Fpx has a few functions, such as `flatMap` or `mapFilter`, where using `.apply` is significantly slower than passing arguments directly.
+In modern JS engines, `.apply(nil, arguments)` is often said to be "special" and equivalent to directly calling the function with the arguments. There are cases where this doesn't hold, at least in V8. Fpx has a few functions, such as `flatMap` or `mapFilter`, where using `.apply` is significantly slower than passing arguments one-by-one.
