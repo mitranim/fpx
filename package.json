@@ -41,7 +41,7 @@
     "gulp-terser": "1.2.0",
     "gulp-watch": "5.0.1",
     "highlight.js": "9.12.0",
-    "marked": "0.3.12",
+    "marked": "0.7.0",
     "statil": "0.9.0"
   }
 }
