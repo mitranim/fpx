@@ -2047,6 +2047,44 @@ f.findKey({one: 10, two: 13}, isOdd)
 
 ---
 
+### `everyVal(dict, fun, a, b, c)`
+
+where `fun: ƒ(value, key, a, b, c)`
+
+Similar to [`every`](#-every-list-test-a-b-c-), but for dict values:
+
+```js
+f.everyVal({}, f.isBoolean)
+// true
+
+f.everyVal({one: true, two: false}, f.isBoolean)
+// true
+
+f.everyVal({one: true, two: false, three: 10}, f.isBoolean)
+// false
+```
+
+---
+
+### `someVal(dict, fun, a, b, c)`
+
+where `fun: ƒ(value, key, a, b, c)`
+
+Similar to [`some`](#-some-list-test-a-b-c-), but for dict values:
+
+```js
+f.someVal({}, f.isBoolean)
+// false
+
+f.someVal({one: 10, two: 20}, f.isBoolean)
+// false
+
+f.someVal({one: true, two: false, three: 10}, f.isBoolean)
+// true
+```
+
+---
+
 ### `invert(dict)`
 
 Returns a version of `dict` with keys and values swapped. Values must satisfy [`isKey`](#-iskey-value-) to become keys; ones that don't are silently dropped from the output.

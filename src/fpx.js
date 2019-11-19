@@ -186,13 +186,6 @@ function testAt(pattern, key, value) {
   return testBy(value[key], pattern)
 }
 
-function everyVal(struct, fun, a, b, c, d, e) {
-  for (const key in struct) {
-    if (!fun(struct[key], key, a, b, c, d, e)) return false
-  }
-  return true
-}
-
 export function test(pattern) {
   return function test_(value) {return testBy(value, pattern)}
 }
@@ -820,6 +813,28 @@ export function findKey(struct, fun, a, b, c, d, e) {
     if (fun(struct[key], key, a, b, c, d, e)) return key
   }
   return undefined
+}
+
+export function everyVal(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
+  validate(fun, isFunction)
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    if (!fun(struct[key], key, a, b, c, d, e)) return false
+  }
+  return true
+}
+
+export function someVal(struct, fun, a, b, c, d, e) {
+  struct = onlyStruct(struct)
+  validate(fun, isFunction)
+  const inputKeys = keys(struct)
+  for (let i = 0; i < inputKeys.length; i += 1) {
+    const key = inputKeys[i]
+    if (fun(struct[key], key, a, b, c, d, e)) return true
+  }
+  return false
 }
 
 export function invert(struct) {

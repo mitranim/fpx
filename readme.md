@@ -22,6 +22,13 @@ See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
 
+### 0.7.1
+
+New functions:
+
+  * `everyVal`: same as `every` but for struct values
+  * `someVal`: same as `some` but for struct values
+
 ### 0.7.0
 
 New term: non-list objects are now called "structs". All object-related functions in Fpx validate their inputs via `onlyStruct`.
