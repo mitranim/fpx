@@ -56,7 +56,7 @@ In Fpx, I strive to keep the code and the algorithms dead simple, with as few un
 
 ### Strictness
 
-Fpx functions tend to be somewhat stricter than their built-in counterparts, and _much_ stricter than the Lodash counterparts. They tend to work _either_ on lists ([`fold`](#-fold-list-init-fun-a-b-c-)) _or_ dicts ([`foldVals`](#-foldvals-dict-init-fun-a-b-c-)), not both. List functions also don't accept strings. This prevents subtle gotchas.
+Fpx functions tend to be somewhat stricter than their built-in counterparts, and _much_ stricter than the Lodash counterparts. They tend to work _either_ on lists ([`fold`](#fold-list-init-fun-a-b-c-)) _or_ dicts ([`foldVals`](#foldvals-dict-init-fun-a-b-c-)), not both. List functions also don't accept strings. This prevents subtle gotchas.
 
 On the other hand, collection functions accept `null` and `undefined`, which is very useful in practice. This would not be possible with methods, since methods must be invoked on an object.
 
@@ -92,7 +92,7 @@ someFunction({one: 10})
 
 So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, which I consider a good tradeoff.
 
-To support this style of coding, Fpx provides [`validate`](#-validate-value-test-) and a bevy of boolean tests.
+To support this style of coding, Fpx provides [`validate`](#validate-value-test-) and a bevy of boolean tests.
 
 ---
 
@@ -109,7 +109,7 @@ There's potential for improvement, but I don't have infinite spare time for micr
 
 ## Bonus Arguments
 
-In Fpx, all collection functions, such as [`map`](#-map-list-fun-a-b-c-), pass up to 3 additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
+In Fpx, all collection functions, such as [`map`](#map-list-fun-a-b-c-), pass up to 3 additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
 
 ```js
 // local context
@@ -146,7 +146,7 @@ This may change with future advancements in JS engines.
 
 ## Fun
 
-Miscellanious utilities and transforms for functions.
+Miscellaneous utilities and transforms for functions.
 
 ---
 
@@ -425,9 +425,9 @@ f.isKey(undefined)
 // false
 ```
 
-In other words, this is a subset of [`isPrimitive`](#-isprimitive-value-) that excludes `null`, `undefined`, `NaN`, and `±Infinity`. These values are often produced on accident, and you almost never want them as your dict keys.
+In other words, this is a subset of [`isPrimitive`](#isprimitive-value-) that excludes `null`, `undefined`, `NaN`, and `±Infinity`. These values are often produced on accident, and you almost never want them as your dict keys.
 
-Fpx uses `isKey` to validate keys in functions like [`keyBy`](#-keyby-list-fun-a-b-c-).
+Fpx uses `isKey` to validate keys in functions like [`keyBy`](#keyby-list-fun-a-b-c-).
 
 ---
 
@@ -486,9 +486,9 @@ f.isFunction(isFunction)
 
 True if `value` is a non-`null` object. This includes plain dicts, arrays, regexps, user-defined "classes", built-in classes, and so on. Doesn't count functions as objects, even though _technically_ they are.
 
-Note: this is _not_ equivalent to lodash's `_.isObject`, which counts functions as objects. See [`isComplex`](#-iscomplex-value-) for that.
+Note: this is _not_ equivalent to lodash's `_.isObject`, which counts functions as objects. See [`isComplex`](#iscomplex-value-) for that.
 
-For plain objects used as dictionaries, see [`isDict`](#-isdict-value-). For fancy non-list objects, see [`isStruct`](#-isstruct-value-).
+For plain objects used as dictionaries, see [`isDict`](#isdict-value-). For fancy non-list objects, see [`isStruct`](#isstruct-value-).
 
 ```js
 f.isObject('blah')
@@ -774,7 +774,7 @@ f.testBy(x, {a: {b: 'c'}})  ≡  f.isStruct(x) && f.testBy(x.a, {b: 'c'})
 
 ### `test(pattern)`
 
-Takes a pattern and returns a version of [`testBy`](#-testby-value-pattern-) bound to that pattern. See the rules above.
+Takes a pattern and returns a version of [`testBy`](#testby-value-pattern-) bound to that pattern. See the rules above.
 
 ```js
 f.test(pattern)
@@ -792,7 +792,7 @@ Type coercions and replacements.
 
 ### `onlyString(value)`
 
-Nil-tolerant string assertion. Replaces `null` or `undefined` with `''`, otherwise asserts [`isString`](#-isstring-value-) and returns `value`.
+Nil-tolerant string assertion. Replaces `null` or `undefined` with `''`, otherwise asserts [`isString`](#isstring-value-) and returns `value`.
 
 ```js
 f.onlyString()
@@ -809,7 +809,7 @@ f.onlyString(['not string'])
 
 ### `onlyList(value)`
 
-Nil-tolerant list assertion. Replaces `null` or `undefined` with `[]`, otherwise asserts [`isList`](#-islist-value-) and returns `value`. Used internally in [list functions](#list).
+Nil-tolerant list assertion. Replaces `null` or `undefined` with `[]`, otherwise asserts [`isList`](#islist-value-) and returns `value`. Used internally in [list functions](#list).
 
 ```js
 f.onlyList()
@@ -826,7 +826,7 @@ f.onlyList('not list')
 
 ### `onlyDict(value)`
 
-Nil-tolerant dict assertion. Replaces `null` or `undefined` with `{}`, otherwise asserts [`isDict`](#-isdict-value-) and returns `value`.
+Nil-tolerant dict assertion. Replaces `null` or `undefined` with `{}`, otherwise asserts [`isDict`](#isdict-value-) and returns `value`.
 
 ```js
 f.onlyDict()
@@ -843,7 +843,7 @@ f.onlyDict('not dict')
 
 ### `onlyStruct(value)`
 
-Nil-tolerant struct assertion. Replaces `null` or `undefined` with `{}`, otherwise asserts [`isStruct`](#-isstruct-value-) and returns `value`. Used internally in [struct functions](#struct).
+Nil-tolerant struct assertion. Replaces `null` or `undefined` with `{}`, otherwise asserts [`isStruct`](#isstruct-value-) and returns `value`. Used internally in [struct functions](#struct).
 
 ```js
 f.onlyStruct()
@@ -884,7 +884,7 @@ List manipulation utils.
 Common rules:
 
   * accept `null` and `undefined`, treating them as `[]`
-  * accept inputs that satisfy [`isList`](#-islist-value-): `arguments`, typed arrays, Node buffers, DOM lists, etc.
+  * accept inputs that satisfy [`isList`](#islist-value-): `arguments`, typed arrays, Node buffers, DOM lists, etc.
   * reject other inputs with an exception
   * don't modify the input; return a new version instead
   * accept [bonus arguments](#bonus-arguments) for the operator function
@@ -1030,7 +1030,7 @@ _.filter([{val: 10}, {val: 20}], {val: 10})
 // [{val: 10}]
 ```
 
-Fpx provides [`test`](#-test-pattern-):
+Fpx provides [`test`](#test-pattern-):
 
 ```js
 f.filter([{val: 10}, {val: 20}], f.test({val: 10}))
@@ -1122,7 +1122,7 @@ f.findIndexRight([10, true, 20, false, 30], f.isBoolean)
 Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf), with the following differences:
 
   * works on `null`, `undefined`, and array-likes
-  * uses [`is`](#-is-one-other-) rather than `===` and therefore detects `NaN`
+  * uses [`is`](#is-one-other-) rather than `===` and therefore detects `NaN`
 
 ```js
 f.indexOf([10, NaN, NaN, 20], NaN)
@@ -1136,7 +1136,7 @@ f.indexOf([10, NaN, NaN, 20], NaN)
 Like [`Array.prototype.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf), with the following differences:
 
   * works on `null`, `undefined`, and array-likes
-  * uses [`is`](#-is-one-other-) rather than `===` and therefore detects `NaN`
+  * uses [`is`](#is-one-other-) rather than `===` and therefore detects `NaN`
 
 ```js
 f.lastIndexOf([10, NaN, NaN, 20], NaN)
@@ -1163,7 +1163,7 @@ f.includes([10, 20, NaN], NaN)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Similar to [`find`](#-find-list-test-a-b-c-), but returns the first truthy result of calling `fun`, rather than the corresponding list element.
+Similar to [`find`](#find-list-test-a-b-c-), but returns the first truthy result of calling `fun`, rather than the corresponding list element.
 
 ```js
 function double(num) {return num * 2}
@@ -1296,7 +1296,7 @@ f.removeAtIndex(['zero', 'one', 'two'], 10)
 
 ### `adjoin(list, value)`
 
-Appends `value` to `list`, duplicate-free. Returns the same `list` if it already [`includes`](#-includes-list-value-) `value`. Always returns an `Array`, converting the input from a non-array list.
+Appends `value` to `list`, duplicate-free. Returns the same `list` if it already [`includes`](#includes-list-value-) `value`. Always returns an `Array`, converting the input from a non-array list.
 
 ```js
 f.adjoin([10, 20], 30)
@@ -1310,7 +1310,7 @@ f.adjoin([10, 20, 30], 20)
 
 ### `toggle(list, value)`
 
-Appends or removes `value`, depending on whether it's already [`included`](#-includes-list-value-).
+Appends or removes `value`, depending on whether it's already [`included`](#includes-list-value-).
 
 ```js
 f.toggle([10, 20], 30)
@@ -1328,8 +1328,8 @@ Concatenates lists, ignoring non-list arguments.
 
 **Different** from [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of appending non-list inputs while flattening list inputs. This leads to surprising errors and/or intentional abuse. `fpx`'s `concat` rejects non-lists, preventing this gotcha.
 
-Note: for individual elements, use [`append`](#-append-list-value-) and
-[`prepend`](#-prepend-list-value-) instead.
+Note: for individual elements, use [`append`](#append-list-value-) and
+[`prepend`](#prepend-list-value-) instead.
 
 ```js
 f.concat()
@@ -1513,7 +1513,7 @@ f.sortBy([{id: 3}, {id: 22}, {id: 111}], getId)
 
 ### `intersection(left, right)`
 
-Returns a list representing a [set intersection](https://en.wikipedia.org/wiki/Set_intersection) of the two lists. It contains only the elements that occur in both lists, tested via [`is`](#-is-one-other-), without any duplicates.
+Returns a list representing a [set intersection](https://en.wikipedia.org/wiki/Set_intersection) of the two lists. It contains only the elements that occur in both lists, tested via [`is`](#is-one-other-), without any duplicates.
 
 ```js
 f.intersection([10, 20, 20, 30], [20, 30, 30, 40])
@@ -1531,7 +1531,7 @@ where `fun: ƒ(value, index, a, b, c)`
 
 Returns a dict where `list`'s values are assigned to the keys created by `fun`.
 
-Major difference from Lodash's `_.keyBy`: keys must pass the [`isKey`](#-iskey-value-) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
+Major difference from Lodash's `_.keyBy`: keys must pass the [`isKey`](#iskey-value-) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
 
 ```js
 function double(value) {return value * 2}
@@ -1548,7 +1548,7 @@ where `fun: ƒ(value, index, a, b, c)`
 
 Similar to `keyBy`: returns a dict where keys have been created by calling `fun`. Unlike `keyBy`, it groups values into lists, accumulating them for repeating keys instead of overwriting.
 
-Just like `keyBy`, and unlike Lodash's `_.groupBy`, keys must pass the [`isKey`](#-iskey-value-) test or be ignored. This helps avoid accidental garbage in the output.
+Just like `keyBy`, and unlike Lodash's `_.groupBy`, keys must pass the [`isKey`](#iskey-value-) test or be ignored. This helps avoid accidental garbage in the output.
 
 ```js
 function oddness(value) {return value % 2}
@@ -1561,7 +1561,7 @@ f.groupBy([10, 13, 16, 19], oddness)
 
 ### `uniq(list)`
 
-Returns a version of `list` without duplicate elements, compared via [`is`](#-is-one-other-).
+Returns a version of `list` without duplicate elements, compared via [`is`](#is-one-other-).
 
 ```js
 f.uniq([10, 20, NaN, 20, NaN, 30])
@@ -1574,7 +1574,7 @@ f.uniq([10, 20, NaN, 20, NaN, 30])
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Returns a version of `list` where no two elements have produced the same result when `fun` was called on them. The results are compared via [`is`](#-is-one-other-).
+Returns a version of `list` where no two elements have produced the same result when `fun` was called on them. The results are compared via [`is`](#is-one-other-).
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1602,7 +1602,7 @@ f.partition([10, 13, 16, 19], isOdd)
 
 ### `sum(list)`
 
-Sums all elements of `list` that satisfy [`isFinite`](#-isfinite-value-), ignoring the rest.
+Sums all elements of `list` that satisfy [`isFinite`](#isfinite-value-), ignoring the rest.
 
 ```js
 f.sum([10, NaN, 20, '5'])
@@ -1615,7 +1615,7 @@ f.sum([10, NaN, 20, '5'])
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and sums the results. Like `sum`, ignores values that don't satisfy [`isFinite`](#-isfinite-value-).
+Calls `fun` on every element of the list and sums the results. Like `sum`, ignores values that don't satisfy [`isFinite`](#isfinite-value-).
 
 ```js
 f.sumBy([10, undefined, '20'], Number)
@@ -1626,7 +1626,7 @@ f.sumBy([10, undefined, '20'], Number)
 
 ### `min(list)`
 
-Finds the smallest value in `list` that also satisfies [`isFinite`](#-isfinite-value-), or `undefined`. Note that it ignores `±Infinity`.
+Finds the smallest value in `list` that also satisfies [`isFinite`](#isfinite-value-), or `undefined`. Note that it ignores `±Infinity`.
 
 ```js
 f.min([])
@@ -1640,7 +1640,7 @@ f.min(['10', 20, '30', -Infinity, NaN])
 
 ### `max(list)`
 
-Finds the largest value in `list` that also satisfies [`isFinite`](#-isfinite-value-), or `undefined`. Note that it ignores `±Infinity`.
+Finds the largest value in `list` that also satisfies [`isFinite`](#isfinite-value-), or `undefined`. Note that it ignores `±Infinity`.
 
 ```js
 f.max([])
@@ -1656,7 +1656,7 @@ f.max(['10', 20, '30', Infinity, NaN])
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the smallest result, using the same rules as [`min`](#-min-list-).
+Calls `fun` on every element of the list and returns the smallest result, using the same rules as [`min`](#min-list-).
 
 Note a major difference from Lodash's `_.minBy`: this returns the smallest value returned by `fun`, not its corresponding list element. I find this far more intuitive. See `findMinBy` for the counterpart to `_.minBy`.
 
@@ -1673,7 +1673,7 @@ f.minBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the largest result, using the same rules as [`max`](#-max-list-).
+Calls `fun` on every element of the list and returns the largest result, using the same rules as [`max`](#max-list-).
 
 Note a major difference from Lodash's `_.maxBy`: this returns the smallest value returned by `fun`, not its corresponding list element. I find this far more intuitive. See `findMaxBy` for the counterpart to `_.maxBy`.
 
@@ -1690,7 +1690,7 @@ f.maxBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the element for which `fun` returned the smallest value, using the same rules as [`min`](#-min-list-).
+Calls `fun` on every element of the list and returns the element for which `fun` returned the smallest value, using the same rules as [`min`](#min-list-).
 
 Similar to Lodash's `_.minBy`.
 
@@ -1707,7 +1707,7 @@ f.findMinBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 where `fun: ƒ(value, index, a, b, c)`
 
-Calls `fun` on every element of the list and returns the element for which `fun` returned the largest value, using the same rules as [`max`](#-max-list-).
+Calls `fun` on every element of the list and returns the element for which `fun` returned the largest value, using the same rules as [`max`](#max-list-).
 
 Similar to Lodash's `_.maxBy`.
 
@@ -1905,7 +1905,7 @@ f.eachVal({one: 10, two: 20}, report, 10, 20, 30)
 
 where `fun: ƒ(accumulator, value, key, a, b, c)`
 
-Similar to [`fold`](#-fold-list-init-fun-a-b-c-), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.
+Similar to [`fold`](#fold-list-init-fun-a-b-c-), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.
 
 ```js
 f.foldVals({one: 10, two: 20}, 5, f.add)
@@ -1918,7 +1918,7 @@ f.foldVals({one: 10, two: 20}, 5, f.add)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`map`](#-map-list-fun-a-b-c-), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`.
+Similar to [`map`](#map-list-fun-a-b-c-), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`.
 
 ```js
 function bang(value) {return value + '!'}
@@ -1933,9 +1933,9 @@ f.mapVals({ping: 'ping', pong: 'pong'}, bang)
 
 where `fun: ƒ(key, value, a, b, c)`
 
-Similar to [`mapVals`](#-mapvals-dict-fun-a-b-c-), but replaces keys rather than values.
+Similar to [`mapVals`](#mapvals-dict-fun-a-b-c-), but replaces keys rather than values.
 
-Major difference from Lodash's `_.mapKeys`: keys must pass the [`isKey`](#-iskey-value-) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
+Major difference from Lodash's `_.mapKeys`: keys must pass the [`isKey`](#iskey-value-) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
 
 Another major difference from Lodash's `_.mapKeys`: the operator receives `key, value, a, b, c` rather than `value, key, dict`.
 
@@ -1965,7 +1965,7 @@ f.mapValsSort({3: 'three', 22: 'two', 111: 'one'}, f.id)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`filter`](#-filter-list-test-a-b-c-), but for dicts. Returns a version of `dict` with properties for which `fun` returned something truthy.
+Similar to [`filter`](#filter-list-test-a-b-c-), but for dicts. Returns a version of `dict` with properties for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1980,7 +1980,7 @@ f.pickBy({one: 10, two: 13, three: 16, four: 19}, isOdd)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`reject`](#-reject-list-test-a-b-c-), but for dicts. Returns a version of `dict` without properties for which `fun` returned something truthy.
+Similar to [`reject`](#reject-list-test-a-b-c-), but for dicts. Returns a version of `dict` without properties for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1993,7 +1993,7 @@ f.omitBy({one: 10, two: 13, three: 16, four: 19}, isOdd)
 
 ### `pickKeys(dict, keys)`
 
-Returns a version of `dict` with only the properties whitelisted in `keys`. The keys must satisfy [`isKey`](#-iskey-value-).
+Returns a version of `dict` with only the properties whitelisted in `keys`. The keys must satisfy [`isKey`](#iskey-value-).
 
 Same as Lodash's `_.pick`.
 
@@ -2006,7 +2006,7 @@ f.pickKeys({one: 10, two: 20}, ['one'])
 
 ### `omitKeys(dict, keys)`
 
-Returns a version of `dict` without any properties blacklisted in `keys`. The keys must satisfy [`isKey`](#-iskey-value-).
+Returns a version of `dict` without any properties blacklisted in `keys`. The keys must satisfy [`isKey`](#iskey-value-).
 
 Same as Lodash's `_.omit`.
 
@@ -2021,7 +2021,7 @@ f.omitKeys({one: 10, two: 20}, ['one'])
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`find`](#-find-list-test-a-b-c-), but for dicts. Returns the first value for which `fun` returned something truthy.
+Similar to [`find`](#find-list-test-a-b-c-), but for dicts. Returns the first value for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -2036,7 +2036,7 @@ f.findVal({one: 10, two: 13}, isOdd)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`findIndex`](#-findindex-list-test-a-b-c-), but for dicts. Returns the first key for which `fun` returned something truthy.
+Similar to [`findIndex`](#findindex-list-test-a-b-c-), but for dicts. Returns the first key for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -2051,7 +2051,7 @@ f.findKey({one: 10, two: 13}, isOdd)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`every`](#-every-list-test-a-b-c-), but for dict values:
+Similar to [`every`](#every-list-test-a-b-c-), but for dict values:
 
 ```js
 f.everyVal({}, f.isBoolean)
@@ -2070,7 +2070,7 @@ f.everyVal({one: true, two: false, three: 10}, f.isBoolean)
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to [`some`](#-some-list-test-a-b-c-), but for dict values:
+Similar to [`some`](#some-list-test-a-b-c-), but for dict values:
 
 ```js
 f.someVal({}, f.isBoolean)
@@ -2087,7 +2087,7 @@ f.someVal({one: true, two: false, three: 10}, f.isBoolean)
 
 ### `invert(dict)`
 
-Returns a version of `dict` with keys and values swapped. Values must satisfy [`isKey`](#-iskey-value-) to become keys; ones that don't are silently dropped from the output.
+Returns a version of `dict` with keys and values swapped. Values must satisfy [`isKey`](#iskey-value-) to become keys; ones that don't are silently dropped from the output.
 
 ```js
 f.invert({one: 10, two: 20})
@@ -2100,7 +2100,7 @@ f.invert({one: 10, two: 20})
 
 where `fun: ƒ(value, key, a, b, c)`
 
-Similar to `invert`, but calls `fun` on each value to produce a key. The resulting keys must satisfy [`isKey`](#-iskey-value-) or be silently dropped from the output.
+Similar to `invert`, but calls `fun` on each value to produce a key. The resulting keys must satisfy [`isKey`](#iskey-value-) or be silently dropped from the output.
 
 ```js
 function double(value) {return value * 2}
@@ -2121,8 +2121,8 @@ Functions that work on both lists and dicts.
 
 Collection size:
 
-  * [`isList`](#-islist-value-) → length
-  * [`isObject`](#-isobject-value-) → number of [`keys`](#-keys-dict-)
+  * [`isList`](#islist-value-) → length
+  * [`isObject`](#isobject-value-) → number of [`keys`](#keys-dict-)
   * primitive or function → `0`
 
 Note that since strings are not considered collections, this function returns `0` for a string.
@@ -2144,7 +2144,7 @@ f.size(f.size)
 // 0
 ```
 
-Also see [`isEmpty`](#-isempty-value-) for a pure boolean version.
+Also see [`isEmpty`](#isempty-value-) for a pure boolean version.
 
 ---
 
@@ -2433,7 +2433,7 @@ f.maskBy(x, {a: {b: 'c'}})  ≡  {a: f.maskBy(x.a, {b: 'c'})}
 
 ### `mask(pattern)`
 
-Takes a pattern and returns a version of [`maskBy`](#-maskby-value-pattern-) bound to that pattern. See the rules above.
+Takes a pattern and returns a version of [`maskBy`](#maskby-value-pattern-) bound to that pattern. See the rules above.
 
 ```js
 f.mask(pattern)
@@ -2492,7 +2492,7 @@ function Queue() {
 
 ### `show(value)`
 
-Returns a string describing the value. Prints plain data as JSON to avoid the dreaded `[object Object]`. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in [`validate`](#-validate-value-test-).
+Returns a string describing the value. Prints plain data as JSON to avoid the dreaded `[object Object]`. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in [`validate`](#validate-value-test-).
 
 ```js
 f.show(10)
@@ -2507,6 +2507,6 @@ f.show({one: 10, two: 20})
 
 ---
 
-## Miscellanious
+## Miscellaneous
 
 I'm receptive to suggestions. If this library _almost_ satisfies you but needs changes, open an issue on [GitHub](https://github.com/mitranim/fpx/issues) or chat me up. Contacts: https://mitranim.com/#contacts.

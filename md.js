@@ -38,7 +38,7 @@ class MarkedRenderer extends marked.Renderer {
     }
     let out = '<a href="' + href + '"'
     if (title) out += ' title="' + title + '"'
-    if (/^[a-z]+:\/\//.test(href)) out += ' target="_blank"'
+    if (/^[a-z]+:\/\//.test(href)) out += ' target="_blank" rel="noopener noreferrer"'
     out += '>' + text + '</a>'
     return out
   }
