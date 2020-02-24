@@ -109,7 +109,7 @@ There's potential for improvement, but I don't have infinite spare time for micr
 
 ## Bonus Arguments
 
-In Fpx, all collection functions, such as [`map`](#map-list-fun-a-b-c-), pass up to 3 additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
+In Fpx, most collection functions, such as [`map`](#map-list-fun-a-b-c-), pass up to 3 additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
 
 ```js
 // local context
@@ -138,7 +138,7 @@ f.map([10, 20, 30], add5)
 
 Broadly speaking, closures have a cost; defining functions statically avoids that cost.
 
-This doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures can accidentally enable optimizations like function specialization. However, you can't _rely_ on such optimizations. As a rule of thumb, memory allocation beats all other costs. Avoiding closure allocation is more reliable and predictable at improving performance.
+This doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures may accidentally enable optimizations like function specialization. However, such optimizations can be unreliable. As a rule of thumb, memory allocation beats all other costs. Avoiding closure allocation is more reliable and predictable at improving performance.
 
 This may change with future advancements in JS engines.
 

@@ -217,7 +217,7 @@ export function onlyStruct(value) {
 }
 
 export function toArray(value) {
-  return isArray(value) ? value : map(value, id)
+  return isArray(value) ? value : slice(value)
 }
 
 /** List **/
@@ -376,7 +376,7 @@ export function remove(list, value) {
 }
 
 export function insertAtIndex(list, index, value) {
-  list = map(list, id)
+  list = slice(list)
   validate(index, isNatural)
   if (!(index <= list.length)) {
     throw Error(`Index ${index} out of bounds for length ${list.length}`)
@@ -389,7 +389,7 @@ export function removeAtIndex(list, index) {
   list = onlyList(list)
   validate(index, isInteger)
   if (isNatural(index) && index < list.length) {
-    list = map(list, id)
+    list = slice(list)
     list.splice(index, 1)
   }
   return list
@@ -408,11 +408,13 @@ export function concat() {
   return NAP.concat.apply([], map(arguments, toArray))
 }
 
-// This could be made more efficient for very large and deep lists by
-// precalculating the length and allocating the result all at once.
-// Unfortunately this requires quite a bit of extra code and would be slower for
-// relatively small arrays. It would also be faster to use native array concat,
-// but I haven't found a way to bypass `.apply` and the argument size limit.
+/*
+This could be made more efficient for very large and deep lists by
+precalculating the length and allocating the result all at once. Unfortunately
+this requires quite a bit of extra code and would be slower for relatively small
+lists. It would also be faster to use native array concat, but I haven't found a
+way to bypass `.apply` and the argument size limit.
+*/
 export function flatten(list) {
   const out = []
   each(list, pushFlat, out)
@@ -473,7 +475,7 @@ export function reverse(list) {
 }
 
 export function sort(list, comparator) {
-  return map(list, id).sort(comparator)
+  return slice(list).sort(comparator)
 }
 
 export function sortBy(list, fun, a, b, c, d, e) {

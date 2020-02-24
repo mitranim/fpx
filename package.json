@@ -1,6 +1,6 @@
 {
   "name": "fpx",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Functional programming extensions for JavaScript. Lightweight replacement for Lodash.",
   "main": "dist/fpx.js",
   "module": "es/fpx.js",
