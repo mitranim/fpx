@@ -65,8 +65,7 @@ $sidenav-width: 20vw;
   width: $sidenav-width;
   padding: 2rem 1rem;
 
-  // Enable scroll
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: scroll;
 }
 

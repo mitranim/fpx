@@ -10,7 +10,7 @@ window.addEventListener('scroll', scroller.call)
 
 window.addEventListener('wheel', function preventSpill(event) {
   const node = findAncestor(event.target, shouldPreventSpill)
-  if (node) preventScrollSpill(node, event)
+  if (node) scrollWithoutSpill(node, event)
 }, {passive: false})
 
 function updateLinksAndHash() {
@@ -140,8 +140,30 @@ function shouldPreventSpill(elem) {
   return f.isInstance(elem, Element) && elem.hasAttribute('data-nospill')
 }
 
-function preventScrollSpill(elem, event) {
+// Reference: https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent.
+function scrollWithoutSpill(elem, event) {
+  if (event.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+    scrollWithoutSpillModePixels(elem, event)
+  }
+  else {
+    scrollWithoutSpillModeLinesOrPages(elem, event)
+  }
+}
+
+// Precise but requires `event.deltaMode === WheelEvent.DOM_DELTA_PIXEL`.
+// Browsers use this mode for smooth-scroll devices such as touchpads.
+function scrollWithoutSpillModePixels(elem, event) {
   event.preventDefault()
   elem.scrollLeft += event.deltaX
   elem.scrollTop += event.deltaY
+}
+
+// Less precise than the pixel version. Breaks when the event has BOTH scrollX
+// and scrollY. Should work fine for regular mouse wheels.
+function scrollWithoutSpillModeLinesOrPages(elem, event) {
+  const movesLeft = event.deltaX < 0 && elem.scrollLeft > 0
+  const movesRight = event.deltaX > 0 && elem.scrollLeft + elem.clientWidth < elem.scrollWidth
+  const movesUp = event.deltaY < 0 && elem.scrollTop > 0
+  const movesDown = event.deltaY > 0 && elem.scrollTop + elem.clientHeight < elem.scrollHeight
+  if (!movesLeft && !movesRight && !movesUp && !movesDown) event.preventDefault()
 }
