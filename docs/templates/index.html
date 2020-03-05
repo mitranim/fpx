@@ -248,3 +248,6 @@
 
 <script src="fpx.js?{{$.COMMIT || ''}}"></script>
 <script src="docs.js?{{$.COMMIT || ''}}"></script>
+<< if (!$.PROD) { >>
+<script>document.write('<script src="'+window.location.origin+'/afr/client.js"><'+'/script>')</script>
+<< } >>

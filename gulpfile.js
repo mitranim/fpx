@@ -5,7 +5,7 @@
  */
 
 const $                 = require('gulp-load-plugins')()
-const bs                = require('browser-sync').create()
+const afr               = require('afr')
 const cp                = require('child_process')
 const del               = require('del')
 const fs                = require('fs')
@@ -44,6 +44,7 @@ const GulpErr = msg => ({showStack: false, toString: () => msg})
 
 const COMMIT = cp.execSync('git rev-parse --short HEAD').toString().trim()
 const {version: VERSION} = require('./package.json')
+const PROD = process.env.NODE_ENV === 'production'
 
 /**
  * Tasks
@@ -110,11 +111,13 @@ gulp.task('lib:watch', () => {
 /* --------------------------------- HTML -----------------------------------*/
 
 gulp.task('docs:templates:build', async () => {
+  const vars = {PROD, COMMIT, VERSION}
+
   const mdInput = await readFile(SRC_DOC_MD, 'utf8')
-  const mdOut = md(compileTemplate(mdInput)({VERSION}))
+  const mdOut = md(compileTemplate(mdInput)(vars))
 
   const htmlInput = await readFile(SRC_DOC_HTML, 'utf8')
-  const htmlOut = compileTemplate(htmlInput)({COMMIT, content: mdOut})
+  const htmlOut = compileTemplate(htmlInput)({...vars, content: mdOut})
 
   await writeFile(OUT_DOC_HTML_FILE, htmlOut)
 })
@@ -162,7 +165,7 @@ ${String(file.contents)}
     .pipe(gulp.dest(OUT_DOC_DIR))
 ))
 
-gulp.task('docs:scripts:compile', () => (
+gulp.task('docs:scripts:transpile', () => (
   gulp.src(SRC_DOC_SCRIPT_MAIN)
     .pipe($.babel())
     .pipe(new Transform({
@@ -181,36 +184,26 @@ ${String(file.contents)}
     .pipe(gulp.dest(OUT_DOC_DIR))
 ))
 
-gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:copy', 'docs:scripts:compile'))
+gulp.task('docs:scripts:build', gulp.parallel('docs:scripts:copy', 'docs:scripts:transpile'))
 
 gulp.task('docs:scripts:watch', () => {
   $.watch(OUT_SCRIPT_MAIN, gulp.series('docs:scripts:copy'))
-  $.watch(SRC_DOC_SCRIPT_MAIN, gulp.series('docs:scripts:compile'))
+  $.watch(SRC_DOC_SCRIPT_MAIN, gulp.series('docs:scripts:transpile'))
 })
 
 /* -------------------------------- Server ----------------------------------*/
 
-gulp.task('docs:server', () => (
-  bs.init({
-    startPath: '/fpx/',
-    server: {
-      baseDir: 'gh-pages',
-      middleware: [
-        (req, res, next) => {
-          req.url = req.url.replace(/^\/fpx\//, '').replace(/^[/]*/, '/')
-          next()
-        },
-      ],
-    },
-    port: 3474,
-    files: 'gh-pages',
-    open: false,
-    online: false,
-    ui: false,
-    ghostMode: false,
-    notify: false,
-  })
-))
+gulp.task('docs:server', () => {
+  const ds = new class extends afr.Devserver {
+    onRequest(req, res) {
+      req.url = req.url.replace(/^\/fpx\//, '').replace(/^[/]*/, '/')
+      super.onRequest(req, res)
+    }
+  }()
+  ds.watchFiles('./gh-pages')
+  ds.serveFiles('./gh-pages')
+  ds.listen(3474)
+})
 
 /* -------------------------------- Default ---------------------------------*/
 
