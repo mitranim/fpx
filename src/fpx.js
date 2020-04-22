@@ -379,7 +379,7 @@ export function insertAtIndex(list, index, value) {
   list = slice(list)
   validate(index, isNatural)
   if (!(index <= list.length)) {
-    throw Error(`Index ${index} out of bounds for length ${list.length}`)
+    throw Error(`index ${index} out of bounds for length ${list.length}`)
   }
   list.splice(index, 0, value)
   return list
@@ -941,10 +941,10 @@ export function mask(pattern) {
 
 export function validate(value, test) {
   if (!isFunction(test)) {
-    throw Error(`Expected validator function, got ${show(test)}`)
+    throw Error(`expected validator function, got ${show(test)}`)
   }
   if (!test(value)) {
-    throw Error(`Expected ${show(value)} to satisfy test ${show(test)}`)
+    throw Error(`expected ${show(value)} to satisfy test ${show(test)}`)
   }
 }
 
@@ -952,14 +952,14 @@ export function validateEach(list, test) {
   validate(list, isList)
   for (let i = 0; i < list.length; i += 1) {
     if (!test(list[i])) {
-      throw Error(`Expected ${show(list[i])} at index ${i} to satisfy test ${show(test)}`)
+      throw Error(`expected ${show(list[i])} at index ${i} to satisfy test ${show(test)}`)
     }
   }
 }
 
 export function validateInstance(value, Class) {
   if (!isInstance(value, Class)) {
-    throw Error(`Expected ${show(value)} to be an instance of ${show(Class)}`)
+    throw Error(`expected ${show(value)} to be an instance of ${show(Class)}`)
   }
 }
 

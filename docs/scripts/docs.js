@@ -151,7 +151,8 @@ function scrollWithoutSpill(elem, event) {
 }
 
 // Precise but requires `event.deltaMode === WheelEvent.DOM_DELTA_PIXEL`.
-// Browsers use this mode for smooth-scroll devices such as touchpads.
+// Browsers use this mode for smooth-scroll devices such as touchpads. Some
+// browsers, including Chrome, also use this for regular mouse wheels.
 function scrollWithoutSpillModePixels(elem, event) {
   event.preventDefault()
   elem.scrollLeft += event.deltaX
