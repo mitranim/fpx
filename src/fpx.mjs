@@ -33,7 +33,7 @@ export function not(fun) {
 
 /** Bool **/
 
-// Could use global `Boolean` but I like symmetry in definitions
+// Same as global `Boolean`, redefined for symmetry with `negate/falsy`.
 export const bool = truthy
 export function truthy(value) {
   return !!value  // eslint-disable-line no-implicit-coercion

@@ -22,6 +22,14 @@ See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
 
+### 0.7.3
+
+Renamed the source file from `fpx.js` to `fpx.mjs` to support some obscure uses.
+
+### 0.7.2
+
+Insignificant micro-improvements.
+
 ### 0.7.1
 
 New functions:

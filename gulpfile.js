@@ -23,7 +23,7 @@ const writeFile = promisify(fs.writeFile)
  * Globals
  */
 
-const SRC_SCRIPT_FILES      = 'src/**/*.js'
+const SRC_SCRIPT_FILES      = 'src/**/*.mjs'
 const SRC_DOC_HTML          = 'docs/templates/index.html'
 const SRC_DOC_MD            = 'docs/templates/index.md'
 const SRC_DOC_STYLE_FILES   = 'docs/styles/**/*.scss'
