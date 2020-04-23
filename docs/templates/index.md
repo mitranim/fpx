@@ -90,7 +90,7 @@ someFunction({one: 10})
 // Error: Expected {"one":10} to satisfy test isFunction
 ```
 
-So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be garbled, which I consider a good tradeoff.
+So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which I consider a good tradeoff.
 
 To support this style of coding, Fpx provides [`validate`](#validate-value-test-) and a bevy of boolean tests.
 
@@ -138,7 +138,7 @@ f.map([10, 20, 30], add5)
 
 Broadly speaking, closures have a cost; defining functions statically avoids that cost.
 
-This doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures may accidentally enable optimizations like function specialization. However, such optimizations can be unreliable. As a rule of thumb, memory allocation beats all other costs. Avoiding closure allocation is more reliable and predictable at improving performance.
+This doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures may accidentally enable optimizations like function specialization. However, such optimizations can be unreliable. As a rule of thumb, memory allocation beats most other costs. Avoiding closure allocation is reliable and predictable at improving performance.
 
 This may change with future advancements in JS engines.
 
@@ -199,6 +199,8 @@ const inc = f.bind(f.add, 1)
 inc(2)
 // 3
 ```
+
+Note: Fpx no longer provides facilities for currying. Experience has shown it to be extremely error prone. Currying, as seen in purely functional languages such as Haskell, tends to care about the amount of arguments. Calling a curried function may either create a new function, or call the underlying function (possibly side-effectful). This approach works reasonably well in statically typed purely functional languages, but not in JavaScript, where all functions are variadic, and it's conventional to sometimes pass extra utility arguments "just in case", which the callee may or may not care about. `bind` is different because the created function will always call the original function, regardless of how many arguments were passed.
 
 ---
 
@@ -264,7 +266,7 @@ Identity test: same as `===`, but considers `NaN` equal to `NaN`. Equivalent to 
 
 Note that [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) implements [_SameValue_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevalue), which treats `-0` and `+0` as _distinct values_. This is typically undesirable. As a result, you should prefer `f.is` over `===` or `Object.is`.
 
-Used internally in `fpx` for all identity tests.
+Used internally in Fpx for all identity tests.
 
 ```js
 f.is(1, '1')
@@ -1326,7 +1328,7 @@ f.toggle([10, 20, 30], 30)
 
 Concatenates lists, ignoring non-list arguments.
 
-**Different** from [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of appending non-list inputs while flattening list inputs. This leads to surprising errors and/or intentional abuse. `fpx`'s `concat` rejects non-lists, preventing this gotcha.
+**Different** from [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat) and, by extension, lodash's `_.concat`. They inherited Scheme's hazardous mistake of appending non-list inputs while flattening list inputs. This leads to surprising errors and/or intentional abuse. Fpx's `concat` rejects non-lists, preventing this gotcha.
 
 Note: for individual elements, use [`append`](#append-list-value-) and
 [`prepend`](#prepend-list-value-) instead.
