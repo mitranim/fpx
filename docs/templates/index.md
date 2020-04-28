@@ -1,6 +1,6 @@
 ## Overview
 
-`fpx`: Functional Programming eXtensions for JavaScript. [Source on GitHub](https://github.com/mitranim/fpx/blob/master/src/fpx.js).
+`fpx`: Functional Programming eXtensions for JavaScript. [Source on GitHub](https://github.com/mitranim/fpx).
 
 Lightweight replacement for Lodash, Underscore, etc. Differences:
 

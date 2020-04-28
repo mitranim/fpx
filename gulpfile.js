@@ -154,7 +154,7 @@ gulp.task('docs:scripts:copy', () => (
       objectMode: true,
       transform(file, __, done) {
         file.contents = Buffer.from(`
-// Transpiled version. See src/fpx.js.
+// Transpiled version. See src/fpx.mjs.
 void function(exports) {
 ${String(file.contents)}
 }(window.fpx = window.f = {});
