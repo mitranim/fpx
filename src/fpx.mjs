@@ -359,8 +359,8 @@ export function some(list, fun, a, b, c, d, e) {
   return false
 }
 
-export function slice(list, start, end) {
-  return NAP.slice.call(onlyList(list), start, end)
+export function slice(list, start, nextStart) {
+  return NAP.slice.call(onlyList(list), start, nextStart)
 }
 
 export function append(list, value) {

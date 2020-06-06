@@ -90,7 +90,7 @@ someFunction({one: 10})
 // Error: Expected {"one":10} to satisfy test isFunction
 ```
 
-So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which I consider a good tradeoff.
+So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which is good for bundle size. The mangled name is a non-issue with a source map, which you need for debugging anyway.
 
 To support this style of coding, Fpx provides [`validate`](#validate-value-test-) and a bevy of boolean tests.
 
@@ -622,8 +622,8 @@ f.isDate(new Date().toString())  // false
 ### `isValidDate(value)`
 
 ```js
-f.isDate(new Date())     // true
-f.isDate(new Date(NaN))  // false
+f.isValidDate(new Date())     // true
+f.isValidDate(new Date(NaN))  // false
 ```
 
 ---
@@ -631,8 +631,8 @@ f.isDate(new Date(NaN))  // false
 ### `isInvalidDate(value)`
 
 ```js
-f.isDate(new Date())     // false
-f.isDate(new Date(NaN))  // true
+f.isInvalidDate(new Date())     // false
+f.isInvalidDate(new Date(NaN))  // true
 ```
 
 ---
@@ -873,7 +873,7 @@ f.toArray()
 f.toArray([10, 20])
 // [10, 20]
 
-f.toArray(function args() {}(10, 20))
+f.toArray(function args() {return arguments}(10, 20))
 // [10, 20]
 ```
 
@@ -967,10 +967,11 @@ _.map([{value: 10}, {value: 20}], 'value')
 // [10, 20]
 ```
 
-Fpx considers this a hazardous malpractice. Just use a function:
+Fpx considers this a hazardous malpractice. Just use a function or [`getter`](#getter-key-):
 
 ```js
 f.map([{value: 10}, {value: 20}], x => x.value)
+f.map([{value: 10}, {value: 20}], f.getter('value'))
 ```
 
 ---
@@ -1214,9 +1215,9 @@ f.some([true, false, 10, 20], f.isBoolean)
 
 ---
 
-### `slice(list, start, end)`
+### `slice(list, start, nextStart)`
 
-Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice), but also accepts `null` and `undefined`. `start` and `end` can be missing or negative; see the linked documentation.
+Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice), but also accepts `null` and `undefined`. `start` and `nextStart` can be missing or negative; see the linked documentation.
 
 ```js
 f.slice([10, 20, 30, 40, 50], 1, -1)
@@ -1722,13 +1723,16 @@ f.findMaxBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 ---
 
-### `range(start, end)`
+### `range(start, nextStart)`
 
-Returns a list of integers from `start` (inclusive) to `end` (exclusive). Both inputs must be natural numbers, with `start <= end`.
+Returns a list of integers from `start` (inclusive) to `nextStart` (exclusive). Both inputs must be integers, with `start <= nextStart`.
 
 ```js
 f.range(5, 10)
 // [5, 6, 7, 8, 9]
+
+f.range(-10, 5)
+// [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4]
 ```
 
 ---
