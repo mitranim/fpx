@@ -1,0 +1,1908 @@
+<!doctype html>
+
+<base href="/fpx/">
+<meta charset="utf-8">
+<title>fpx</title>
+<link rel="stylesheet" href="docs.css?9a87264">
+<link rel="icon" href="data:;base64,=">
+
+<!-- Prevent caching -->
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma" content="no-cache" />
+
+<body class="row-start-stretch"></body>
+
+<div id="sidenav" class="sidenav-column padding-1 gaps-1-v" data-nospill>
+  <div>
+    <a href="https://github.com/mitranim/fpx" target="_blank" class="decorate-link external-link">
+      Source on GitHub
+    </a>
+  </div>
+
+  <div class="col-start-stretch gaps-1-v">
+    <a href="#" class="sidenav-link"><span>Top</span></a>
+
+    <a href="#overview" class="sidenav-link"><span>Overview</span></a>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#why" class="sidenav-link"><span>Why</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#size" class="sidenav-link"><span>Size</span></a>
+        <a href="#simplicity" class="sidenav-link"><span>Simplicity</span></a>
+        <a href="#strictness" class="sidenav-link"><span>Strictness</span></a>
+        <a href="#minifiable-assertions" class="sidenav-link"><span>Minifiable Assertions</span></a>
+      </div>
+    </div>
+
+    <a href="#performance" class="sidenav-link"><span>Performance</span></a>
+
+    <a href="#bonus-arguments" class="sidenav-link"><span>Bonus Arguments</span></a>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#fun" class="sidenav-link"><span>Fun</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#call-fun-args-" class="sidenav-link"><code>call</code></a>
+        <a href="#apply-fun-args-" class="sidenav-link"><code>apply</code></a>
+        <a href="#bind-fun-args-" class="sidenav-link"><code>bind</code></a>
+        <a href="#not-fun-" class="sidenav-link"><code>not</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#bool" class="sidenav-link"><span>Bool</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#truthy-value-" class="sidenav-link"><code>truthy</code></a>
+        <a href="#truthy-value-" class="sidenav-link opacity-40 margin-1-l"><code>bool</code></a>
+        <a href="#falsy-value-" class="sidenav-link"><code>falsy</code></a>
+        <a href="#falsy-value-" class="sidenav-link opacity-40 margin-1-l"><code>negate</code></a>
+        <a href="#is-one-other-" class="sidenav-link"><code>is</code></a>
+        <a href="#isnumber-value-" class="sidenav-link"><code>isNumber</code></a>
+        <a href="#isfinite-value-" class="sidenav-link"><code>isFinite</code></a>
+        <a href="#isinteger-value-" class="sidenav-link"><code>isInteger</code></a>
+        <a href="#isnatural-value-" class="sidenav-link"><code>isNatural</code></a>
+        <a href="#isnan-value-" class="sidenav-link"><code>isNaN</code></a>
+        <a href="#isinfinity-value-" class="sidenav-link"><code>isInfinity</code></a>
+        <a href="#isstring-value-" class="sidenav-link"><code>isString</code></a>
+        <a href="#isboolean-value-" class="sidenav-link"><code>isBoolean</code></a>
+        <a href="#issymbol-value-" class="sidenav-link"><code>isSymbol</code></a>
+        <a href="#iskey-value-" class="sidenav-link"><code>isKey</code></a>
+        <a href="#isprimitive-value-" class="sidenav-link"><code>isPrimitive</code></a>
+        <a href="#iscomplex-value-" class="sidenav-link"><code>isComplex</code></a>
+        <a href="#isinstance-value-class-" class="sidenav-link"><code>isInstance</code></a>
+        <a href="#isfunction-value-" class="sidenav-link"><code>isFunction</code></a>
+        <a href="#isobject-value-" class="sidenav-link"><code>isObject</code></a>
+        <a href="#isdict-value-" class="sidenav-link"><code>isDict</code></a>
+        <a href="#isstruct-value-" class="sidenav-link"><code>isStruct</code></a>
+        <a href="#isarray-value-" class="sidenav-link"><code>isArray</code></a>
+        <a href="#islist-value-" class="sidenav-link"><code>isList</code></a>
+        <a href="#isregexp-value-" class="sidenav-link"><code>isRegExp</code></a>
+        <a href="#isdate-value-" class="sidenav-link"><code>isDate</code></a>
+        <a href="#isvaliddate-value-" class="sidenav-link"><code>isValidDate</code></a>
+        <a href="#isinvaliddate-value-" class="sidenav-link"><code>isInvalidDate</code></a>
+        <a href="#ispromise-value-" class="sidenav-link"><code>isPromise</code></a>
+        <a href="#isiterator-value-" class="sidenav-link"><code>isIterator</code></a>
+        <a href="#isnil-value-" class="sidenav-link"><code>isNil</code></a>
+        <a href="#issomething-value-" class="sidenav-link"><code>isSomething</code></a>
+        <a href="#isempty-value-" class="sidenav-link"><code>isEmpty</code></a>
+        <a href="#testby-value-pattern-" class="sidenav-link"><code>testBy</code></a>
+        <a href="#test-pattern-" class="sidenav-link"><code>test</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#casts" class="sidenav-link"><span>Casts</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#onlystring-value-" class="sidenav-link"><code>onlyString</code></a>
+        <a href="#onlylist-value-" class="sidenav-link"><code>onlyList</code></a>
+        <a href="#onlydict-value-" class="sidenav-link"><code>onlyDict</code></a>
+        <a href="#onlystruct-value-" class="sidenav-link"><code>onlyStruct</code></a>
+        <a href="#toarray-value-" class="sidenav-link"><code>toArray</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#list" class="sidenav-link"><span>List</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#each-list-fun-args-" class="sidenav-link"><code>each</code></a>
+        <a href="#fold-list-init-fun-args-" class="sidenav-link"><code>fold</code></a>
+        <a href="#foldright-list-init-fun-args-" class="sidenav-link"><code>foldRight</code></a>
+        <a href="#map-list-fun-args-" class="sidenav-link"><code>map</code></a>
+        <a href="#flatmap-list-fun-args-" class="sidenav-link"><code>flatMap</code></a>
+        <a href="#flatmapdeep-list-fun-args-" class="sidenav-link"><code>flatMapDeep</code></a>
+        <a href="#mapfilter-list-fun-args-" class="sidenav-link"><code>mapFilter</code></a>
+        <a href="#filter-list-test-args-" class="sidenav-link"><code>filter</code></a>
+        <a href="#reject-list-test-args-" class="sidenav-link"><code>reject</code></a>
+        <a href="#compact-list-" class="sidenav-link"><code>compact</code></a>
+        <a href="#find-list-test-args-" class="sidenav-link"><code>find</code></a>
+        <a href="#findright-list-test-args-" class="sidenav-link"><code>findRight</code></a>
+        <a href="#findindex-list-test-args-" class="sidenav-link"><code>findIndex</code></a>
+        <a href="#findindexright-list-test-args-" class="sidenav-link"><code>findIndexRight</code></a>
+        <a href="#indexof-list-value-" class="sidenav-link"><code>indexOf</code></a>
+        <a href="#lastindexof-list-value-" class="sidenav-link"><code>lastIndexOf</code></a>
+        <a href="#includes-list-value-" class="sidenav-link"><code>includes</code></a>
+        <a href="#procure-list-fun-args-" class="sidenav-link"><code>procure</code></a>
+        <a href="#every-list-test-args-" class="sidenav-link"><code>every</code></a>
+        <a href="#some-list-test-args-" class="sidenav-link"><code>some</code></a>
+        <a href="#slice-list-start-end-" class="sidenav-link"><code>slice</code></a>
+        <a href="#append-list-value-" class="sidenav-link"><code>append</code></a>
+        <a href="#prepend-list-value-" class="sidenav-link"><code>prepend</code></a>
+        <a href="#remove-list-value-" class="sidenav-link"><code>remove</code></a>
+        <a href="#insertatindex-list-index-value-" class="sidenav-link"><code>insertAtIndex</code></a>
+        <a href="#removeatindex-list-index-" class="sidenav-link"><code>removeAtIndex</code></a>
+        <a href="#adjoin-list-value-" class="sidenav-link"><code>adjoin</code></a>
+        <a href="#toggle-list-value-" class="sidenav-link"><code>toggle</code></a>
+        <a href="#concat-lists-" class="sidenav-link"><code>concat</code></a>
+        <a href="#flatten-list-" class="sidenav-link"><code>flatten</code></a>
+        <a href="#flattendeep-list-" class="sidenav-link"><code>flattenDeep</code></a>
+        <a href="#head-list-" class="sidenav-link"><code>head</code></a>
+        <a href="#tail-list-" class="sidenav-link"><code>tail</code></a>
+        <a href="#init-list-" class="sidenav-link"><code>init</code></a>
+        <a href="#last-list-" class="sidenav-link"><code>last</code></a>
+        <a href="#take-list-count-" class="sidenav-link"><code>take</code></a>
+        <a href="#drop-list-count-" class="sidenav-link"><code>drop</code></a>
+        <a href="#reverse-list-" class="sidenav-link"><code>reverse</code></a>
+        <a href="#sort-list-comparator-" class="sidenav-link"><code>sort</code></a>
+        <a href="#sortby-list-fun-args-" class="sidenav-link"><code>sortBy</code></a>
+        <a href="#intersection-left-right-" class="sidenav-link"><code>intersection</code></a>
+        <a href="#keyby-list-fun-args-" class="sidenav-link"><code>keyBy</code></a>
+        <a href="#groupby-list-fun-args-" class="sidenav-link"><code>groupBy</code></a>
+        <a href="#uniq-list-" class="sidenav-link"><code>uniq</code></a>
+        <a href="#uniqby-list-fun-args-" class="sidenav-link"><code>uniqBy</code></a>
+        <a href="#partition-list-fun-args-" class="sidenav-link"><code>partition</code></a>
+        <a href="#sum-list-" class="sidenav-link"><code>sum</code></a>
+        <a href="#sumby-list-fun-args-" class="sidenav-link"><code>sumBy</code></a>
+        <a href="#min-list-" class="sidenav-link"><code>min</code></a>
+        <a href="#max-list-" class="sidenav-link"><code>max</code></a>
+        <a href="#minby-list-fun-args-" class="sidenav-link"><code>minBy</code></a>
+        <a href="#maxby-list-fun-args-" class="sidenav-link"><code>maxBy</code></a>
+        <a href="#findminby-list-fun-args-" class="sidenav-link"><code>findMinBy</code></a>
+        <a href="#findmaxby-list-fun-args-" class="sidenav-link"><code>findMaxBy</code></a>
+        <a href="#range-start-end-" class="sidenav-link"><code>range</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#struct" class="sidenav-link"><span>Struct</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#get-value-key-" class="sidenav-link"><code>get</code></a>
+        <a href="#scan-value-path-" class="sidenav-link"><code>scan</code></a>
+        <a href="#getin-value-path-" class="sidenav-link"><code>getIn</code></a>
+        <a href="#getter-key-" class="sidenav-link"><code>getter</code></a>
+        <a href="#keys-dict-" class="sidenav-link"><code>keys</code></a>
+        <a href="#values-dict-" class="sidenav-link"><code>values</code></a>
+        <a href="#entries-dict-" class="sidenav-link"><code>entries</code></a>
+        <a href="#eachval-dict-fun-args-" class="sidenav-link"><code>eachVal</code></a>
+        <a href="#foldvals-dict-init-fun-args-" class="sidenav-link"><code>foldVals</code></a>
+        <a href="#mapvals-dict-fun-args-" class="sidenav-link"><code>mapVals</code></a>
+        <a href="#mapkeys-dict-fun-args-" class="sidenav-link"><code>mapKeys</code></a>
+        <a href="#mapvalssort-dict-fun-args-" class="sidenav-link"><code>mapValsSort</code></a>
+        <a href="#pickby-dict-fun-args-" class="sidenav-link"><code>pickBy</code></a>
+        <a href="#omitby-dict-fun-args-" class="sidenav-link"><code>omitBy</code></a>
+        <a href="#pickkeys-dict-keys-" class="sidenav-link"><code>pickKeys</code></a>
+        <a href="#omitkeys-dict-keys-" class="sidenav-link"><code>omitKeys</code></a>
+        <a href="#findval-dict-fun-args-" class="sidenav-link"><code>findVal</code></a>
+        <a href="#findkey-dict-fun-args-" class="sidenav-link"><code>findKey</code></a>
+        <a href="#everyval-dict-fun-args-" class="sidenav-link"><code>everyVal</code></a>
+        <a href="#someval-dict-fun-args-" class="sidenav-link"><code>someVal</code></a>
+        <a href="#invert-dict-" class="sidenav-link"><code>invert</code></a>
+        <a href="#invertby-dict-fun-args-" class="sidenav-link"><code>invertBy</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#coll" class="sidenav-link"><span>Coll</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#size-value-" class="sidenav-link"><code>size</code></a>
+        <a href="#vacate-value-" class="sidenav-link"><code>vacate</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#ops" class="sidenav-link"><span>Ops</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#add-a-b-" class="sidenav-link"><code>add</code></a>
+        <a href="#sub-a-b-" class="sidenav-link"><code>sub</code></a>
+        <a href="#mul-a-b-" class="sidenav-link"><code>mul</code></a>
+        <a href="#div-a-b-" class="sidenav-link"><code>div</code></a>
+        <a href="#rem-a-b-" class="sidenav-link"><code>rem</code></a>
+        <a href="#lt-a-b-" class="sidenav-link"><code>lt</code></a>
+        <a href="#gt-a-b-" class="sidenav-link"><code>gt</code></a>
+        <a href="#lte-a-b-" class="sidenav-link"><code>lte</code></a>
+        <a href="#gte-a-b-" class="sidenav-link"><code>gte</code></a>
+        <a href="#inc-num-" class="sidenav-link"><code>inc</code></a>
+        <a href="#dec-num-" class="sidenav-link"><code>dec</code></a>
+      </div>
+    </div>
+
+    <div class="col-start-stretch gaps-0x5-v">
+      <a href="#misc" class="sidenav-link"><span>Misc</span></a>
+      <div class="col-start-stretch gaps-0x25-v margin-0x5-l">
+        <a href="#global-" class="sidenav-link"><code>global</code></a>
+        <a href="#id-value-" class="sidenav-link"><code>id</code></a>
+        <a href="#di-_-value-" class="sidenav-link"><code>di</code></a>
+        <a href="#val-value-" class="sidenav-link"><code>val</code></a>
+        <a href="#noop-" class="sidenav-link"><code>noop</code></a>
+        <a href="#rethrow-value-" class="sidenav-link"><code>rethrow</code></a>
+        <a href="#assign-target-sources-" class="sidenav-link"><code>assign</code></a>
+        <a href="#maskby-value-pattern-" class="sidenav-link"><code>maskBy</code></a>
+        <a href="#mask-pattern-" class="sidenav-link"><code>mask</code></a>
+        <a href="#validate-value-test-" class="sidenav-link"><code>validate</code></a>
+        <a href="#validateeach-list-test-" class="sidenav-link"><code>validateEach</code></a>
+        <a href="#validateinstance-object-class-" class="sidenav-link"><code>validateInstance</code></a>
+        <a href="#show-value-" class="sidenav-link"><code>show</code></a>
+      </div>
+    </div>
+
+    <a href="#miscellaneous" class="sidenav-link"><span>Miscellaneous</span></a>
+  </div>
+</div>
+
+<section id="main" class="content-column">
+  <article class="fancy-typography">
+<h2><span>Overview</span><a class="heading-anchor" href="#overview" id="overview">🔗</a></h2>
+<p><code>fpx</code>: Functional Programming eXtensions for JavaScript. <a href="https://github.com/mitranim/fpx" target="_blank" rel="noopener noreferrer">Source on GitHub</a>.</p>
+<p>Lightweight replacement for Lodash, Underscore, etc. Differences:</p>
+<ul>
+<li>One small file (≈ 13 KiB minified, versus ≈ 73 KiB in Lodash 4+)</li>
+<li>Extremely simple source code</li>
+<li>Relatively space-efficient, minifies well</li>
+<li>Compatible with tree shaking</li>
+</ul>
+<p>Doesn’t have complete feature parity with Lodash, and probably never will. More functions may be added on demand. Open a GitHub issue or a pull request if something useful is missing.</p>
+<p>Fpx is written as a single native JS module, compatible with <code>&lt;script type=&quot;module&quot;&gt;</code> and Node <code>.mjs</code> modules. CommonJS is available in versions prior to <code>0.8.0</code>.</p>
+<p>See sibling libraries:</p>
+<ul>
+<li>Emerge: <a href="https://github.com/mitranim/emerge" target="_blank" rel="noopener noreferrer">https://github.com/mitranim/emerge</a>. Efficient patching and merging of plain JS data.</li>
+<li>Espo: <a href="https://mitranim.com/espo/" target="_blank" rel="noopener noreferrer">https://mitranim.com/espo/</a>. Reactive and stateful programming: observables, implicit reactivity, automatic resource cleanup.</li>
+</ul>
+<p>Install from NPM. Current version: <code>0.8.0</code>.</p>
+<pre><code class="hljs language-sh">npm i -E fpx
+</code></pre>
+<p>All examples on this page imply an import:</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> f <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fpx&#x27;</span>
+</code></pre>
+<p>On this page, Fpx is globally available as <code>f</code> or <code>fpx</code>. You can run the examples in the browser console.</p>
+<h2><span>Why</span><a class="heading-anchor" href="#why" id="why">🔗</a></h2>
+<p>Why a library: the built-ins are not sufficient. Fpx replaces some common code patterns with small functions, significantly reducing the code size. It also enables assertions that are desired but missing from most JS code.</p>
+<h3><span>Size</span><a class="heading-anchor" href="#size" id="size">🔗</a></h3>
+<p>Why not just use Lodash? It’s way, <strong>way</strong>, <strong>WAY</strong> too huge. You just want a few functions and BAM, you get ≈ 73 KiB minified. You could make a custom bundle, but most folks just import the whole thing. For a web developer, shipping so much useless code to your users is irresponsible. It’s also space-inefficient, bloated with avoidable code, and judging by the source, this seems unlikely to change. If you care about size, you need a replacement.</p>
+<p>The current version of Lodash is incompatible with techniques like tree shaking / dead code elimination / live code inclusion, which pick just the functions you actually use, dropping the rest. These techniques work perfectly on Fpx. When using a module bundler that supports them, such as Rollup or Webpack 4+, you automatically get a “custom version” of Fpx without any unused stuff.</p>
+<h3><span>Simplicity</span><a class="heading-anchor" href="#simplicity" id="simplicity">🔗</a></h3>
+<blockquote>
+<p>Programs must be written for people to read, and only incidentally for machines to execute.</p>
+<p><em>— Abelson &amp; Sussman, “Structure and Interpretation of Computer Programs”</em></p>
+</blockquote>
+<p>I believe that <em>all code</em> should strive to be simple and educational. This gives me a massive distaste for most code ever written. For example, reading Lodash’s source might teach you code obfuscation, but not much else.</p>
+<p>In Fpx, I strive to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.</p>
+<h3><span>Strictness</span><a class="heading-anchor" href="#strictness" id="strictness">🔗</a></h3>
+<p>Fpx functions tend to be somewhat stricter than their built-in counterparts, and <em>much</em> stricter than the Lodash counterparts. They tend to work <em>either</em> on lists (<a href="#fold-list-init-fun-args-"><code>fold</code></a>) <em>or</em> dicts (<a href="#foldvals-dict-init-fun-args-"><code>foldVals</code></a>), not both. Collection functions don’t accept strings. This prevents subtle gotchas.</p>
+<p>On the other hand, collection functions accept <code>null</code> and <code>undefined</code>, which is very useful in practice. This would not be possible with methods, since methods must be invoked on an object.</p>
+<p>Unlike Lodash, higher-order functions always require an operator function. There’s no implicit fallback on the identity function, and no implicit conversion of data patterns into functions.</p>
+<h3><span>Minifiable Assertions</span><a class="heading-anchor" href="#minifiable-assertions" id="minifiable-assertions">🔗</a></h3>
+<p>Assertions go a <strong>long</strong> way in debugging. Fail fast, catch bugs early. In asynchronous code, validating inputs as early as possible, instead of letting it fail mysteriously later, can save you hours of debugging.</p>
+<p>Here’s the traditional way of doing assertions:</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">someFunction</span>(<span class="hljs-params">input</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> input !== <span class="hljs-string">&#x27;function&#x27;</span>) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">`expected a function, got <span class="hljs-subst">${input}</span>`</span>)
+  }
+}
+
+someFunction({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>})
+<span class="hljs-comment">// Error: Expected a function, got [object Object]</span>
+</code></pre>
+<p>Annoying to type and <strong>really</strong> bad for minification. Some folks strip assertions from production builds, but I find the idea flawed. Even in production, failing fast is better than failing mysteriously, and assertions help with debugging when it inevitably fails.</p>
+<p>Fpx provides a much better alternative:</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">someFunction</span>(<span class="hljs-params">input</span>) </span>{
+  f.validate(input, f.isFunction)
+}
+
+someFunction({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>})
+<span class="hljs-comment">// Error: expected {&quot;one&quot;:10} to satisfy test isFunction</span>
+</code></pre>
+<p>So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which is good for bundle size. The mangled name is a non-issue with a source map, which you need for debugging anyway.</p>
+<p>To support this style of coding, Fpx provides <a href="#validate-value-test-"><code>validate</code></a> and a bevy of boolean tests.</p>
+<hr>
+<h2><span>Performance</span><a class="heading-anchor" href="#performance" id="performance">🔗</a></h2>
+<p>For now, Fpx makes no bold performance claims, other than:</p>
+<ul>
+<li>it’s reasonably competitive with Lodash and native methods</li>
+<li>it doesn’t do anything outlandishly slow and shouldn’t be your bottleneck</li>
+</ul>
+<p>There’s potential for improvement, but I don’t have infinite spare time for microbenchmark contests. Suggestions are welcome.</p>
+<hr>
+<h2><span>Bonus Arguments</span><a class="heading-anchor" href="#bonus-arguments" id="bonus-arguments">🔗</a></h2>
+<p>In Fpx, most collection functions, such as <a href="#map-list-fun-args-"><code>map</code></a>, pass additional arguments to the operator function. Use this to define your functions statically and avoid local closures:</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// local context</span>
+<span class="hljs-keyword">const</span> a = <span class="hljs-number">1</span>
+<span class="hljs-keyword">const</span> b = <span class="hljs-number">2</span>
+<span class="hljs-keyword">const</span> c = <span class="hljs-number">3</span>
+
+
+<span class="hljs-comment">// bonus args (recommended)</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add5</span>(<span class="hljs-params">value, key, a, b, c</span>) </span>{
+  <span class="hljs-keyword">return</span> value + key + a + b + c
+}
+f.map([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], add5, a, b, c)
+<span class="hljs-comment">// [16, 27, 38]</span>
+
+
+<span class="hljs-comment">// closure (not recommended)</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add5</span>(<span class="hljs-params">value, key</span>) </span>{
+  <span class="hljs-keyword">return</span> value + key + a + b + c
+}
+f.map([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], add5)
+<span class="hljs-comment">// [16, 27, 38]</span>
+</code></pre>
+<p>Broadly speaking, closures have a cost; defining functions statically avoids that cost.</p>
+<p>This doesn’t always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures may accidentally enable optimizations like function specialization. However, such optimizations can be unreliable. As a rule of thumb, memory allocation beats most other costs. Avoiding closure allocation is reliable and predictable at improving performance.</p>
+<p>This may change with future advancements in JS engines.</p>
+<hr>
+<h2><span>Fun</span><a class="heading-anchor" href="#fun" id="fun">🔗</a></h2>
+<p>Miscellaneous utilities and transforms for functions.</p>
+<hr>
+<h3><span><code>call(fun, ...args)</code></span><a class="heading-anchor" href="#call-fun-args-" id="call-fun-args-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call" target="_blank" rel="noopener noreferrer"><code>Function.prototype.call</code></a>. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.call(f.add, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 3</span>
+
+<span class="hljs-comment">// equivalent:</span>
+<span class="hljs-comment">// f.add(10, 20)</span>
+<span class="hljs-comment">// f.call(f.add, 10, 20)</span>
+
+<span class="hljs-comment">// Side effect of implementation</span>
+<span class="hljs-comment">// f.add.call(f.add, 10, 20)</span>
+</code></pre>
+<hr>
+<h3><span><code>apply(fun, args)</code></span><a class="heading-anchor" href="#apply-fun-args-" id="apply-fun-args-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank" rel="noopener noreferrer"><code>Function.prototype.apply</code></a>. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.apply(f.add, [<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// 3</span>
+
+<span class="hljs-comment">// equivalent:</span>
+<span class="hljs-comment">// f.add(10, 20)</span>
+<span class="hljs-comment">// f.add(...[10, 20])</span>
+<span class="hljs-comment">// f.apply(f.add, [10, 20])</span>
+
+<span class="hljs-comment">// Side effect of implementation</span>
+<span class="hljs-comment">// f.add.apply(f.add, [10, 20])</span>
+</code></pre>
+<hr>
+<h3><span><code>bind(fun, ...args)</code></span><a class="heading-anchor" href="#bind-fun-args-" id="bind-fun-args-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank" rel="noopener noreferrer"><code>Function.prototype.bind</code></a>, but sets implicit <code>this = fun</code> as a side effect of the implementation.</p>
+<p>Returns a new function that represents <a href="https://en.wikipedia.org/wiki/Partial_application" target="_blank" rel="noopener noreferrer">partial application</a> of the given function, a common tool in functional programming. When called, it joins arguments from both calls and invokes the original function. Think of it like splitting a function call in two, or more.</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> inc = f.bind(f.add, <span class="hljs-number">1</span>)
+
+inc(<span class="hljs-number">2</span>)
+<span class="hljs-comment">// 3</span>
+</code></pre>
+<p>Note: Fpx no longer provides facilities for currying. Experience has shown it to be extremely error prone. Currying, as seen in purely functional languages such as Haskell, tends to care about the amount of arguments. Calling a curried function may either create a new function, or call the underlying function (possibly side-effectful). This approach works reasonably well in statically typed purely functional languages, but not in JavaScript, where all functions are variadic, and it’s conventional to sometimes pass extra utility arguments “just in case”, which the callee may or may not care about. <code>bind</code> is different because the created function will always call the original function, regardless of how many arguments were passed.</p>
+<hr>
+<h3><span><code>not(fun)</code></span><a class="heading-anchor" href="#not-fun-" id="not-fun-">🔗</a></h3>
+<p>Returns a new function that negates the result of the given function, like a delayed <code>!</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eq</span>(<span class="hljs-params">a, b</span>) </span>{<span class="hljs-keyword">return</span> a === b}
+
+<span class="hljs-keyword">const</span> different = f.not(eq)
+
+different(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// !eq(10, 20) = true</span>
+
+<span class="hljs-comment">// equivalent:</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">different</span>(<span class="hljs-params">a, b</span>) </span>{<span class="hljs-keyword">return</span> !eq(a, b)}
+</code></pre>
+<hr>
+<h2><span>Bool</span><a class="heading-anchor" href="#bool" id="bool">🔗</a></h2>
+<p>Boolean tests.</p>
+<hr>
+<h3><span><code>truthy(value)</code></span><a class="heading-anchor" href="#truthy-value-" id="truthy-value-">🔗</a></h3>
+<p>Aliases: <code>truthy</code>, <code>bool</code>.</p>
+<p>Same as <code>!!</code> or <code>Boolean</code>. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.truthy(<span class="hljs-literal">null</span>)
+<span class="hljs-comment">// false</span>
+
+f.truthy(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>falsy(value)</code></span><a class="heading-anchor" href="#falsy-value-" id="falsy-value-">🔗</a></h3>
+<p>Aliases: <code>falsy</code>, <code>negate</code>.</p>
+<p>Same as <code>!</code>. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.falsy(<span class="hljs-literal">null</span>)
+<span class="hljs-comment">// true</span>
+
+f.falsy(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>is(one, other)</code></span><a class="heading-anchor" href="#is-one-other-" id="is-one-other-">🔗</a></h3>
+<p>Identity test: same as <code>===</code>, but considers <code>NaN</code> equal to <code>NaN</code>. Equivalent to <a href="https://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero" target="_blank" rel="noopener noreferrer"><em>SameValueZero</em></a> as defined by the language spec.</p>
+<p>Note that <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is" target="_blank" rel="noopener noreferrer"><code>Object.is</code></a> implements <a href="https://www.ecma-international.org/ecma-262/6.0/#sec-samevalue" target="_blank" rel="noopener noreferrer"><em>SameValue</em></a>, which treats <code>-0</code> and <code>+0</code> as <em>distinct values</em>. This is typically undesirable. As a result, you should prefer <code>f.is</code> over <code>===</code> or <code>Object.is</code>.</p>
+<p>Used internally in Fpx for all identity tests.</p>
+<pre><code class="hljs language-js">f.is(<span class="hljs-number">1</span>, <span class="hljs-string">&#x27;1&#x27;</span>)
+<span class="hljs-comment">// false</span>
+
+f.is(<span class="hljs-literal">NaN</span>, <span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isNumber(value)</code></span><a class="heading-anchor" href="#isnumber-value-" id="isnumber-value-">🔗</a></h3>
+<p>Same as <code>typeof value === &#39;number&#39;</code>. Returns <code>true</code> for <code>NaN</code> and <code>±Infinity</code>. In most cases, you should use <code>isFinite</code> instead.</p>
+<pre><code class="hljs language-js">f.isNumber(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// true</span>
+f.isNumber(<span class="hljs-string">&#x27;1&#x27;</span>)
+<span class="hljs-comment">// false</span>
+f.isNumber(<span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// true &lt;-- WTF</span>
+</code></pre>
+<hr>
+<h3><span><code>isFinite(value)</code></span><a class="heading-anchor" href="#isfinite-value-" id="isfinite-value-">🔗</a></h3>
+<p>Same as ES2015’s <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite" target="_blank" rel="noopener noreferrer"><code>Number.isFinite</code></a>.</p>
+<p>Returns <code>true</code> if <code>value</code> is a number and is <em>not</em> <code>NaN</code> or <code>±Infinity</code>. In most cases, you should use <code>isFinite</code> rather than <code>isNumber</code>.</p>
+<pre><code class="hljs language-js">f.isFinite(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// true</span>
+f.isFinite(<span class="hljs-string">&#x27;1&#x27;</span>)
+<span class="hljs-comment">// false</span>
+f.isFinite(<span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isInteger(value)</code></span><a class="heading-anchor" href="#isinteger-value-" id="isinteger-value-">🔗</a></h3>
+<p>True if <code>value</code> is an integer: finite without a fractional part.</p>
+<pre><code class="hljs language-js">f.isInteger(<span class="hljs-number">0</span>)
+<span class="hljs-comment">// true</span>
+f.isInteger(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// true</span>
+f.isInteger(-<span class="hljs-number">1</span>)
+<span class="hljs-comment">// true</span>
+f.isInteger(<span class="hljs-number">1.1</span>)
+<span class="hljs-comment">// false</span>
+f.isInteger(<span class="hljs-string">&#x27;1&#x27;</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isNatural(value)</code></span><a class="heading-anchor" href="#isnatural-value-" id="isnatural-value-">🔗</a></h3>
+<p>True if <code>value</code> is a natural number: a positive integer, starting with <code>0</code>.</p>
+<pre><code class="hljs language-js">f.isNatural(<span class="hljs-number">0</span>)
+<span class="hljs-comment">// true</span>
+f.isNatural(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// true</span>
+f.isNatural(-<span class="hljs-number">1</span>)
+<span class="hljs-comment">// false</span>
+f.isNatural(<span class="hljs-number">1.1</span>)
+<span class="hljs-comment">// false</span>
+f.isNatural(<span class="hljs-string">&#x27;1&#x27;</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isNaN(value)</code></span><a class="heading-anchor" href="#isnan-value-" id="isnan-value-">🔗</a></h3>
+<p>Same as ES2015’s <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN" target="_blank" rel="noopener noreferrer"><code>Number.isNaN</code></a>. True if <code>value</code> is <em>actually</em> <code>NaN</code>. Doesn’t coerce non-numbers to numbers, unlike <code>global.isNaN</code> / <code>window.isNaN</code>.</p>
+<pre><code class="hljs language-js">f.isNaN(<span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// true</span>
+f.isNaN(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isInfinity(value)</code></span><a class="heading-anchor" href="#isinfinity-value-" id="isinfinity-value-">🔗</a></h3>
+<p>True if <code>value</code> is <code>-Infinity</code> or <code>Infinity</code>.</p>
+<pre><code class="hljs language-js">f.isInfinity(<span class="hljs-literal">Infinity</span>)
+<span class="hljs-comment">// true</span>
+f.isInfinity(-<span class="hljs-literal">Infinity</span>)
+<span class="hljs-comment">// true</span>
+f.isInfinity(<span class="hljs-number">10</span>)
+<span class="hljs-comment">// false</span>
+f.isInfinity(<span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// false</span>
+f.isInfinity(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isString(value)</code></span><a class="heading-anchor" href="#isstring-value-" id="isstring-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isString(<span class="hljs-string">&#x27;blah&#x27;</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isBoolean(value)</code></span><a class="heading-anchor" href="#isboolean-value-" id="isboolean-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isBoolean(<span class="hljs-literal">false</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isSymbol(value)</code></span><a class="heading-anchor" href="#issymbol-value-" id="issymbol-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isSymbol(<span class="hljs-built_in">Symbol</span>(<span class="hljs-string">&#x27;blah&#x27;</span>))
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isKey(value)</code></span><a class="heading-anchor" href="#iskey-value-" id="iskey-value-">🔗</a></h3>
+<p>True if <code>value</code> could, with some suspension of disbelief, claim to be usable as a dict key. Must satisfy either of:</p>
+<ul>
+<li><code>isString</code></li>
+<li><code>isSymbol</code></li>
+<li><code>isBoolean</code></li>
+<li><code>isFinite</code></li>
+</ul>
+<pre><code class="hljs language-js">f.isKey(<span class="hljs-string">&#x27;key&#x27;</span>)
+<span class="hljs-comment">// true</span>
+f.isKey(<span class="hljs-built_in">Symbol</span>(<span class="hljs-string">&#x27;key&#x27;</span>))
+<span class="hljs-comment">// true</span>
+f.isKey(<span class="hljs-number">10</span>)
+<span class="hljs-comment">// true</span>
+f.isKey(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<p>In other words, this is a subset of <a href="#isprimitive-value-"><code>isPrimitive</code></a> that excludes <code>null</code>, <code>undefined</code>, <code>NaN</code>, and <code>±Infinity</code>. These values are often produced on accident, and you almost never want them as your dict keys.</p>
+<p>Fpx uses <code>isKey</code> to validate keys in functions like <a href="#keyby-list-fun-args-"><code>keyBy</code></a>.</p>
+<hr>
+<h3><span><code>isPrimitive(value)</code></span><a class="heading-anchor" href="#isprimitive-value-" id="isprimitive-value-">🔗</a></h3>
+<p>Opposite of <code>isComplex</code>. Either of:</p>
+<ul>
+<li><code>isString</code></li>
+<li><code>isSymbol</code></li>
+<li><code>isBoolean</code></li>
+<li><code>isNumber</code></li>
+<li><code>null</code></li>
+<li><code>undefined</code></li>
+</ul>
+<hr>
+<h3><span><code>isComplex(value)</code></span><a class="heading-anchor" href="#iscomplex-value-" id="iscomplex-value-">🔗</a></h3>
+<p>Definition:</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isComplex</span>(<span class="hljs-params">value</span>) </span>{
+  <span class="hljs-keyword">return</span> isObject(value) || isFunction(value)
+}
+</code></pre>
+<p>This covers all mutable objects in the true JavaScript sense, including functions.</p>
+<hr>
+<h3><span><code>isInstance(value, Class)</code></span><a class="heading-anchor" href="#isinstance-value-class-" id="isinstance-value-class-">🔗</a></h3>
+<p>Same as <code>instanceof</code> but more efficient for primitives.</p>
+<p>When the left operand to <code>instanceof</code> is a primitive, it creates a temporary wrapper object, wasting CPU cycles on allocation and garbage collection, even though <code>false</code> was guaranteed. <code>isInstance</code> avoids this mistake. At the time of writing, the improvement is measurable in V8.</p>
+<pre><code class="hljs language-js">f.isInstance([], <span class="hljs-built_in">Array</span>)          <span class="hljs-comment">// true</span>
+f.isInstance(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(), <span class="hljs-built_in">Date</span>)   <span class="hljs-comment">// true</span>
+f.isInstance(<span class="hljs-number">1</span>, <span class="hljs-built_in">Number</span>)          <span class="hljs-comment">// false, cheaper than instanceof</span>
+f.isInstance(<span class="hljs-literal">undefined</span>, <span class="hljs-built_in">Object</span>)  <span class="hljs-comment">// false, cheaper than instanceof</span>
+</code></pre>
+<hr>
+<h3><span><code>isFunction(value)</code></span><a class="heading-anchor" href="#isfunction-value-" id="isfunction-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isFunction(isFunction)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isObject(value)</code></span><a class="heading-anchor" href="#isobject-value-" id="isobject-value-">🔗</a></h3>
+<p>True if <code>value</code> is a non-<code>null</code> object. This includes plain dicts, arrays, regexps, user-defined “classes”, built-in classes, and so on. Doesn’t count functions as objects, even though <em>technically</em> they are.</p>
+<p>Note: this is <em>not</em> equivalent to lodash’s <code>_.isObject</code>, which counts functions as objects. See <a href="#iscomplex-value-"><code>isComplex</code></a> for that.</p>
+<p>For plain objects used as dictionaries, see <a href="#isdict-value-"><code>isDict</code></a>. For fancy non-list objects, see <a href="#isstruct-value-"><code>isStruct</code></a>.</p>
+<pre><code class="hljs language-js">f.isObject(<span class="hljs-string">&#x27;blah&#x27;</span>)
+<span class="hljs-comment">// false</span>
+
+f.isObject(<span class="hljs-regexp">/blah/</span>)
+<span class="hljs-comment">// true</span>
+
+f.isObject([])
+<span class="hljs-comment">// true</span>
+
+f.isObject(<span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>))
+<span class="hljs-comment">// true</span>
+
+f.isObject(<span class="hljs-function">() =&gt;</span> {})
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isDict(value)</code></span><a class="heading-anchor" href="#isdict-value-" id="isdict-value-">🔗</a></h3>
+<p>True if <code>value</code> is a normal, honest-to-goodness dictionary and not something fancy-shmancy.</p>
+<p>Roughly equivalent to Lodash’s <code>_.isPlainObject</code>.</p>
+<pre><code class="hljs language-js">f.isDict({})
+<span class="hljs-comment">// true</span>
+
+f.isDict(<span class="hljs-built_in">Object</span>.create(<span class="hljs-literal">null</span>))
+<span class="hljs-comment">// true</span>
+
+f.isDict(<span class="hljs-built_in">Object</span>.create({}))
+<span class="hljs-comment">// false</span>
+
+f.isDict([])
+<span class="hljs-comment">// false</span>
+
+f.isDict(<span class="hljs-keyword">new</span> <span class="hljs-class"><span class="hljs-keyword">class</span> </span>{}())
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isStruct(value)</code></span><a class="heading-anchor" href="#isstruct-value-" id="isstruct-value-">🔗</a></h3>
+<p>True if <code>value</code> is a non-list object. In Fpx lingo, such objects are called “structs”. There’s an entire <a href="#struct">category</a> of functions dedicated to them, similar to “object” functions in Lodash.</p>
+<p>Note that anything that satisfies <code>isDict</code> automatically satisfies <code>isStruct</code>, but not vice versa.</p>
+<pre><code class="hljs language-js">f.isStruct({})
+<span class="hljs-comment">// true</span>
+
+f.isStruct(<span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>())
+<span class="hljs-comment">// true</span>
+
+f.isStruct([])
+<span class="hljs-comment">// false</span>
+
+f.isStruct(f.isStruct)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isArray(value)</code></span><a class="heading-anchor" href="#isarray-value-" id="isarray-value-">🔗</a></h3>
+<p>True if <code>value</code> inherits from <code>Array.prototype</code>.</p>
+<pre><code class="hljs language-js">f.isArray([])
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isList(value)</code></span><a class="heading-anchor" href="#islist-value-" id="islist-value-">🔗</a></h3>
+<p>True if <code>value</code> looks array-like, such as:</p>
+<ul>
+<li><code>[]</code></li>
+<li><code>arguments</code></li>
+<li><code>TypedArray</code></li>
+<li><code>NodeList</code></li>
+<li>etc.</li>
+</ul>
+<p>Used internally for most list checks. Note that <em>strings are not considered lists</em>.</p>
+<pre><code class="hljs language-js">f.isList([])
+<span class="hljs-comment">// true</span>
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">args</span>(<span class="hljs-params"></span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>}
+f.isList(args())
+<span class="hljs-comment">// true</span>
+
+f.isList(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Uint8Array</span>())
+<span class="hljs-comment">// true</span>
+
+f.isList(<span class="hljs-built_in">document</span>.querySelectorAll(<span class="hljs-string">&#x27;div&#x27;</span>))
+<span class="hljs-comment">// true</span>
+
+f.isList(<span class="hljs-string">&#x27;string&#x27;</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isRegExp(value)</code></span><a class="heading-anchor" href="#isregexp-value-" id="isregexp-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isRegExp(<span class="hljs-regexp">/blah/</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isDate(value)</code></span><a class="heading-anchor" href="#isdate-value-" id="isdate-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isDate(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>())             <span class="hljs-comment">// true</span>
+f.isDate(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toString())  <span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isValidDate(value)</code></span><a class="heading-anchor" href="#isvaliddate-value-" id="isvaliddate-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isValidDate(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>())     <span class="hljs-comment">// true</span>
+f.isValidDate(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-literal">NaN</span>))  <span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isInvalidDate(value)</code></span><a class="heading-anchor" href="#isinvaliddate-value-" id="isinvaliddate-value-">🔗</a></h3>
+<pre><code class="hljs language-js">f.isInvalidDate(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>())     <span class="hljs-comment">// false</span>
+f.isInvalidDate(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-literal">NaN</span>))  <span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isPromise(value)</code></span><a class="heading-anchor" href="#ispromise-value-" id="ispromise-value-">🔗</a></h3>
+<p>True if the value <a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank" rel="noopener noreferrer">quacks</a> like an ES2015 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener noreferrer"><code>Promise</code></a>. The value doesn’t have to belong to the built-in <code>Promise</code> class.</p>
+<pre><code class="hljs language-js">f.isPromise(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">() =&gt;</span> {}))
+<span class="hljs-comment">// true</span>
+
+f.isPromise({<span class="hljs-function"><span class="hljs-title">then</span>(<span class="hljs-params"></span>)</span> {}, <span class="hljs-keyword">catch</span>() {}})
+<span class="hljs-comment">// true</span>
+
+f.isPromise({<span class="hljs-function"><span class="hljs-title">then</span>(<span class="hljs-params"></span>)</span> {}})
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isIterator(value)</code></span><a class="heading-anchor" href="#isiterator-value-" id="isiterator-value-">🔗</a></h3>
+<p>True if the value <a href="https://en.wikipedia.org/wiki/Duck_test" target="_blank" rel="noopener noreferrer">quacks</a> like an ES2015 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator" target="_blank" rel="noopener noreferrer">iterator</a>. <em>Iterators</em>, also called <em>generator objects</em>, are created by calling a <em>generator function</em>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">myGenerator</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">yield</span> <span class="hljs-number">10</span>
+  <span class="hljs-keyword">yield</span> <span class="hljs-number">20</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-number">30</span>
+}
+
+f.isIterator(myGenerator())
+<span class="hljs-comment">// true</span>
+
+f.isIterator(myGenerator)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isNil(value)</code></span><a class="heading-anchor" href="#isnil-value-" id="isnil-value-">🔗</a></h3>
+<p>True for <code>null</code> and <code>undefined</code>. Same as <code>value == null</code>.</p>
+<p>Incidentally, these are the only values that produce an exception when attempting to read a property: <code>null.someProperty</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// Definition</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isNil</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> value == <span class="hljs-literal">null</span>}
+
+f.isNil(<span class="hljs-literal">null</span>)
+<span class="hljs-comment">// true</span>
+
+f.isNil(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// true</span>
+
+f.isNil(<span class="hljs-literal">false</span>)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>isSomething(value)</code></span><a class="heading-anchor" href="#issomething-value-" id="issomething-value-">🔗</a></h3>
+<p>True for everything except <code>null</code> and <code>undefined</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// Definition</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isSomething</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> value != <span class="hljs-literal">null</span>}
+
+f.isSomething(<span class="hljs-literal">null</span>)
+<span class="hljs-comment">// false</span>
+f.isSomething(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// false</span>
+f.isSomething(<span class="hljs-literal">false</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>isEmpty(value)</code></span><a class="heading-anchor" href="#isempty-value-" id="isempty-value-">🔗</a></h3>
+<p>True if <code>!size(value)</code>. Only lists and dicts can be non-empty.</p>
+<pre><code class="hljs language-js">f.isEmpty(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// true</span>
+
+f.isEmpty(<span class="hljs-string">&#x27;blah&#x27;</span>)
+<span class="hljs-comment">// true</span>
+
+f.isEmpty([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// false</span>
+
+f.isEmpty({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>testBy(value, pattern)</code></span><a class="heading-anchor" href="#testby-value-pattern-" id="testby-value-pattern-">🔗</a></h3>
+<p>Limited form of pattern testing. Together with ES2015 destructuring, it lets you crudely approximate pattern matching, a feature common in functional languages but missing from JavaScript.</p>
+<p>Tests <code>value</code> against <code>pattern</code>, using the following rules:</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// Function pattern: call it, convert result to boolean</span>
+
+f.testBy(<span class="hljs-number">10</span>, f.inc)  ≡  !!f.inc(<span class="hljs-number">10</span>)
+
+<span class="hljs-comment">// Primitive pattern: test for identity via `f.is`</span>
+
+f.testBy(x, <span class="hljs-literal">null</span>)  ≡  f.is(x, <span class="hljs-literal">null</span>)
+f.testBy(x, <span class="hljs-number">10</span>)    ≡  f.is(x, <span class="hljs-number">10</span>)
+f.testBy(x, <span class="hljs-literal">NaN</span>)   ≡  f.is(x, <span class="hljs-literal">NaN</span>)
+
+<span class="hljs-comment">// Regexp pattern:</span>
+<span class="hljs-comment">//   input must be a string</span>
+<span class="hljs-comment">//   use `RegExp.prototype.test`</span>
+
+f.testBy(x, <span class="hljs-regexp">/blah/</span>)  ≡  f.isString(x) &amp;&amp; <span class="hljs-regexp">/blah/</span>.test(x)
+
+<span class="hljs-comment">// List pattern:</span>
+<span class="hljs-comment">//   input must be a list</span>
+<span class="hljs-comment">//   recursively apply sub-patterns</span>
+
+f.testBy(x, [])             ≡  f.isList(x)
+f.testBy(x, [<span class="hljs-regexp">/blah/</span>])       ≡  f.isList(x) &amp;&amp; f.testBy(x[<span class="hljs-number">0</span>], <span class="hljs-regexp">/blah/</span>)
+f.testBy(x, [<span class="hljs-regexp">/blah/</span>, <span class="hljs-string">&#x27;c&#x27;</span>])  ≡  f.isList(x) &amp;&amp; f.testBy(x[<span class="hljs-number">0</span>], <span class="hljs-regexp">/blah/</span>) &amp;&amp; f.testBy(x[<span class="hljs-number">1</span>], <span class="hljs-string">&#x27;c&#x27;</span>)
+
+<span class="hljs-comment">// Struct pattern:</span>
+<span class="hljs-comment">//   input must a struct (a non-list object)</span>
+<span class="hljs-comment">//   recursively apply sub-patterns</span>
+
+f.testBy(x, {})             ≡  f.isStruct(x)
+f.testBy(x, {<span class="hljs-attr">one</span>: <span class="hljs-regexp">/blah/</span>})  ≡  f.isStruct(x) &amp;&amp; f.testBy(x.one, <span class="hljs-regexp">/blah/</span>)
+f.testBy(x, {<span class="hljs-attr">a</span>: {<span class="hljs-attr">b</span>: <span class="hljs-string">&#x27;c&#x27;</span>}})  ≡  f.isStruct(x) &amp;&amp; f.testBy(x.a, {<span class="hljs-attr">b</span>: <span class="hljs-string">&#x27;c&#x27;</span>})
+</code></pre>
+<h3><span><code>test(pattern)</code></span><a class="heading-anchor" href="#test-pattern-" id="test-pattern-">🔗</a></h3>
+<p>Takes a pattern and returns a version of <a href="#testby-value-pattern-"><code>testBy</code></a> bound to that pattern. See the rules above.</p>
+<pre><code class="hljs language-js">f.test(pattern)
+<span class="hljs-comment">// ≡ function(x) {return f.testBy(x, pattern)}</span>
+
+f.test(pattern)(input)
+<span class="hljs-comment">// ≡ f.testBy(input, pattern)</span>
+</code></pre>
+<hr>
+<h2><span>Casts</span><a class="heading-anchor" href="#casts" id="casts">🔗</a></h2>
+<p>Type coercions and replacements.</p>
+<h3><span><code>onlyString(value)</code></span><a class="heading-anchor" href="#onlystring-value-" id="onlystring-value-">🔗</a></h3>
+<p>Nil-tolerant string assertion. Replaces <code>null</code> or <code>undefined</code> with <code>&#39;&#39;</code>, otherwise asserts <a href="#isstring-value-"><code>isString</code></a> and returns <code>value</code>.</p>
+<pre><code class="hljs language-js">f.onlyString()
+<span class="hljs-comment">// &#x27;&#x27;</span>
+
+f.onlyString(<span class="hljs-string">&#x27;blah&#x27;</span>)
+<span class="hljs-comment">// &#x27;blah&#x27;</span>
+
+f.onlyString([<span class="hljs-string">&#x27;not string&#x27;</span>])
+<span class="hljs-comment">// Error: Expected [&quot;not string&quot;] to satisfy test isString</span>
+</code></pre>
+<hr>
+<h3><span><code>onlyList(value)</code></span><a class="heading-anchor" href="#onlylist-value-" id="onlylist-value-">🔗</a></h3>
+<p>Nil-tolerant list assertion. Replaces <code>null</code> or <code>undefined</code> with <code>[]</code>, otherwise asserts <a href="#islist-value-"><code>isList</code></a> and returns <code>value</code>. Used internally in <a href="#list">list functions</a>.</p>
+<pre><code class="hljs language-js">f.onlyList()
+<span class="hljs-comment">// []</span>
+
+f.onlyList([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// [10, 20]</span>
+
+f.onlyList(<span class="hljs-string">&#x27;not list&#x27;</span>)
+<span class="hljs-comment">// Error: Expected &quot;not list&quot; to satisfy test isList</span>
+</code></pre>
+<hr>
+<h3><span><code>onlyDict(value)</code></span><a class="heading-anchor" href="#onlydict-value-" id="onlydict-value-">🔗</a></h3>
+<p>Nil-tolerant dict assertion. Replaces <code>null</code> or <code>undefined</code> with <code>{}</code>, otherwise asserts <a href="#isdict-value-"><code>isDict</code></a> and returns <code>value</code>.</p>
+<pre><code class="hljs language-js">f.onlyDict()
+<span class="hljs-comment">// {}</span>
+
+f.onlyDict({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>})
+<span class="hljs-comment">// {one: 10}</span>
+
+f.onlyDict(<span class="hljs-string">&#x27;not dict&#x27;</span>)
+<span class="hljs-comment">// Error: Expected &quot;not dict&quot; to satisfy test isDict</span>
+</code></pre>
+<hr>
+<h3><span><code>onlyStruct(value)</code></span><a class="heading-anchor" href="#onlystruct-value-" id="onlystruct-value-">🔗</a></h3>
+<p>Nil-tolerant struct assertion. Replaces <code>null</code> or <code>undefined</code> with <code>{}</code>, otherwise asserts <a href="#isstruct-value-"><code>isStruct</code></a> and returns <code>value</code>. Used internally in <a href="#struct">struct functions</a>.</p>
+<pre><code class="hljs language-js">f.onlyStruct()
+<span class="hljs-comment">// {}</span>
+
+f.onlyStruct({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>})
+<span class="hljs-comment">// {one: 10}</span>
+
+f.onlyStruct(<span class="hljs-string">&#x27;not struct&#x27;</span>)
+<span class="hljs-comment">// Error: Expected &quot;not struct&quot; to satisfy test isDict</span>
+</code></pre>
+<hr>
+<h3><span><code>toArray(value)</code></span><a class="heading-anchor" href="#toarray-value-" id="toarray-value-">🔗</a></h3>
+<p>Nil-tolerant cast. Converts any array-like into an <code>Array</code>. If the input is
+already an <code>Array</code>, it’s returned as-is. Converts <code>null</code> and <code>undefined</code> to
+<code>[]</code>.</p>
+<pre><code class="hljs language-js">f.toArray()
+<span class="hljs-comment">// []</span>
+
+f.toArray([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// [10, 20]</span>
+
+f.toArray(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">args</span>(<span class="hljs-params"></span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>}(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>))
+<span class="hljs-comment">// [10, 20]</span>
+</code></pre>
+<hr>
+<h2><span>List</span><a class="heading-anchor" href="#list" id="list">🔗</a></h2>
+<p>List manipulation utils.</p>
+<p>Common rules:</p>
+<ul>
+<li>accept <code>null</code> and <code>undefined</code>, treating them as <code>[]</code></li>
+<li>accept inputs that satisfy <a href="#islist-value-"><code>isList</code></a>: <code>arguments</code>, typed arrays, Node buffers, DOM lists, etc.</li>
+<li>reject other inputs with an exception</li>
+<li>don’t modify the input; return a new version instead</li>
+<li>accept <a href="#bonus-arguments">bonus arguments</a> for the operator function</li>
+</ul>
+<p>Note that <em>strings are not considered lists</em>.</p>
+<hr>
+<h3><span><code>each(list, fun, ...args)</code></span><a class="heading-anchor" href="#each-list-fun-args-" id="each-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank" rel="noopener noreferrer"><code>Array.prototype.forEach</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">report</span>(<span class="hljs-params">value, index, ...args</span>) </span>{
+  <span class="hljs-built_in">console</span>.info(value, index, ...args)
+}
+
+f.each([<span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>], report, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>)
+<span class="hljs-comment">// &#x27;one&#x27; 0 10 20 30</span>
+<span class="hljs-comment">// &#x27;two&#x27; 1 10 20 30</span>
+</code></pre>
+<hr>
+<h3><span><code>fold(list, init, fun, ...args)</code></span><a class="heading-anchor" href="#fold-list-init-fun-args-" id="fold-list-init-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(accumulator, value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank" rel="noopener noreferrer"><code>Array.prototype.reduce</code></a>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code>, <code>undefined</code>, and array-likes</li>
+<li>the argument order is <code>list, init, fun</code> rather than <code>this=list, fun, init</code></li>
+<li>the init argument is mandatory</li>
+</ul>
+<pre><code class="hljs language-js">f.fold([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-number">5</span>, f.add)
+<span class="hljs-comment">// 5 + 10 + 20 = 35</span>
+</code></pre>
+<hr>
+<h3><span><code>foldRight(list, init, fun, ...args)</code></span><a class="heading-anchor" href="#foldright-list-init-fun-args-" id="foldright-list-init-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(accumulator, value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight" target="_blank" rel="noopener noreferrer"><code>Array.prototype.reduceRight</code></a>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code>, <code>undefined</code>, and array-likes</li>
+<li>the argument order is <code>list, init, fun</code> rather than <code>this=list, fun, init</code></li>
+<li>the init argument is mandatory</li>
+</ul>
+<pre><code class="hljs language-js">f.foldRight([<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">20</span>], <span class="hljs-number">100</span>, f.sub)
+<span class="hljs-comment">// 100 - 20 - 5 - 1 = 74</span>
+</code></pre>
+<hr>
+<h3><span><code>map(list, fun, ...args)</code></span><a class="heading-anchor" href="#map-list-fun-args-" id="map-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="noopener noreferrer"><code>Array.prototype.map</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">double</span>(<span class="hljs-params">num</span>) </span>{<span class="hljs-keyword">return</span> num * <span class="hljs-number">2</span>}
+
+f.map([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], double)
+<span class="hljs-comment">// [20, 40, 60]</span>
+</code></pre>
+<p>Note: coming from Lodash, you might miss the string shortcut:</p>
+<pre><code class="hljs language-js">_.map([{<span class="hljs-attr">value</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">value</span>: <span class="hljs-number">20</span>}], <span class="hljs-string">&#x27;value&#x27;</span>)
+<span class="hljs-comment">// [10, 20]</span>
+</code></pre>
+<p>Fpx considers this a hazardous malpractice. Just use a function or <a href="#getter-key-"><code>getter</code></a>:</p>
+<pre><code class="hljs language-js">f.map([{<span class="hljs-attr">value</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">value</span>: <span class="hljs-number">20</span>}], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x.value)
+f.map([{<span class="hljs-attr">value</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">value</span>: <span class="hljs-number">20</span>}], f.getter(<span class="hljs-string">&#x27;value&#x27;</span>))
+</code></pre>
+<hr>
+<h3><span><code>flatMap(list, fun, ...args)</code></span><a class="heading-anchor" href="#flatmap-list-fun-args-" id="flatmap-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Similar to <code>map</code>, but flattens any lists returned by <code>fun</code> into the output array. Equivalent to <code>flatten(map(...arguments))</code>.</p>
+<pre><code class="hljs language-js">f.flatMap([<span class="hljs-number">10</span>, [<span class="hljs-number">20</span>], [[<span class="hljs-number">30</span>]]], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x)
+<span class="hljs-comment">// [10, 20, [30]]</span>
+</code></pre>
+<hr>
+<h3><span><code>flatMapDeep(list, fun, ...args)</code></span><a class="heading-anchor" href="#flatmapdeep-list-fun-args-" id="flatmapdeep-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Similar to <code>map</code>, but deeply flattens any lists returned by <code>fun</code>, returning a completely flat array. Equivalent to <code>flattenDeep(map(...arguments))</code>.</p>
+<pre><code class="hljs language-js">f.flatMapDeep([<span class="hljs-number">10</span>, [<span class="hljs-number">20</span>], [[[<span class="hljs-number">30</span>]]]], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x)
+<span class="hljs-comment">// [10, 20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>mapFilter(list, fun, ...args)</code></span><a class="heading-anchor" href="#mapfilter-list-fun-args-" id="mapfilter-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Similar to <code>map</code>, but drops any “falsy” values from the output. Equivalent to <code>compact(map(...arguments))</code>.</p>
+<pre><code class="hljs language-js">f.mapFilter([<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, <span class="hljs-number">20</span>, <span class="hljs-number">0</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>)
+<span class="hljs-comment">// [20, 40]</span>
+</code></pre>
+<hr>
+<h3><span><code>filter(list, test, ...args)</code></span><a class="heading-anchor" href="#filter-list-test-args-" id="filter-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank" rel="noopener noreferrer"><code>Array.prototype.filter</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js">f.filter([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>], f.isBoolean)
+<span class="hljs-comment">// [true, false]</span>
+</code></pre>
+<p>Note: coming from Lodash, you might miss the magic pattern shortcut:</p>
+<pre><code class="hljs language-js">_.filter([{<span class="hljs-attr">val</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">val</span>: <span class="hljs-number">20</span>}], {<span class="hljs-attr">val</span>: <span class="hljs-number">10</span>})
+<span class="hljs-comment">// [{val: 10}]</span>
+</code></pre>
+<p>Fpx provides <a href="#test-pattern-"><code>test</code></a>:</p>
+<pre><code class="hljs language-js">f.filter([{<span class="hljs-attr">val</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">val</span>: <span class="hljs-number">20</span>}], f.test({<span class="hljs-attr">val</span>: <span class="hljs-number">10</span>}))
+<span class="hljs-comment">// [{val: 10}]</span>
+</code></pre>
+<p>Be wary that it’s slower than a hand-coded test.</p>
+<hr>
+<h3><span><code>reject(list, test, ...args)</code></span><a class="heading-anchor" href="#reject-list-test-args-" id="reject-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Opposite of <code>filter</code>: drops elements that don’t satisfy <code>test</code>.</p>
+<pre><code class="hljs language-js">f.reject([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>], f.isNumber)
+<span class="hljs-comment">// [true, false]</span>
+</code></pre>
+<hr>
+<h3><span><code>compact(list)</code></span><a class="heading-anchor" href="#compact-list-" id="compact-list-">🔗</a></h3>
+<p>Returns a version of <code>list</code> without any “falsy” elements. Equivalent to <code>filter(list, id)</code>.</p>
+<pre><code class="hljs language-js">f.compact([<span class="hljs-number">10</span>, <span class="hljs-number">0</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-number">30</span>, <span class="hljs-literal">undefined</span>])
+<span class="hljs-comment">// [10, 20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>find(list, test, ...args)</code></span><a class="heading-anchor" href="#find-list-test-args-" id="find-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target="_blank" rel="noopener noreferrer"><code>Array.prototype.find</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js">f.find([<span class="hljs-number">10</span>, <span class="hljs-literal">true</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">30</span>], f.isBoolean)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>findRight(list, test, ...args)</code></span><a class="heading-anchor" href="#findright-list-test-args-" id="findright-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <code>find</code>, but iterates from the <em>end</em> of the list. Returns the rightmost element that satisfies <code>test</code>, or <code>undefined</code> if none do.</p>
+<pre><code class="hljs language-js">f.findRight([<span class="hljs-number">10</span>, <span class="hljs-literal">true</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">30</span>], f.isBoolean)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>findIndex(list, test, ...args)</code></span><a class="heading-anchor" href="#findindex-list-test-args-" id="findindex-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex" target="_blank" rel="noopener noreferrer"><code>Array.prototype.findIndex</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js">f.findIndex([<span class="hljs-number">10</span>, <span class="hljs-literal">true</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">30</span>], f.isBoolean)
+<span class="hljs-comment">// 1</span>
+</code></pre>
+<hr>
+<h3><span><code>findIndexRight(list, test, ...args)</code></span><a class="heading-anchor" href="#findindexright-list-test-args-" id="findindexright-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <code>findIndex</code>, but iterates from the <em>end</em> of the list. Returns the index of the rightmost element that satisfies <code>test</code>, or <code>-1</code> if none do.</p>
+<pre><code class="hljs language-js">f.findIndexRight([<span class="hljs-number">10</span>, <span class="hljs-literal">true</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">30</span>], f.isBoolean)
+<span class="hljs-comment">// 3</span>
+</code></pre>
+<hr>
+<h3><span><code>indexOf(list, value)</code></span><a class="heading-anchor" href="#indexof-list-value-" id="indexof-list-value-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf" target="_blank" rel="noopener noreferrer"><code>Array.prototype.indexOf</code></a>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code>, <code>undefined</code>, and array-likes</li>
+<li>uses <a href="#is-one-other-"><code>is</code></a> rather than <code>===</code> and therefore detects <code>NaN</code></li>
+</ul>
+<pre><code class="hljs language-js">f.indexOf([<span class="hljs-number">10</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-number">20</span>], <span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// 1</span>
+</code></pre>
+<hr>
+<h3><span><code>lastIndexOf(list, value)</code></span><a class="heading-anchor" href="#lastindexof-list-value-" id="lastindexof-list-value-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf" target="_blank" rel="noopener noreferrer"><code>Array.prototype.lastIndexOf</code></a>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code>, <code>undefined</code>, and array-likes</li>
+<li>uses <a href="#is-one-other-"><code>is</code></a> rather than <code>===</code> and therefore detects <code>NaN</code></li>
+</ul>
+<pre><code class="hljs language-js">f.lastIndexOf([<span class="hljs-number">10</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-number">20</span>], <span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// 2</span>
+</code></pre>
+<hr>
+<h3><span><code>includes(list, value)</code></span><a class="heading-anchor" href="#includes-list-value-" id="includes-list-value-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes" target="_blank" rel="noopener noreferrer"><code>Array.prototype.includes</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js">f.includes([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], <span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// false</span>
+
+f.includes([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">NaN</span>], <span class="hljs-literal">NaN</span>)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>procure(list, fun, ...args)</code></span><a class="heading-anchor" href="#procure-list-fun-args-" id="procure-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Similar to <a href="#find-list-test-args-"><code>find</code></a>, but returns the first truthy result of calling <code>fun</code>, rather than the corresponding list element.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">double</span>(<span class="hljs-params">num</span>) </span>{<span class="hljs-keyword">return</span> num * <span class="hljs-number">2</span>}
+
+f.procure([<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">10</span>, <span class="hljs-number">100</span>], double)
+<span class="hljs-comment">// double(10) = 20</span>
+</code></pre>
+<hr>
+<h3><span><code>every(list, test, ...args)</code></span><a class="heading-anchor" href="#every-list-test-args-" id="every-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every" target="_blank" rel="noopener noreferrer"><code>Array.prototype.every</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js">f.every([], f.isBoolean)
+<span class="hljs-comment">// true</span>
+
+f.every([<span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>], f.isBoolean)
+<span class="hljs-comment">// true</span>
+
+f.every([<span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>], f.isBoolean)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>some(list, test, ...args)</code></span><a class="heading-anchor" href="#some-list-test-args-" id="some-list-test-args-">🔗</a></h3>
+<p>where <code>test: ƒ(value, index, ...args)</code></p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some" target="_blank" rel="noopener noreferrer"><code>Array.prototype.some</code></a>, but works on <code>null</code>, <code>undefined</code>, and array-likes.</p>
+<pre><code class="hljs language-js">f.some([], f.isBoolean)
+<span class="hljs-comment">// false</span>
+
+f.some([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], f.isBoolean)
+<span class="hljs-comment">// false</span>
+
+f.some([<span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>], f.isBoolean)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>slice(list, start, nextStart)</code></span><a class="heading-anchor" href="#slice-list-start-nextstart-" id="slice-list-start-nextstart-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice" target="_blank" rel="noopener noreferrer"><code>Array.prototype.slice</code></a>, but also accepts <code>null</code> and <code>undefined</code>. <code>start</code> and <code>nextStart</code> can be missing or negative; see the linked documentation.</p>
+<pre><code class="hljs language-js">f.slice([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>, <span class="hljs-number">50</span>], <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>)
+<span class="hljs-comment">// [20, 30, 40]</span>
+</code></pre>
+<hr>
+<h3><span><code>append(list, value)</code></span><a class="heading-anchor" href="#append-list-value-" id="append-list-value-">🔗</a></h3>
+<p>Returns a version of <code>list</code> with <code>value</code> appended at the end.</p>
+<pre><code class="hljs language-js">f.append([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-number">30</span>)
+<span class="hljs-comment">// [10, 20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>prepend(list, value)</code></span><a class="heading-anchor" href="#prepend-list-value-" id="prepend-list-value-">🔗</a></h3>
+<p>Returns a version of <code>list</code> with <code>value</code> prepended at the start.</p>
+<pre><code class="hljs language-js">f.prepend([<span class="hljs-number">20</span>, <span class="hljs-number">30</span>], <span class="hljs-number">10</span>)
+<span class="hljs-comment">// [10, 20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>remove(list, value)</code></span><a class="heading-anchor" href="#remove-list-value-" id="remove-list-value-">🔗</a></h3>
+<p>Returns a version of <code>list</code> with one occurrence of <code>value</code> removed. May return
+the original list.</p>
+<pre><code class="hljs language-js">f.remove([<span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>, <span class="hljs-string">&#x27;three&#x27;</span>], <span class="hljs-string">&#x27;two&#x27;</span>)
+<span class="hljs-comment">// [&#x27;one&#x27;, &#x27;three&#x27;]</span>
+
+f.remove([<span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>], <span class="hljs-string">&#x27;one&#x27;</span>)
+<span class="hljs-comment">// [&#x27;two&#x27;, &#x27;one&#x27;]</span>
+</code></pre>
+<hr>
+<h3><span><code>insertAtIndex(list, index, value)</code></span><a class="heading-anchor" href="#insertatindex-list-index-value-" id="insertatindex-list-index-value-">🔗</a></h3>
+<p>Returns a version of <code>list</code> with <code>value</code> inserted at <code>index</code>, moving subsequent elements to the end. <code>index</code> must be an integer within list bounds + 1, otherwise throws.</p>
+<pre><code class="hljs language-js">f.insertAtIndex(<span class="hljs-literal">undefined</span>, <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;zero&#x27;</span>)
+<span class="hljs-comment">// [&#x27;zero&#x27;]</span>
+
+f.insertAtIndex([<span class="hljs-string">&#x27;zero&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>], <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;absolute zero&#x27;</span>)
+<span class="hljs-comment">// [&#x27;absolute zero&#x27;, &#x27;zero&#x27;, &#x27;one&#x27;, &#x27;two&#x27;]</span>
+
+f.insertAtIndex([<span class="hljs-string">&#x27;zero&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>], <span class="hljs-number">2</span>, <span class="hljs-string">&#x27;...&#x27;</span>)
+<span class="hljs-comment">// [&#x27;zero&#x27;, &#x27;one&#x27;, &#x27;...&#x27;, &#x27;two&#x27;]</span>
+</code></pre>
+<hr>
+<h3><span><code>removeAtIndex(list, index)</code></span><a class="heading-anchor" href="#removeatindex-list-index-" id="removeatindex-list-index-">🔗</a></h3>
+<p>Returns a version of <code>list</code> with the value at <code>index</code> removed, if within bounds. <code>index</code> must be an integer, otherwise throws.</p>
+<pre><code class="hljs language-js">f.removeAtIndex([<span class="hljs-string">&#x27;zero&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>], <span class="hljs-number">0</span>)
+<span class="hljs-comment">// [&#x27;one&#x27;, &#x27;two&#x27;]</span>
+
+f.removeAtIndex([<span class="hljs-string">&#x27;zero&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>], <span class="hljs-number">1</span>)
+<span class="hljs-comment">// [&#x27;zero&#x27;, &#x27;two&#x27;]</span>
+
+f.removeAtIndex([<span class="hljs-string">&#x27;zero&#x27;</span>, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>], <span class="hljs-number">10</span>)
+<span class="hljs-comment">// [&#x27;zero&#x27;, &#x27;one&#x27;, &#x27;two&#x27;]</span>
+</code></pre>
+<hr>
+<h3><span><code>adjoin(list, value)</code></span><a class="heading-anchor" href="#adjoin-list-value-" id="adjoin-list-value-">🔗</a></h3>
+<p>Appends <code>value</code> to <code>list</code>, duplicate-free. Returns the same <code>list</code> if it already <a href="#includes-list-value-"><code>includes</code></a> <code>value</code>. Always returns an <code>Array</code>, converting the input from a non-array list.</p>
+<pre><code class="hljs language-js">f.adjoin([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-number">30</span>)
+<span class="hljs-comment">// [10, 20, 30]</span>
+
+f.adjoin([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], <span class="hljs-number">20</span>)
+<span class="hljs-comment">// [10, 20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>toggle(list, value)</code></span><a class="heading-anchor" href="#toggle-list-value-" id="toggle-list-value-">🔗</a></h3>
+<p>Appends or removes <code>value</code>, depending on whether it’s already <a href="#includes-list-value-"><code>included</code></a>.</p>
+<pre><code class="hljs language-js">f.toggle([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-number">30</span>)
+<span class="hljs-comment">// [10, 20, 30]</span>
+
+f.toggle([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], <span class="hljs-number">30</span>)
+<span class="hljs-comment">// [10, 20]</span>
+</code></pre>
+<hr>
+<h3><span><code>concat(...lists)</code></span><a class="heading-anchor" href="#concat-lists-" id="concat-lists-">🔗</a></h3>
+<p>Concatenates lists, ignoring non-list arguments.</p>
+<p><strong>Different</strong> from <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat" target="_blank" rel="noopener noreferrer"><code>Array.prototype.concat</code></a> and, by extension, lodash’s <code>_.concat</code>. They inherited Scheme’s hazardous mistake of appending non-list inputs while flattening list inputs. This leads to surprising errors and/or intentional abuse. Fpx’s <code>concat</code> rejects non-lists, preventing this gotcha.</p>
+<p>Note: for individual elements, use <a href="#append-list-value-"><code>append</code></a> and
+<a href="#prepend-list-value-"><code>prepend</code></a> instead.</p>
+<pre><code class="hljs language-js">f.concat()
+<span class="hljs-comment">// []</span>
+
+f.concat([<span class="hljs-number">10</span>], [<span class="hljs-number">20</span>], [<span class="hljs-number">30</span>])
+<span class="hljs-comment">// [10, 20, 30]</span>
+
+f.concat([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-number">30</span>)
+<span class="hljs-comment">// Error: Expected 30 to satisfy test isList</span>
+</code></pre>
+<hr>
+<h3><span><code>flatten(list)</code></span><a class="heading-anchor" href="#flatten-list-" id="flatten-list-">🔗</a></h3>
+<p>Returns a version of <code>list</code> flattened one level down.</p>
+<pre><code class="hljs language-js">f.flatten([<span class="hljs-number">10</span>, [<span class="hljs-number">20</span>], [[<span class="hljs-number">30</span>]]])
+<span class="hljs-comment">// [10, 20, [30]]</span>
+</code></pre>
+<hr>
+<h3><span><code>flattenDeep(list)</code></span><a class="heading-anchor" href="#flattendeep-list-" id="flattendeep-list-">🔗</a></h3>
+<p>Returns a version of <code>list</code> with all nested lists flattened into one result.</p>
+<pre><code class="hljs language-js">f.flattenDeep([<span class="hljs-number">10</span>, [<span class="hljs-number">20</span>], [[[<span class="hljs-number">30</span>]]]])
+<span class="hljs-comment">// [10, 20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>head(list)</code></span><a class="heading-anchor" href="#head-list-" id="head-list-">🔗</a></h3>
+<p>Returns the first element of the given list.</p>
+<pre><code class="hljs language-js">f.head()
+<span class="hljs-comment">// undefined</span>
+
+f.head([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>])
+<span class="hljs-comment">// 10</span>
+</code></pre>
+<hr>
+<h3><span><code>tail(list)</code></span><a class="heading-anchor" href="#tail-list-" id="tail-list-">🔗</a></h3>
+<p>Returns all but first element of the given list.</p>
+<pre><code class="hljs language-js">f.tail()
+<span class="hljs-comment">// []</span>
+
+f.tail([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>])
+<span class="hljs-comment">// [20, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>init(list)</code></span><a class="heading-anchor" href="#init-list-" id="init-list-">🔗</a></h3>
+<p>Returns all but last element of the given list.</p>
+<pre><code class="hljs language-js">f.init()
+<span class="hljs-comment">// []</span>
+
+f.init([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>])
+<span class="hljs-comment">// [10, 20]</span>
+</code></pre>
+<hr>
+<h3><span><code>last(list)</code></span><a class="heading-anchor" href="#last-list-" id="last-list-">🔗</a></h3>
+<p>Returns the last element of the given list.</p>
+<pre><code class="hljs language-js">f.last()
+<span class="hljs-comment">// undefined</span>
+
+f.last([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>])
+<span class="hljs-comment">// 30</span>
+</code></pre>
+<hr>
+<h3><span><code>take(list, count)</code></span><a class="heading-anchor" href="#take-list-count-" id="take-list-count-">🔗</a></h3>
+<p>Returns a sub-<code>list</code> with <code>count</code> elements taken from the start. Equivalent to <code>slice(list, count)</code>.</p>
+<pre><code class="hljs language-js">f.take(<span class="hljs-literal">undefined</span>, <span class="hljs-number">0</span>)
+<span class="hljs-comment">// []</span>
+
+f.take([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>], <span class="hljs-number">2</span>)
+<span class="hljs-comment">// [10, 20]</span>
+
+f.take([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>], <span class="hljs-literal">Infinity</span>)
+<span class="hljs-comment">// [10, 20, 30, 40]</span>
+</code></pre>
+<hr>
+<h3><span><code>drop(list, count)</code></span><a class="heading-anchor" href="#drop-list-count-" id="drop-list-count-">🔗</a></h3>
+<p>Returns a sub-<code>list</code> with <code>count</code> elements removed from the start. Equivalent to <code>slice(list, 0, count)</code>.</p>
+<pre><code class="hljs language-js">f.drop(<span class="hljs-literal">undefined</span>, <span class="hljs-number">0</span>)
+<span class="hljs-comment">// []</span>
+
+f.drop([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>], <span class="hljs-number">2</span>)
+<span class="hljs-comment">// [30, 40]</span>
+
+f.drop([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>], <span class="hljs-literal">Infinity</span>)
+<span class="hljs-comment">// []</span>
+</code></pre>
+<hr>
+<h3><span><code>reverse(list)</code></span><a class="heading-anchor" href="#reverse-list-" id="reverse-list-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse" target="_blank" rel="noopener noreferrer"><code>Array.prototype.reverse</code></a>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code>, <code>undefined</code>, and array-likes</li>
+<li>returns a new version instead of mutating the list</li>
+</ul>
+<pre><code class="hljs language-js">f.reverse()
+<span class="hljs-comment">// []</span>
+
+f.reverse([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>])
+<span class="hljs-comment">// [30, 20, 10]</span>
+</code></pre>
+<hr>
+<h3><span><code>sort(list, comparator)</code></span><a class="heading-anchor" href="#sort-list-comparator-" id="sort-list-comparator-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort" target="_blank" rel="noopener noreferrer"><code>Array.prototype.sort</code></a>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code>, <code>undefined</code>, and array-likes</li>
+<li>returns a new version instead of mutating the list</li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-comment">// Messed-up default JS sorting</span>
+f.sort([<span class="hljs-number">3</span>, <span class="hljs-number">22</span>, <span class="hljs-number">111</span>])
+<span class="hljs-comment">// [111, 22, 3]</span>
+
+<span class="hljs-comment">// Use a custom comparator to sort numbers properly</span>
+f.sort([<span class="hljs-number">3</span>, <span class="hljs-number">22</span>, <span class="hljs-number">111</span>], f.sub)
+<span class="hljs-comment">// [3, 22, 111]</span>
+</code></pre>
+<hr>
+<h3><span><code>sortBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#sortby-list-fun-args-" id="sortby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, ...args)</code></p>
+<p>Returns a version of <code>list</code> sorted by the order of values returned by <code>fun</code>, which is called on every element with the bonus arguments. Kinda like mapping <code>list</code> to <code>fun</code>, sorting the result, then changing the element order in the original list the same way.</p>
+<p>The “virtual elements” are sorted the same way as in <code>.sort()</code>, i.e. by the Unicode code order of its stringified elements; see the relevant <a href="https://tc39.github.io/ecma262/#sec-sortcompare" target="_blank" rel="noopener noreferrer">part of the spec</a>. <code>sortBy</code> currently doesn’t accept a custom comparator, although this could be changed if needed.</p>
+<p>Works on array-likes. Note that <code>fun</code> doesn’t receive an element index.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getId</span>(<span class="hljs-params">{id}</span>) </span>{<span class="hljs-keyword">return</span> id}
+
+f.sortBy([{<span class="hljs-attr">id</span>: <span class="hljs-number">3</span>}, {<span class="hljs-attr">id</span>: <span class="hljs-number">22</span>}, {<span class="hljs-attr">id</span>: <span class="hljs-number">111</span>}], getId)
+<span class="hljs-comment">// [{id: 111}, {id: 22}, {id: 3}]</span>
+</code></pre>
+<hr>
+<h3><span><code>intersection(left, right)</code></span><a class="heading-anchor" href="#intersection-left-right-" id="intersection-left-right-">🔗</a></h3>
+<p>Returns a list representing a <a href="https://en.wikipedia.org/wiki/Set_intersection" target="_blank" rel="noopener noreferrer">set intersection</a> of the two lists. It contains only the elements that occur in both lists, tested via <a href="#is-one-other-"><code>is</code></a>, without any duplicates.</p>
+<pre><code class="hljs language-js">f.intersection([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], [<span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>])
+<span class="hljs-comment">// [20, 30]</span>
+
+f.intersection([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>], <span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// []</span>
+</code></pre>
+<hr>
+<h3><span><code>keyBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#keyby-list-fun-args-" id="keyby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Returns a dict where <code>list</code>‘s values are assigned to the keys created by <code>fun</code>.</p>
+<p>Major difference from Lodash’s <code>_.keyBy</code>: keys must pass the <a href="#iskey-value-"><code>isKey</code></a> test or be ignored. This means they must be primitives, excluding the nonsense values <code>null</code>, <code>undefined</code>, <code>NaN</code> and <code>±Infinity</code>. This helps avoid accidental garbage in the output.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">double</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> value * <span class="hljs-number">2</span>}
+
+f.keyBy([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>], double)
+<span class="hljs-comment">// {20: 10, 40: 20, 60: 30}</span>
+</code></pre>
+<hr>
+<h3><span><code>groupBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#groupby-list-fun-args-" id="groupby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Similar to <code>keyBy</code>: returns a dict where keys have been created by calling <code>fun</code>. Unlike <code>keyBy</code>, it groups values into lists, accumulating them for repeating keys instead of overwriting.</p>
+<p>Just like <code>keyBy</code>, and unlike Lodash’s <code>_.groupBy</code>, keys must pass the <a href="#iskey-value-"><code>isKey</code></a> test or be ignored. This helps avoid accidental garbage in the output.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">oddness</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> value % <span class="hljs-number">2</span>}
+
+f.groupBy([<span class="hljs-number">10</span>, <span class="hljs-number">13</span>, <span class="hljs-number">16</span>, <span class="hljs-number">19</span>], oddness)
+<span class="hljs-comment">// {0: [10, 16], 1: [13, 19]}</span>
+</code></pre>
+<hr>
+<h3><span><code>uniq(list)</code></span><a class="heading-anchor" href="#uniq-list-" id="uniq-list-">🔗</a></h3>
+<p>Returns a version of <code>list</code> without duplicate elements, compared via <a href="#is-one-other-"><code>is</code></a>.</p>
+<pre><code class="hljs language-js">f.uniq([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-number">20</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-number">30</span>])
+<span class="hljs-comment">// [10, 20, NaN, 30]</span>
+</code></pre>
+<hr>
+<h3><span><code>uniqBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#uniqby-list-fun-args-" id="uniqby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Returns a version of <code>list</code> where no two elements have produced the same result when <code>fun</code> was called on them. The results are compared via <a href="#is-one-other-"><code>is</code></a>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isOdd</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(value % <span class="hljs-number">2</span>)}
+
+f.uniqBy([<span class="hljs-number">10</span>, <span class="hljs-number">13</span>, <span class="hljs-number">16</span>, <span class="hljs-number">19</span>], isOdd)
+<span class="hljs-comment">// [10, 13]</span>
+</code></pre>
+<hr>
+<h3><span><code>partition(list, fun, ...args)</code></span><a class="heading-anchor" href="#partition-list-fun-args-" id="partition-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Splits <code>list</code> into “accepted” and “rejected” groups. The accepted group contains elements for which <code>fun</code> returned something truthy, and the rejected group contains the rest.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isOdd</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(value % <span class="hljs-number">2</span>)}
+
+f.partition([<span class="hljs-number">10</span>, <span class="hljs-number">13</span>, <span class="hljs-number">16</span>, <span class="hljs-number">19</span>], isOdd)
+<span class="hljs-comment">// [[13, 19], [10, 16]]</span>
+</code></pre>
+<hr>
+<h3><span><code>sum(list)</code></span><a class="heading-anchor" href="#sum-list-" id="sum-list-">🔗</a></h3>
+<p>Sums all elements of <code>list</code> that satisfy <a href="#isfinite-value-"><code>isFinite</code></a>, ignoring the rest.</p>
+<pre><code class="hljs language-js">f.sum([<span class="hljs-number">10</span>, <span class="hljs-literal">NaN</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&#x27;5&#x27;</span>])
+<span class="hljs-comment">// 30</span>
+</code></pre>
+<hr>
+<h3><span><code>sumBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#sumby-list-fun-args-" id="sumby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Calls <code>fun</code> on every element of the list and sums the results. Like <code>sum</code>, ignores values that don’t satisfy <a href="#isfinite-value-"><code>isFinite</code></a>.</p>
+<pre><code class="hljs language-js">f.sumBy([<span class="hljs-number">10</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-string">&#x27;20&#x27;</span>], <span class="hljs-built_in">Number</span>)
+<span class="hljs-comment">// 30</span>
+</code></pre>
+<hr>
+<h3><span><code>min(list)</code></span><a class="heading-anchor" href="#min-list-" id="min-list-">🔗</a></h3>
+<p>Finds the smallest value in <code>list</code> that also satisfies <a href="#isfinite-value-"><code>isFinite</code></a>, or <code>undefined</code>. Note that it ignores <code>±Infinity</code>.</p>
+<pre><code class="hljs language-js">f.min([])
+<span class="hljs-comment">// undefined</span>
+
+f.min([<span class="hljs-string">&#x27;10&#x27;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&#x27;30&#x27;</span>, -<span class="hljs-literal">Infinity</span>, <span class="hljs-literal">NaN</span>])
+<span class="hljs-comment">// 20</span>
+</code></pre>
+<hr>
+<h3><span><code>max(list)</code></span><a class="heading-anchor" href="#max-list-" id="max-list-">🔗</a></h3>
+<p>Finds the largest value in <code>list</code> that also satisfies <a href="#isfinite-value-"><code>isFinite</code></a>, or <code>undefined</code>. Note that it ignores <code>±Infinity</code>.</p>
+<pre><code class="hljs language-js">f.max([])
+<span class="hljs-comment">// undefined</span>
+
+f.max([<span class="hljs-string">&#x27;10&#x27;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&#x27;30&#x27;</span>, <span class="hljs-literal">Infinity</span>, <span class="hljs-literal">NaN</span>])
+<span class="hljs-comment">// 20</span>
+</code></pre>
+<hr>
+<h3><span><code>minBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#minby-list-fun-args-" id="minby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Calls <code>fun</code> on every element of the list and returns the smallest result, using the same rules as <a href="#min-list-"><code>min</code></a>.</p>
+<p>Note a major difference from Lodash’s <code>_.minBy</code>: this returns the smallest value returned by <code>fun</code>, not its corresponding list element. I find this far more intuitive. See <code>findMinBy</code> for the counterpart to <code>_.minBy</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getNum</span>(<span class="hljs-params">{num}</span>) </span>{<span class="hljs-keyword">return</span> num}
+
+f.minBy([{<span class="hljs-attr">num</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">20</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">30</span>}], getNum)
+<span class="hljs-comment">// 10</span>
+</code></pre>
+<hr>
+<h3><span><code>maxBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#maxby-list-fun-args-" id="maxby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Calls <code>fun</code> on every element of the list and returns the largest result, using the same rules as <a href="#max-list-"><code>max</code></a>.</p>
+<p>Note a major difference from Lodash’s <code>_.maxBy</code>: this returns the smallest value returned by <code>fun</code>, not its corresponding list element. I find this far more intuitive. See <code>findMaxBy</code> for the counterpart to <code>_.maxBy</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getNum</span>(<span class="hljs-params">{num}</span>) </span>{<span class="hljs-keyword">return</span> num}
+
+f.maxBy([{<span class="hljs-attr">num</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">20</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">30</span>}], getNum)
+<span class="hljs-comment">// 30</span>
+</code></pre>
+<hr>
+<h3><span><code>findMinBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#findminby-list-fun-args-" id="findminby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Calls <code>fun</code> on every element of the list and returns the element for which <code>fun</code> returned the smallest value, using the same rules as <a href="#min-list-"><code>min</code></a>.</p>
+<p>Similar to Lodash’s <code>_.minBy</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getNum</span>(<span class="hljs-params">{num}</span>) </span>{<span class="hljs-keyword">return</span> num}
+
+f.findMinBy([{<span class="hljs-attr">num</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">20</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">30</span>}], getNum)
+<span class="hljs-comment">// {num: 10}</span>
+</code></pre>
+<hr>
+<h3><span><code>findMaxBy(list, fun, ...args)</code></span><a class="heading-anchor" href="#findmaxby-list-fun-args-" id="findmaxby-list-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, index, ...args)</code></p>
+<p>Calls <code>fun</code> on every element of the list and returns the element for which <code>fun</code> returned the largest value, using the same rules as <a href="#max-list-"><code>max</code></a>.</p>
+<p>Similar to Lodash’s <code>_.maxBy</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getNum</span>(<span class="hljs-params">{num}</span>) </span>{<span class="hljs-keyword">return</span> num}
+
+f.findMaxBy([{<span class="hljs-attr">num</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">20</span>}, {<span class="hljs-attr">num</span>: <span class="hljs-number">30</span>}], getNum)
+<span class="hljs-comment">// {num: 30}</span>
+</code></pre>
+<hr>
+<h3><span><code>range(start, nextStart)</code></span><a class="heading-anchor" href="#range-start-nextstart-" id="range-start-nextstart-">🔗</a></h3>
+<p>Returns a list of integers from <code>start</code> (inclusive) to <code>nextStart</code> (exclusive). Both inputs must be integers, with <code>start &lt;= nextStart</code>.</p>
+<pre><code class="hljs language-js">f.range(<span class="hljs-number">5</span>, <span class="hljs-number">10</span>)
+<span class="hljs-comment">// [5, 6, 7, 8, 9]</span>
+
+f.range(-<span class="hljs-number">10</span>, <span class="hljs-number">5</span>)
+<span class="hljs-comment">// [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4]</span>
+</code></pre>
+<hr>
+<h2><span>Struct</span><a class="heading-anchor" href="#struct" id="struct">🔗</a></h2>
+<p>Utils for dealing with non-list objects, called “structs” or “dictionaries” in Fpx.</p>
+<p>Common rules:</p>
+<ul>
+<li>accept <code>null</code> and <code>undefined</code>, treating them as <code>{}</code></li>
+<li>accept non-list objects; reject lists and all other inputs with an exception</li>
+<li>don’t modify the input; return a new version instead</li>
+<li>accept <a href="#bonus-arguments">bonus arguments</a> for the operator function</li>
+</ul>
+<p>Property getters <code>get</code>, <code>scan</code>, <code>getIn</code> and <code>getter</code> work on <em>any</em> input, even primitives.</p>
+<hr>
+<h3><span><code>get(value, key)</code></span><a class="heading-anchor" href="#get-value-key-" id="get-value-key-">🔗</a></h3>
+<p>Same as <code>value[key]</code>, but safe on <code>null</code> or <code>undefined</code>.</p>
+<pre><code class="hljs language-js">f.get()
+<span class="hljs-comment">// undefined</span>
+
+f.get(<span class="hljs-literal">null</span>, <span class="hljs-string">&#x27;one&#x27;</span>)
+<span class="hljs-comment">// undefined</span>
+
+f.get({<span class="hljs-attr">one</span>: <span class="hljs-number">1</span>}, <span class="hljs-string">&#x27;one&#x27;</span>)
+<span class="hljs-comment">// 1</span>
+
+f.get(<span class="hljs-string">&#x27;string&#x27;</span>, <span class="hljs-string">&#x27;length&#x27;</span>)
+<span class="hljs-comment">// 6</span>
+</code></pre>
+<hr>
+<h3><span><code>scan(value, ...path)</code></span><a class="heading-anchor" href="#scan-value-path-" id="scan-value-path-">🔗</a></h3>
+<p>Like <code>get</code> but takes many keys and reads a nested property at that path. Like <code>get</code>, is safe against <code>null</code> or <code>undefined</code>.</p>
+<pre><code class="hljs language-js">f.scan()
+<span class="hljs-comment">// undefined</span>
+
+f.scan(<span class="hljs-literal">null</span>)
+<span class="hljs-comment">// null</span>
+
+f.scan(<span class="hljs-literal">null</span>, <span class="hljs-string">&#x27;one&#x27;</span>)
+<span class="hljs-comment">// undefined</span>
+
+f.scan({<span class="hljs-attr">one</span>: <span class="hljs-number">1</span>}, <span class="hljs-string">&#x27;one&#x27;</span>)
+<span class="hljs-comment">// 1</span>
+
+f.scan({<span class="hljs-attr">one</span>: {<span class="hljs-attr">two</span>: <span class="hljs-number">2</span>}}, <span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>)
+<span class="hljs-comment">// 2</span>
+</code></pre>
+<hr>
+<h3><span><code>getIn(value, path)</code></span><a class="heading-anchor" href="#getin-value-path-" id="getin-value-path-">🔗</a></h3>
+<p>Like <code>scan</code> but expects the entire <code>path</code> as the second argument. Like <code>get</code>, is safe against <code>null</code> or <code>undefined</code>.</p>
+<pre><code class="hljs language-js">f.getIn(<span class="hljs-number">1</span>, [])
+<span class="hljs-comment">// 1</span>
+
+f.getIn({<span class="hljs-attr">one</span>: {<span class="hljs-attr">two</span>: <span class="hljs-number">2</span>}}, [<span class="hljs-string">&#x27;one&#x27;</span>, <span class="hljs-string">&#x27;two&#x27;</span>])
+<span class="hljs-comment">// 2</span>
+</code></pre>
+<hr>
+<h3><span><code>getter(key)</code></span><a class="heading-anchor" href="#getter-key-" id="getter-key-">🔗</a></h3>
+<p>Delayed <code>get</code>. Equivalent to this function: <code>x =&gt; get(x, key)</code>.</p>
+<pre><code class="hljs language-js">f.map([{<span class="hljs-attr">value</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">value</span>: <span class="hljs-number">20</span>}], f.getter(<span class="hljs-string">&#x27;value&#x27;</span>))
+<span class="hljs-comment">// [10, 20]</span>
+</code></pre>
+<p>Convenient, but also a performance malpractice. The “right” way, performance-wise, is to statically define a getter function with a hardcoded property:</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getValue</span>(<span class="hljs-params">{value}</span>) </span>{<span class="hljs-keyword">return</span> value}
+
+f.map([{<span class="hljs-attr">value</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">value</span>: <span class="hljs-number">20</span>}], getValue)
+<span class="hljs-comment">// [10, 20]</span>
+</code></pre>
+<hr>
+<h3><span><code>keys(dict)</code></span><a class="heading-anchor" href="#keys-dict-" id="keys-dict-">🔗</a></h3>
+<p>Like <code>Object.keys</code>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code> and <code>undefined</code></li>
+<li>rejects list inputs with an exception</li>
+</ul>
+<pre><code class="hljs language-js">f.keys()
+<span class="hljs-comment">// []</span>
+
+f.keys({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// [&#x27;one&#x27;, &#x27;two&#x27;]</span>
+
+f.keys([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// Error: Expected [10,20] to satisfy test isStruct</span>
+</code></pre>
+<hr>
+<h3><span><code>values(dict)</code></span><a class="heading-anchor" href="#values-dict-" id="values-dict-">🔗</a></h3>
+<p>Like <code>Object.values</code>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code> and <code>undefined</code></li>
+<li>rejects list inputs with an exception</li>
+</ul>
+<pre><code class="hljs language-js">f.values()
+<span class="hljs-comment">// []</span>
+
+f.values({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// [10, 20]</span>
+
+f.values([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// Error: Expected [10,20] to satisfy test isStruct</span>
+</code></pre>
+<hr>
+<h3><span><code>entries(dict)</code></span><a class="heading-anchor" href="#entries-dict-" id="entries-dict-">🔗</a></h3>
+<p>Like <code>Object.entries</code>, with the following differences:</p>
+<ul>
+<li>works on <code>null</code> and <code>undefined</code></li>
+<li>rejects list inputs with an exception</li>
+</ul>
+<pre><code class="hljs language-js">f.entries()
+<span class="hljs-comment">// []</span>
+
+f.entries({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// [[&#x27;one&#x27;, 10], [&#x27;two&#x27;, 20]]</span>
+
+f.entries([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// Error: Expected [10,20] to satisfy test isStruct</span>
+</code></pre>
+<hr>
+<h3><span><code>eachVal(dict, fun, ...args)</code></span><a class="heading-anchor" href="#eachval-dict-fun-args-" id="eachval-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Iterates for side effects, calling <code>fun</code> with every property and key. Returns <code>undefined</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">report</span>(<span class="hljs-params">value, key, ...args</span>) </span>{
+  <span class="hljs-built_in">console</span>.info(value, key, ...args)
+}
+
+f.eachVal({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, report, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>)
+<span class="hljs-comment">// 10 &#x27;one&#x27; 10 20 30</span>
+<span class="hljs-comment">// 20 &#x27;two&#x27; 10 20 30</span>
+</code></pre>
+<hr>
+<h3><span><code>foldVals(dict, init, fun, ...args)</code></span><a class="heading-anchor" href="#foldvals-dict-init-fun-args-" id="foldvals-dict-init-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(accumulator, value, key, ...args)</code></p>
+<p>Similar to <a href="#fold-list-init-fun-args-"><code>fold</code></a>, but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.</p>
+<pre><code class="hljs language-js">f.foldVals({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, <span class="hljs-number">5</span>, f.add)
+<span class="hljs-comment">// 5 + 10 + 20 = 35</span>
+</code></pre>
+<hr>
+<h3><span><code>mapVals(dict, fun, ...args)</code></span><a class="heading-anchor" href="#mapvals-dict-fun-args-" id="mapvals-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#map-list-fun-args-"><code>map</code></a>, but for dicts. Creates a version of <code>dict</code> where values have been replaced by calling <code>fun</code>.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bang</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> value + <span class="hljs-string">&#x27;!&#x27;</span>}
+
+f.mapVals({<span class="hljs-attr">ping</span>: <span class="hljs-string">&#x27;ping&#x27;</span>, <span class="hljs-attr">pong</span>: <span class="hljs-string">&#x27;pong&#x27;</span>}, bang)
+<span class="hljs-comment">// {ping: &#x27;ping!&#x27;, pong: &#x27;pong!&#x27;}</span>
+</code></pre>
+<hr>
+<h3><span><code>mapKeys(dict, fun, ...args)</code></span><a class="heading-anchor" href="#mapkeys-dict-fun-args-" id="mapkeys-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(key, value, ...args)</code></p>
+<p>Similar to <a href="#mapvals-dict-fun-args-"><code>mapVals</code></a>, but replaces keys rather than values.</p>
+<p>Major difference from Lodash’s <code>_.mapKeys</code>: keys must pass the <a href="#iskey-value-"><code>isKey</code></a> test or be ignored. This means they must be primitives, excluding the nonsense values <code>null</code>, <code>undefined</code>, <code>NaN</code> and <code>±Infinity</code>. This helps avoid accidental garbage in the output.</p>
+<p>Another major difference from Lodash’s <code>_.mapKeys</code>: the operator receives <code>key, value, ...args</code> rather than <code>value, key, dict</code>.</p>
+<pre><code class="hljs language-js">f.mapKeys({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, f.head)
+<span class="hljs-comment">// {o: 10, t: 20}</span>
+</code></pre>
+<hr>
+<h3><span><code>mapValsSort(dict, fun, ...args)</code></span><a class="heading-anchor" href="#mapvalssort-dict-fun-args-" id="mapvalssort-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Maps <code>dict</code> to a <em>list</em>, sorted by key order.</p>
+<p>Note the difference: Lodash’s <code>_.map</code> works on dicts, but since object key/iteration order is unspecified, the output is unsorted and therefore unstable. <code>mapValsSort</code> avoids this issue, always producing the same output for a given dict.</p>
+<pre><code class="hljs language-js">f.mapValsSort({<span class="hljs-number">3</span>: <span class="hljs-string">&#x27;three&#x27;</span>, <span class="hljs-number">22</span>: <span class="hljs-string">&#x27;two&#x27;</span>, <span class="hljs-number">111</span>: <span class="hljs-string">&#x27;one&#x27;</span>}, f.id)
+<span class="hljs-comment">// [&#x27;one&#x27;, &#x27;two&#x27;, &#x27;three&#x27;]</span>
+</code></pre>
+<hr>
+<h3><span><code>pickBy(dict, fun, ...args)</code></span><a class="heading-anchor" href="#pickby-dict-fun-args-" id="pickby-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#filter-list-test-args-"><code>filter</code></a>, but for dicts. Returns a version of <code>dict</code> with properties for which <code>fun</code> returned something truthy.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isOdd</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(value % <span class="hljs-number">2</span>)}
+
+f.pickBy({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">13</span>, <span class="hljs-attr">three</span>: <span class="hljs-number">16</span>, <span class="hljs-attr">four</span>: <span class="hljs-number">19</span>}, isOdd)
+<span class="hljs-comment">// {two: 13, four: 19}</span>
+</code></pre>
+<hr>
+<h3><span><code>omitBy(dict, fun, ...args)</code></span><a class="heading-anchor" href="#omitby-dict-fun-args-" id="omitby-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#reject-list-test-args-"><code>reject</code></a>, but for dicts. Returns a version of <code>dict</code> without properties for which <code>fun</code> returned something truthy.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isOdd</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(value % <span class="hljs-number">2</span>)}
+
+f.omitBy({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">13</span>, <span class="hljs-attr">three</span>: <span class="hljs-number">16</span>, <span class="hljs-attr">four</span>: <span class="hljs-number">19</span>}, isOdd)
+<span class="hljs-comment">// {one: 10, three: 16}</span>
+</code></pre>
+<hr>
+<h3><span><code>pickKeys(dict, keys)</code></span><a class="heading-anchor" href="#pickkeys-dict-keys-" id="pickkeys-dict-keys-">🔗</a></h3>
+<p>Returns a version of <code>dict</code> with only the properties whitelisted in <code>keys</code>. The keys must satisfy <a href="#iskey-value-"><code>isKey</code></a>.</p>
+<p>Same as Lodash’s <code>_.pick</code>.</p>
+<pre><code class="hljs language-js">f.pickKeys({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, [<span class="hljs-string">&#x27;one&#x27;</span>])
+<span class="hljs-comment">// {one: 10}</span>
+</code></pre>
+<hr>
+<h3><span><code>omitKeys(dict, keys)</code></span><a class="heading-anchor" href="#omitkeys-dict-keys-" id="omitkeys-dict-keys-">🔗</a></h3>
+<p>Returns a version of <code>dict</code> without any properties blacklisted in <code>keys</code>. The keys must satisfy <a href="#iskey-value-"><code>isKey</code></a>.</p>
+<p>Same as Lodash’s <code>_.omit</code>.</p>
+<pre><code class="hljs language-js">f.omitKeys({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, [<span class="hljs-string">&#x27;one&#x27;</span>])
+<span class="hljs-comment">// {two: 20}</span>
+</code></pre>
+<hr>
+<h3><span><code>findVal(dict, fun, ...args)</code></span><a class="heading-anchor" href="#findval-dict-fun-args-" id="findval-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#find-list-test-args-"><code>find</code></a>, but for dicts. Returns the first value for which <code>fun</code> returned something truthy.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isOdd</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(value % <span class="hljs-number">2</span>)}
+
+f.findVal({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">13</span>}, isOdd)
+<span class="hljs-comment">// 13</span>
+</code></pre>
+<hr>
+<h3><span><code>findKey(dict, fun, ...args)</code></span><a class="heading-anchor" href="#findkey-dict-fun-args-" id="findkey-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#findindex-list-test-args-"><code>findIndex</code></a>, but for dicts. Returns the first key for which <code>fun</code> returned something truthy.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isOdd</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> <span class="hljs-built_in">Boolean</span>(value % <span class="hljs-number">2</span>)}
+
+f.findKey({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">13</span>}, isOdd)
+<span class="hljs-comment">// &#x27;two&#x27;</span>
+</code></pre>
+<hr>
+<h3><span><code>everyVal(dict, fun, ...args)</code></span><a class="heading-anchor" href="#everyval-dict-fun-args-" id="everyval-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#every-list-test-args-"><code>every</code></a>, but for dict values:</p>
+<pre><code class="hljs language-js">f.everyVal({}, f.isBoolean)
+<span class="hljs-comment">// true</span>
+
+f.everyVal({<span class="hljs-attr">one</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">two</span>: <span class="hljs-literal">false</span>}, f.isBoolean)
+<span class="hljs-comment">// true</span>
+
+f.everyVal({<span class="hljs-attr">one</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">two</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">three</span>: <span class="hljs-number">10</span>}, f.isBoolean)
+<span class="hljs-comment">// false</span>
+</code></pre>
+<hr>
+<h3><span><code>someVal(dict, fun, ...args)</code></span><a class="heading-anchor" href="#someval-dict-fun-args-" id="someval-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <a href="#some-list-test-args-"><code>some</code></a>, but for dict values:</p>
+<pre><code class="hljs language-js">f.someVal({}, f.isBoolean)
+<span class="hljs-comment">// false</span>
+
+f.someVal({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, f.isBoolean)
+<span class="hljs-comment">// false</span>
+
+f.someVal({<span class="hljs-attr">one</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">two</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">three</span>: <span class="hljs-number">10</span>}, f.isBoolean)
+<span class="hljs-comment">// true</span>
+</code></pre>
+<hr>
+<h3><span><code>invert(dict)</code></span><a class="heading-anchor" href="#invert-dict-" id="invert-dict-">🔗</a></h3>
+<p>Returns a version of <code>dict</code> with keys and values swapped. Values must satisfy <a href="#iskey-value-"><code>isKey</code></a> to become keys; ones that don’t are silently dropped from the output.</p>
+<pre><code class="hljs language-js">f.invert({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// {10: &#x27;one&#x27;, 20: &#x27;two&#x27;}</span>
+</code></pre>
+<hr>
+<h3><span><code>invertBy(dict, fun, ...args)</code></span><a class="heading-anchor" href="#invertby-dict-fun-args-" id="invertby-dict-fun-args-">🔗</a></h3>
+<p>where <code>fun: ƒ(value, key, ...args)</code></p>
+<p>Similar to <code>invert</code>, but calls <code>fun</code> on each value to produce a key. The resulting keys must satisfy <a href="#iskey-value-"><code>isKey</code></a> or be silently dropped from the output.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">double</span>(<span class="hljs-params">value</span>) </span>{<span class="hljs-keyword">return</span> value * <span class="hljs-number">2</span>}
+
+f.invertBy({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>}, double)
+<span class="hljs-comment">// {20: &#x27;one&#x27;, 40: &#x27;two&#x27;}</span>
+</code></pre>
+<hr>
+<h2><span>Coll</span><a class="heading-anchor" href="#coll" id="coll">🔗</a></h2>
+<p>Functions that work on both lists and dicts.</p>
+<hr>
+<h3><span><code>size(value)</code></span><a class="heading-anchor" href="#size-value-" id="size-value-">🔗</a></h3>
+<p>Collection size:</p>
+<ul>
+<li><a href="#islist-value-"><code>isList</code></a> → length</li>
+<li><a href="#isobject-value-"><code>isObject</code></a> → number of <a href="#keys-dict-"><code>keys</code></a></li>
+<li>primitive or function → <code>0</code></li>
+</ul>
+<p>Note that since strings are not considered collections, this function returns <code>0</code> for a string.</p>
+<pre><code class="hljs language-js">f.size([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// 2</span>
+
+f.size({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// 2</span>
+
+f.size(<span class="hljs-string">&#x27;string&#x27;</span>)
+<span class="hljs-comment">// 0</span>
+
+f.size()
+<span class="hljs-comment">// 0</span>
+
+f.size(f.size)
+<span class="hljs-comment">// 0</span>
+</code></pre>
+<p>Also see <a href="#isempty-value-"><code>isEmpty</code></a> for a pure boolean version.</p>
+<hr>
+<h3><span><code>vacate(value)</code></span><a class="heading-anchor" href="#vacate-value-" id="vacate-value-">🔗</a></h3>
+<p>If <code>size(value) &gt; 0</code>, returns <code>value</code> unchanged, otherwise returns <code>undefined</code>.</p>
+<pre><code class="hljs language-js">f.vacate([])
+<span class="hljs-comment">// undefined</span>
+
+f.vacate([<span class="hljs-number">10</span>, <span class="hljs-number">20</span>])
+<span class="hljs-comment">// [10, 20]</span>
+
+f.vacate({})
+<span class="hljs-comment">// undefined</span>
+
+f.vacate({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// {one: 10, two: 20}</span>
+</code></pre>
+<hr>
+<h2><span>Ops</span><a class="heading-anchor" href="#ops" id="ops">🔗</a></h2>
+<p>Operator-style functions. Sometimes useful with higher-order functions. Like with regular JS operators, beware of implicit type coercions.</p>
+<hr>
+<h3><span><code>add(a, b)</code></span><a class="heading-anchor" href="#add-a-b-" id="add-a-b-">🔗</a></h3>
+<p>Same as <code>+</code>.</p>
+<pre><code class="hljs language-js">f.add(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 + 20 = 30</span>
+</code></pre>
+<hr>
+<h3><span><code>sub(a, b)</code></span><a class="heading-anchor" href="#sub-a-b-" id="sub-a-b-">🔗</a></h3>
+<p>Same as <code>-</code>.</p>
+<pre><code class="hljs language-js">f.sub(<span class="hljs-number">20</span>, <span class="hljs-number">10</span>)
+<span class="hljs-comment">// 20 - 10 = 10</span>
+</code></pre>
+<hr>
+<h3><span><code>mul(a, b)</code></span><a class="heading-anchor" href="#mul-a-b-" id="mul-a-b-">🔗</a></h3>
+<p>Same as <code>*</code>.</p>
+<pre><code class="hljs language-js">f.mul(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 * 20 = 200</span>
+</code></pre>
+<hr>
+<h3><span><code>div(a, b)</code></span><a class="heading-anchor" href="#div-a-b-" id="div-a-b-">🔗</a></h3>
+<p>Same as <code>/</code>.</p>
+<pre><code class="hljs language-js">f.div(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 / 20 = 0.5</span>
+</code></pre>
+<hr>
+<h3><span><code>rem(a, b)</code></span><a class="heading-anchor" href="#rem-a-b-" id="rem-a-b-">🔗</a></h3>
+<p>Same as <code>%</code>.</p>
+<pre><code class="hljs language-js">f.rem(<span class="hljs-number">2.5</span>, <span class="hljs-number">1</span>)
+<span class="hljs-comment">// 2.5 % 1 = 0.5</span>
+</code></pre>
+<hr>
+<h3><span><code>lt(a, b)</code></span><a class="heading-anchor" href="#lt-a-b-" id="lt-a-b-">🔗</a></h3>
+<p>Same as <code>&lt;</code>.</p>
+<pre><code class="hljs language-js">f.lt(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 &lt; 20 = true</span>
+</code></pre>
+<hr>
+<h3><span><code>gt(a, b)</code></span><a class="heading-anchor" href="#gt-a-b-" id="gt-a-b-">🔗</a></h3>
+<p>Same as <code>&gt;</code>.</p>
+<pre><code class="hljs language-js">f.gt(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 &gt; 20 = false</span>
+</code></pre>
+<hr>
+<h3><span><code>lte(a, b)</code></span><a class="heading-anchor" href="#lte-a-b-" id="lte-a-b-">🔗</a></h3>
+<p>Same as <code>&lt;=</code>.</p>
+<pre><code class="hljs language-js">f.lte(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 &lt;= 20 = true</span>
+f.lte(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>)
+<span class="hljs-comment">// 10 &lt;= 10 = true</span>
+</code></pre>
+<hr>
+<h3><span><code>gte(a, b)</code></span><a class="heading-anchor" href="#gte-a-b-" id="gte-a-b-">🔗</a></h3>
+<p>Same as <code>&gt;=</code>.</p>
+<pre><code class="hljs language-js">f.gte(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>)
+<span class="hljs-comment">// 10 &gt;= 20 = false</span>
+f.gte(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>)
+<span class="hljs-comment">// 10 &gt;= 10 = true</span>
+</code></pre>
+<hr>
+<h3><span><code>inc(num)</code></span><a class="heading-anchor" href="#inc-num-" id="inc-num-">🔗</a></h3>
+<p>Increments by <code>1</code>.</p>
+<pre><code class="hljs language-js">f.inc(<span class="hljs-number">1</span>)
+<span class="hljs-comment">// 1 + 1 = 2</span>
+</code></pre>
+<hr>
+<h3><span><code>dec(num)</code></span><a class="heading-anchor" href="#dec-num-" id="dec-num-">🔗</a></h3>
+<p>Decrements by <code>1</code>.</p>
+<pre><code class="hljs language-js">f.dec(<span class="hljs-number">2</span>)
+<span class="hljs-comment">// 2 - 1 = 1</span>
+</code></pre>
+<hr>
+<h2><span>Misc</span><a class="heading-anchor" href="#misc" id="misc">🔗</a></h2>
+<p>Uncategorised utils.</p>
+<hr>
+<h3><span><code>global</code></span><a class="heading-anchor" href="#global" id="global">🔗</a></h3>
+<p>The global object for the current environment:</p>
+<ul>
+<li>Node → <code>global</code></li>
+<li>browser → <code>window</code></li>
+<li>service worker, web worker, extension script → <code>self</code></li>
+<li>??? → ???</li>
+</ul>
+<hr>
+<h3><span><code>id(value)</code></span><a class="heading-anchor" href="#id-value-" id="id-value-">🔗</a></h3>
+<p>Identity function: returns its first argument unchanged. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.id(<span class="hljs-string">&#x27;first&#x27;</span>, <span class="hljs-string">&#x27;second&#x27;</span>, <span class="hljs-string">&#x27;third&#x27;</span>)
+<span class="hljs-comment">// &#x27;first&#x27;</span>
+</code></pre>
+<hr>
+<h3><span><code>di(_, value)</code></span><a class="heading-anchor" href="#di-_-value-" id="di-_-value-">🔗</a></h3>
+<p>Returns its <em>second</em> argument unchanged. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.di(<span class="hljs-string">&#x27;first&#x27;</span>, <span class="hljs-string">&#x27;second&#x27;</span>, <span class="hljs-string">&#x27;third&#x27;</span>)
+<span class="hljs-comment">// &#x27;second&#x27;</span>
+</code></pre>
+<hr>
+<h3><span><code>val(value)</code></span><a class="heading-anchor" href="#val-value-" id="val-value-">🔗</a></h3>
+<p>“Constant” function. Returns a function that always returns the original value. Useful for dealing with functional APIs when values are known in advance.</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> one = f.val(<span class="hljs-number">1</span>)
+
+one()
+<span class="hljs-comment">// 1</span>
+
+one(<span class="hljs-number">100</span>)
+<span class="hljs-comment">// 1</span>
+</code></pre>
+<hr>
+<h3><span><code>noop</code></span><a class="heading-anchor" href="#noop" id="noop">🔗</a></h3>
+<p>Empty function. Functional equivalent of <code>;</code> or <code>undefined</code>. Sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js">f.noop()
+<span class="hljs-comment">// undefined</span>
+</code></pre>
+<hr>
+<h3><span><code>rethrow(value)</code></span><a class="heading-anchor" href="#rethrow-value-" id="rethrow-value-">🔗</a></h3>
+<p>Same as <code>throw</code> but can be used as an expression. Also sometimes useful with higher-order functions.</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// Can be used where the regular `throw` can&#x27;t</span>
+<span class="hljs-keyword">const</span> x = someTest ? someValue : f.rethrow(<span class="hljs-built_in">Error</span>(<span class="hljs-string">&#x27;unreachable&#x27;</span>))
+</code></pre>
+<hr>
+<h3><span><code>assign(target, ...sources)</code></span><a class="heading-anchor" href="#assign-target-sources-" id="assign-target-sources-">🔗</a></h3>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign" target="_blank" rel="noopener noreferrer"><code>Object.assign</code></a>, but stricter:</p>
+<ul>
+<li><code>target</code> must be a mutable object</li>
+<li>each source must be a non-list object, <code>null</code>, or <code>undefined</code></li>
+<li>returns <code>undefined</code></li>
+</ul>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> target = {}
+f.assign(target, {<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>}, {<span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+target
+<span class="hljs-comment">// {one: 10, two: 20}</span>
+</code></pre>
+<hr>
+<h3><span><code>maskBy(value, pattern)</code></span><a class="heading-anchor" href="#maskby-value-pattern-" id="maskby-value-pattern-">🔗</a></h3>
+<p>Overlays <code>pattern</code> on <code>value</code>, using the following rules:</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// Function pattern: call as-is</span>
+
+f.maskBy(x, f.inc)  ≡  f.inc(x)
+
+<span class="hljs-comment">// Primitive pattern: replace input</span>
+
+f.maskBy(x, <span class="hljs-literal">null</span>)   ≡  <span class="hljs-literal">null</span>
+f.maskBy(x, <span class="hljs-number">10</span>)     ≡  <span class="hljs-number">10</span>
+f.maskBy(x, <span class="hljs-literal">NaN</span>)    ≡  <span class="hljs-literal">NaN</span>
+
+<span class="hljs-comment">// Regexp pattern:</span>
+<span class="hljs-comment">//   input must be nil or string</span>
+<span class="hljs-comment">//   call `.match(regexp)`</span>
+
+f.maskBy(x, <span class="hljs-regexp">/blah/</span>)  ≡  f.onlyString(x).match(<span class="hljs-regexp">/blah/</span>)
+
+<span class="hljs-comment">// List pattern:</span>
+<span class="hljs-comment">//   input must be nil or list</span>
+<span class="hljs-comment">//   recursively apply sub-patterns</span>
+
+f.maskBy(x, [])             ≡  f.onlyList(x)
+f.maskBy(x, [<span class="hljs-regexp">/blah/</span>])       ≡  [f.maskBy(x[<span class="hljs-number">0</span>], <span class="hljs-regexp">/blah/</span>)]
+f.maskBy(x, [<span class="hljs-regexp">/blah/</span>, <span class="hljs-string">&#x27;c&#x27;</span>])  ≡  [f.maskBy(x[<span class="hljs-number">0</span>], <span class="hljs-regexp">/blah/</span>), f.maskBy(x[<span class="hljs-number">1</span>], <span class="hljs-string">&#x27;c&#x27;</span>)]
+
+<span class="hljs-comment">// Struct pattern:</span>
+<span class="hljs-comment">//   input must be nil or struct</span>
+<span class="hljs-comment">//   recursively apply sub-patterns</span>
+
+f.maskBy(x, {})             ≡  f.onlyStruct(x)
+f.maskBy(x, {<span class="hljs-attr">one</span>: <span class="hljs-regexp">/blah/</span>})  ≡  {<span class="hljs-attr">one</span>: f.maskBy(x.one, <span class="hljs-regexp">/blah/</span>)}
+f.maskBy(x, {<span class="hljs-attr">a</span>: {<span class="hljs-attr">b</span>: <span class="hljs-string">&#x27;c&#x27;</span>}})  ≡  {<span class="hljs-attr">a</span>: f.maskBy(x.a, {<span class="hljs-attr">b</span>: <span class="hljs-string">&#x27;c&#x27;</span>})}
+</code></pre>
+<h3><span><code>mask(pattern)</code></span><a class="heading-anchor" href="#mask-pattern-" id="mask-pattern-">🔗</a></h3>
+<p>Takes a pattern and returns a version of <a href="#maskby-value-pattern-"><code>maskBy</code></a> bound to that pattern. See the rules above.</p>
+<pre><code class="hljs language-js">f.mask(pattern)
+<span class="hljs-comment">// ≡ function(x) {return f.maskBy(x, pattern)}</span>
+
+f.mask(pattern)(input)
+<span class="hljs-comment">// ≡ f.maskBy(input, pattern)</span>
+</code></pre>
+<hr>
+<h3><span><code>validate(value, test)</code></span><a class="heading-anchor" href="#validate-value-test-" id="validate-value-test-">🔗</a></h3>
+<p>where <code>test: ƒ(value) -&gt; boolean</code></p>
+<p>Minification-friendly assertion. If <code>!test(value)</code>, throws an exception with a message including <code>value</code> and the name of the test function.</p>
+<p>Since the assertion doesn’t contain any strings, it can be minified to just a few characters.</p>
+<pre><code class="hljs language-js">f.validate({}, f.isObject)
+<span class="hljs-comment">//</span>
+
+f.validate(<span class="hljs-string">&#x27;blah&#x27;</span>, f.isFunction)
+<span class="hljs-comment">// Uncaught Error: Expected blah to satisfy test isFunction</span>
+</code></pre>
+<hr>
+<h3><span><code>validateEach(list, test)</code></span><a class="heading-anchor" href="#validateeach-list-test-" id="validateeach-list-test-">🔗</a></h3>
+<p>Same as <code>validate</code> but asserts each value in the provided <code>list</code>. Includes the list index in the error message.</p>
+<pre><code class="hljs language-js">f.validateEach([f.isFunction], f.isFunction)
+<span class="hljs-comment">//</span>
+
+f.validateEach([<span class="hljs-string">&#x27;blah&#x27;</span>], f.isFunction)
+<span class="hljs-comment">// Uncaught Error: Expected blah at index 0 to satisfy test isFunction</span>
+</code></pre>
+<hr>
+<h3><span><code>validateInstance(object, Class)</code></span><a class="heading-anchor" href="#validateinstance-object-class-" id="validateinstance-object-class-">🔗</a></h3>
+<p>Asserts that <code>object</code> is an instance of the given class. Useful for writing ES5-style classes.</p>
+<pre><code class="hljs language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Queue</span>(<span class="hljs-params"></span>) </span>{
+  f.validateInstance(<span class="hljs-built_in">this</span>, Queue)
+}
+</code></pre>
+<hr>
+<h3><span><code>show(value)</code></span><a class="heading-anchor" href="#show-value-" id="show-value-">🔗</a></h3>
+<p>Returns a string describing the value. Prints plain data as JSON to avoid the dreaded <code>[object Object]</code>. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in <a href="#validate-value-test-"><code>validate</code></a>.</p>
+<pre><code class="hljs language-js">f.show(<span class="hljs-number">10</span>)
+<span class="hljs-comment">// &#x27;10&#x27;</span>
+
+f.show(f.show)
+<span class="hljs-comment">// &#x27;show&#x27;</span>
+
+f.show({<span class="hljs-attr">one</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">two</span>: <span class="hljs-number">20</span>})
+<span class="hljs-comment">// &#x27;{&quot;one&quot;:10,&quot;two&quot;:20}&#x27;</span>
+</code></pre>
+<hr>
+<h2><span>Miscellaneous</span><a class="heading-anchor" href="#miscellaneous" id="miscellaneous">🔗</a></h2>
+<p>I’m receptive to suggestions. If this library <em>almost</em> satisfies you but needs changes, open an issue on <a href="https://github.com/mitranim/fpx/issues" target="_blank" rel="noopener noreferrer">GitHub</a> or chat me up. Contacts: <a href="https://mitranim.com/#contacts" target="_blank" rel="noopener noreferrer">https://mitranim.com/#contacts</a>.</p>
+
+  </article>
+</section>
+
+<script type="module" src="docs.mjs?9a87264"></script>
+
