@@ -1,10 +1,7 @@
-'use strict'
+/* eslint-disable no-implicit-coercion, no-new-wrappers */
 
-/* global Symbol, Promise */
-/* eslint-disable no-implicit-coercion */
-
-const {eq} = require('./utils')
-const f = require('../dist/fpx')
+import {eq} from './utils.mjs'
+import * as f from '../fpx.mjs'
 const {create} = Object
 
 function id(a) {return a}

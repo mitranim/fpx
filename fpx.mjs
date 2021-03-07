@@ -1,42 +1,31 @@
-// See impl.md
-
-// Minifiable aliases
-const Object_ = Object
-const NOP     = Object_.prototype
-const has     = NOP.hasOwnProperty
-const Array_  = Array
-const NAP     = Array_.prototype
+// See implementation notes in `impl.md`.
 
 /** Fun **/
 
-// Tries to avoid allocation of `arguments` to minimize performance overhead.
-// As a side effect, the function is called with `this = fun`.
-export function call(fun) {
-  return fun.call.apply(fun, arguments)
+export function call(fun, ...args) {
+  return fun(...args)
 }
 
-// Called with `this = fun` for consistency with `call` and `bind`.
 export function apply(fun, args) {
-  return fun.apply(fun, args)
+  return fun(...args)
 }
 
-// Tries to avoid allocation of `arguments` to minimize performance overhead.
-// As a side effect, the function is called with `this = fun`.
-export function bind(fun) {
-  return fun.bind.apply(fun, arguments)
+export function bind(fun, ...args) {
+  return fun.bind(undefined, ...args)
 }
 
 export function not(fun) {
   validate(fun, isFunction)
-  return function not_() {return !fun.apply(null, arguments)}
+  return function not_() {return !fun(...arguments)}
 }
 
 /** Bool **/
 
 // Same as global `Boolean`, redefined for symmetry with `negate/falsy`.
 export const bool = truthy
+
 export function truthy(value) {
-  return !!value  // eslint-disable-line no-implicit-coercion
+  return !!value // eslint-disable-line no-implicit-coercion
 }
 
 export const negate = falsy
@@ -65,11 +54,16 @@ export function isNatural(value) {
 }
 
 export function isNaN(value) {
-  return value !== value  // eslint-disable-line no-self-compare
+  return value !== value // eslint-disable-line no-self-compare
 }
 
 export function isInfinity(value) {
   return value === Infinity || value === -Infinity
+}
+
+// Tentative, private for now.
+function isNaturalOrInfinity(value) {
+  return isNatural(value) || isInfinity(value)
 }
 
 export function isString(value) {
@@ -110,8 +104,8 @@ export function isObject(value) {
 
 export function isDict(value) {
   if (!isObject(value)) return false
-  const proto = Object_.getPrototypeOf(value)
-  return proto === null || proto === NOP
+  const proto = Object.getPrototypeOf(value)
+  return proto === null || proto === Object.prototype
 }
 
 export function isStruct(value) {
@@ -119,13 +113,13 @@ export function isStruct(value) {
 }
 
 export function isArray(value) {
-  return isInstance(value, Array_)
+  return isInstance(value, Array)
 }
 
 export function isList(value) {
   return isObject(value) && (
     isArray(value) || (
-      isNatural(value.length) && (!isDict(value) || has.call(value, 'callee'))
+      isNatural(value.length) && (!isDict(value) || has(value, 'callee'))
     )
   )
 }
@@ -171,11 +165,16 @@ export function isEmpty(value) {
   return !size(value)
 }
 
+export function has(val, key) {
+  return isComplex(val) && Object.prototype.hasOwnProperty.call(val, key)
+}
+
 export function testBy(value, pattern) {
   return (
     isFunction(pattern)  ? bool(pattern(value)) :
     isPrimitive(pattern) ? is(value, pattern) :
     isRegExp(pattern)    ? isString(value) && pattern.test(value) :
+    isDate(pattern)      ? isDate(value) && is(pattern.valueOf(), value.valueOf()) :
     isList(pattern)      ? isList(value) && every(pattern, testAt, value) :
     isStruct(pattern)    ? isStruct(value) && everyVal(pattern, testAt, value) :
     false
@@ -222,95 +221,95 @@ export function toArray(value) {
 
 /** List **/
 
-export function each(list, fun, a, b, c, d, e) {
+export function each(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
-  for (let i = 0; i < list.length; i += 1) fun(list[i], i, a, b, c, d, e)
+  for (let i = 0; i < list.length; i += 1) fun(list[i], i, ...args)
 }
 
-export function fold(list, acc, fun, a, b, c, d, e) {
+export function fold(list, acc, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
-  for (let i = 0; i < list.length; i += 1) acc = fun(acc, list[i], i, a, b, c, d, e)
+  for (let i = 0; i < list.length; i += 1) acc = fun(acc, list[i], i, ...args)
   return acc
 }
 
-export function foldRight(list, acc, fun, a, b, c, d, e) {
+export function foldRight(list, acc, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
-  for (let i = list.length - 1; i >= 0; i -= 1) acc = fun(acc, list[i], i, a, b, c, d, e)
+  for (let i = list.length - 1; i >= 0; i -= 1) acc = fun(acc, list[i], i, ...args)
   return acc
 }
 
-export function map(list, fun, a, b, c, d, e) {
+export function map(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
-  const out = Array_(list.length)
-  for (let i = 0; i < list.length; i += 1) out[i] = fun(list[i], i, a, b, c, d, e)
+  const out = Array(list.length)
+  for (let i = 0; i < list.length; i += 1) out[i] = fun(list[i], i, ...args)
   return out
 }
 
-export function flatMap(list, fun, a, b, c, d, e) {
-  return flatten(map(list, fun, a, b, c, d, e))
+export function flatMap(list, fun, ...args) {
+  return flatten(map(list, fun, ...args))
 }
 
-export function flatMapDeep(list, fun, a, b, c, d, e) {
-  return flattenDeep(map(list, fun, a, b, c, d, e))
+export function flatMapDeep(list, fun, ...args) {
+  return flattenDeep(map(list, fun, ...args))
 }
 
-export function mapFilter(list, fun, a, b, c, d, e) {
-  return compact(map(list, fun, a, b, c, d, e))
+export function mapFilter(list, fun, ...args) {
+  return compact(map(list, fun, ...args))
 }
 
-export function filter(list, fun, a, b, c, d, e) {
+export function filter(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   const out = []
   for (let i = 0; i < list.length; i += 1) {
-    if (fun(list[i], i, a, b, c, d, e)) out.push(list[i])
+    if (fun(list[i], i, ...args)) out.push(list[i])
   }
   return out
 }
 
-export function reject(list, fun, a, b, c, d, e) {
+export function reject(list, fun, ...args) {
   validate(fun, isFunction)
-  return filter(list, notBy, fun, a, b, c, d, e)
+  return filter(list, notBy, fun, ...args)
 }
 
-function notBy(value, key, fun, a, b, c, d, e) {
-  return !fun(value, key, a, b, c, d, e)
+function notBy(value, key, fun, ...args) {
+  return !fun(value, key, ...args)
 }
 
 export function compact(list) {
   return filter(list, id)
 }
 
-export function find(list, fun, a, b, c, d, e) {
+export function find(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
-  return list[findIndex(list, fun, a, b, c, d, e)]
+  return list[findIndex(list, fun, ...args)]
 }
 
-export function findRight(list, fun, a, b, c, d, e) {
+export function findRight(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
-  return list[findIndexRight(list, fun, a, b, c, d, e)]
+  return list[findIndexRight(list, fun, ...args)]
 }
 
-export function findIndex(list, fun, a, b, c, d, e) {
+export function findIndex(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   for (let i = 0; i < list.length; i += 1) {
-    if (fun(list[i], i, a, b, c, d, e)) return i
+    if (fun(list[i], i, ...args)) return i
   }
   return -1
 }
 
-export function findIndexRight(list, fun, a, b, c, d, e) {
+export function findIndexRight(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   for (let i = list.length; --i >= 0;) {
-    if (fun(list[i], i, a, b, c, d, e)) return i
+    if (fun(list[i], i, ...args)) return i
   }
   return -1
 }
@@ -331,36 +330,36 @@ export function includes(list, value) {
   return indexOf(list, value) !== -1
 }
 
-export function procure(list, fun, a, b, c, d, e) {
+export function procure(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   for (let i = 0; i < list.length; i += 1) {
-    const result = fun(list[i], i, a, b, c, d, e)
+    const result = fun(list[i], i, ...args)
     if (result) return result
   }
   return undefined
 }
 
-export function every(list, fun, a, b, c, d, e) {
+export function every(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   for (let i = 0; i < list.length; i += 1) {
-    if (!fun(list[i], i, a, b, c, d, e)) return false
+    if (!fun(list[i], i, ...args)) return false
   }
   return true
 }
 
-export function some(list, fun, a, b, c, d, e) {
+export function some(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   for (let i = 0; i < list.length; i += 1) {
-    if (fun(list[i], i, a, b, c, d, e)) return true
+    if (fun(list[i], i, ...args)) return true
   }
   return false
 }
 
 export function slice(list, start, nextStart) {
-  return NAP.slice.call(onlyList(list), start, nextStart)
+  return Array.prototype.slice.call(onlyList(list), start, nextStart)
 }
 
 export function append(list, value) {
@@ -405,7 +404,7 @@ export function toggle(list, value) {
 
 // Uses native concat because it seems to perform very well in many JS engines.
 export function concat() {
-  return NAP.concat.apply([], map(arguments, toArray))
+  return [].concat(...map(arguments, toArray))
 }
 
 /*
@@ -413,7 +412,7 @@ This could be made more efficient for very large and deep lists by
 precalculating the length and allocating the result all at once. Unfortunately
 this requires quite a bit of extra code and would be slower for relatively small
 lists. It would also be faster to use native array concat, but I haven't found a
-way to bypass `.apply` and the argument size limit.
+way to bypass `.apply`/spread and the argument size limit.
 */
 export function flatten(list) {
   const out = []
@@ -457,19 +456,19 @@ export function last(list) {
 }
 
 export function take(list, count) {
-  validate(count, isNatural)
+  validate(count, isNaturalOrInfinity)
   return slice(list, 0, count)
 }
 
 export function drop(list, count) {
-  validate(count, isNatural)
+  validate(count, isNaturalOrInfinity)
   return slice(list, count)
 }
 
 export function reverse(list) {
   list = onlyList(list)
   const len = list.length
-  const out = Array_(len)
+  const out = Array(len)
   for (let i = len; --i >= 0;) out[len - i - 1] = list[i]
   return out
 }
@@ -478,10 +477,10 @@ export function sort(list, comparator) {
   return slice(list).sort(comparator)
 }
 
-export function sortBy(list, fun, a, b, c, d, e) {
+export function sortBy(list, fun, ...args) {
   validate(fun, isFunction)
   return sort(list, function compareBy(left, right) {
-    return sortCompare(fun(left, a, b, c, d, e), fun(right, a, b, c, d, e))
+    return sortCompare(fun(left, ...args), fun(right, ...args))
   })
 }
 
@@ -490,8 +489,8 @@ function sortCompare(left, right) {
   if (left === undefined && right === undefined) return 0
   if (left === undefined) return 1
   if (right === undefined) return -1
-  left += ''  // eslint-disable-line no-implicit-coercion
-  right += ''  // eslint-disable-line no-implicit-coercion
+  left += '' // eslint-disable-line no-implicit-coercion
+  right += '' // eslint-disable-line no-implicit-coercion
   if (left < right) return -1
   if (right < left) return 1
   return 0
@@ -512,27 +511,27 @@ function intersectionAdd(value, _key, out, control) {
   if (includes(control, value) && !includes(out, value)) out.push(value)
 }
 
-export function keyBy(list, fun, a, b, c, d, e) {
+export function keyBy(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   const out = {}
   for (let i = 0; i < list.length; i += 1) {
     const value = list[i]
-    const key = fun(value, i, a, b, c, d, e)
+    const key = fun(value, i, ...args)
     if (isKey(key)) out[key] = value
   }
   return out
 }
 
-export function groupBy(list, fun, a, b, c, d, e) {
+export function groupBy(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   const out = {}
   for (let i = 0; i < list.length; i += 1) {
     const value = list[i]
-    const groupKey = fun(value, i, a, b, c, d, e)
+    const groupKey = fun(value, i, ...args)
     if (isKey(groupKey)) {
-      if (!has.call(out, groupKey)) out[groupKey] = []
+      if (!has(out, groupKey)) out[groupKey] = []
       out[groupKey].push(value)
     }
   }
@@ -543,14 +542,14 @@ export function uniq(list) {
   return uniqBy(list, id)
 }
 
-export function uniqBy(list, fun, a, b, c, d, e) {
+export function uniqBy(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   const out = []
   const attrs = []
   for (let i = 0; i < list.length; i += 1) {
     const value = list[i]
-    const attr = fun(value, i, a, b, c, d, e)
+    const attr = fun(value, i, ...args)
     if (!includes(attrs, attr)) {
       attrs.push(attr)
       out.push(value)
@@ -559,14 +558,14 @@ export function uniqBy(list, fun, a, b, c, d, e) {
   return out
 }
 
-export function partition(list, fun, a, b, c, d, e) {
+export function partition(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   const accepted = []
   const rejected = []
   for (let i = 0; i < list.length; i += 1) {
     const value = list[i]
-    if (fun(value, i, a, b, c, d, e)) accepted.push(value)
+    if (fun(value, i, ...args)) accepted.push(value)
     else rejected.push(value)
   }
   return [accepted, rejected]
@@ -576,12 +575,12 @@ export function sum(list) {
   return sumBy(list, id)
 }
 
-export function sumBy(list, fun, a, b, c, d, e) {
+export function sumBy(list, fun, ...args) {
   list = onlyList(list)
   validate(fun, isFunction)
   let acc = 0
   for (let i = 0; i < list.length; i += 1) {
-    const value = fun(list[i], i, a, b, c, d, e)
+    const value = fun(list[i], i, ...args)
     if (isFinite(value)) acc += value
   }
   return acc
@@ -595,18 +594,18 @@ export function max(list) {
   return maxBy(list, id)
 }
 
-export function minBy(list, fun, a, b, c, d, e) {
+export function minBy(list, fun, ...args) {
   validate(fun, isFunction)
-  return fold(list, undefined, compareNumbersBy, lt, fun, a, b, c, d, e)
+  return fold(list, undefined, compareNumbersBy, lt, fun, ...args)
 }
 
-export function maxBy(list, fun, a, b, c, d, e) {
+export function maxBy(list, fun, ...args) {
   validate(fun, isFunction)
-  return fold(list, undefined, compareNumbersBy, gt, fun, a, b, c, d, e)
+  return fold(list, undefined, compareNumbersBy, gt, fun, ...args)
 }
 
-function compareNumbersBy(acc, value, key, compare, fun, a, b, c, d, e) {
-  value = fun(value, key, a, b, c, d, e)
+function compareNumbersBy(acc, value, key, compare, fun, ...args) {
+  value = fun(value, key, ...args)
   return !isFinite(value)
     ? acc
     : !isFinite(acc) || compare(value, acc)
@@ -614,18 +613,18 @@ function compareNumbersBy(acc, value, key, compare, fun, a, b, c, d, e) {
     : acc
 }
 
-export function findMinBy(list, fun, a, b, c, d, e) {
+export function findMinBy(list, fun, ...args) {
   validate(fun, isFunction)
-  return findNumBy(list, lt, fun, a, b, c, d, e)
+  return findNumBy(list, lt, fun, ...args)
 }
 
-export function findMaxBy(list, fun, a, b, c, d, e) {
+export function findMaxBy(list, fun, ...args) {
   validate(fun, isFunction)
-  return findNumBy(list, gt, fun, a, b, c, d, e)
+  return findNumBy(list, gt, fun, ...args)
 }
 
-// WTF too large
-function findNumBy(list, compare, fun, a, b, c, d, e) {
+// WTF too large!
+function findNumBy(list, compare, fun, ...args) {
   list = onlyList(list)
   validate(compare, isFunction)
   validate(fun, isFunction)
@@ -633,7 +632,7 @@ function findNumBy(list, compare, fun, a, b, c, d, e) {
   let winningAttr = undefined
   for (let i = 0; i < list.length; i += 1) {
     const value = list[i]
-    const attr = fun(value, i, a, b, c, d, e)
+    const attr = fun(value, i, ...args)
     if (isFinite(attr) && (winningAttr == null || compare(attr, winningAttr))) {
       winningValue = value
       winningAttr = attr
@@ -642,11 +641,12 @@ function findNumBy(list, compare, fun, a, b, c, d, e) {
   return winningValue
 }
 
-// Doesn't need validation: the Array constructor rejects NaN and negatives,
-// producing a decent error message.
 export function range(start, end) {
+  validate(start, isInteger)
+  validate(end, isInteger)
   let remaining = end - start
-  const out = Array_(remaining)
+  // Note: this rejects negatives, producing a decent error message.
+  const out = Array(remaining)
   while (--remaining >= 0) out[remaining] = start + remaining
   return out
 }
@@ -677,7 +677,7 @@ export function getter(key) {
 
 // Like `Object.keys`, but only for non-list objects.
 export function keys(value) {
-  return Object_.keys(onlyStruct(value))
+  return Object.keys(onlyStruct(value))
 }
 
 // Like `Object.values`, but only for non-list objects.
@@ -694,40 +694,45 @@ export function entries(value) {
   return out
 }
 
-export function eachVal(struct, fun, a, b, c, d, e) {
+export function eachVal(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    fun(struct[key], key, a, b, c, d, e)
+    fun(struct[key], key, ...args)
   }
 }
 
-export function foldVals(struct, acc, fun, a, b, c, d, e) {
+export function foldVals(struct, acc, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    acc = fun(acc, struct[key], key, a, b, c, d, e)
+    acc = fun(acc, struct[key], key, ...args)
   }
   return acc
 }
 
-export function mapVals(struct, fun, a, b, c, d, e) {
+export function mapVals(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    out[key] = fun(struct[key], key, a, b, c, d, e)
+    out[key] = fun(struct[key], key, ...args)
   }
   return out
 }
 
-export function mapKeys(struct, fun, a, b, c, d, e) {
+/*
+Note: there's no corresponding `mapKeysMut`. The point of in-place mapping is
+efficiency. In this case, the possibility of key collisions would require an
+additional temporary structure for book-keeping, negating any possible gains.
+*/
+export function mapKeys(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
@@ -735,24 +740,25 @@ export function mapKeys(struct, fun, a, b, c, d, e) {
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
     const value = struct[key]
-    const newKey = fun(key, value, a, b, c, d, e)
+    const newKey = fun(key, value, ...args)
     if (isKey(newKey)) out[newKey] = value
   }
   return out
 }
 
-export function mapValsSort(struct, fun, a, b, c, d, e) {
+export function mapValsSort(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = keys(struct).sort()
   for (let i = -1; ++i < out.length;) {
     const key = out[i]
-    out[i] = fun(struct[key], key, a, b, c, d, e)
+    out[i] = fun(struct[key], key, ...args)
   }
   return out
 }
 
-export function pickBy(struct, fun, a, b, c, d, e) {
+// TODO rename to `filterVals`.
+export function pickBy(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
@@ -760,16 +766,19 @@ export function pickBy(struct, fun, a, b, c, d, e) {
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
     const value = struct[key]
-    if (fun(value, key, a, b, c, d, e)) out[key] = value
+    if (fun(value, key, ...args)) out[key] = value
   }
   return out
 }
 
-export function omitBy(struct, fun, a, b, c, d, e) {
+// TODO rename to `rejectVals`.
+export function omitBy(struct, fun, ...args) {
   validate(fun, isFunction)
-  return pickBy(struct, notBy, fun, a, b, c, d, e)
+  return pickBy(struct, notBy, fun, ...args)
 }
 
+// TODO: consider `keys = onlyList(keys)`.
+// TODO: consider renaming to `pickByKeys` or `pick`.
 export function pickKeys(struct, keys) {
   struct = onlyStruct(struct)
   validateEach(keys, isKey)
@@ -779,9 +788,11 @@ export function pickKeys(struct, keys) {
 }
 
 function pickKnown(key, _i, src, out) {
-  if (has.call(src, key)) out[key] = src[key]
+  if (has(src, key)) out[key] = src[key]
 }
 
+// TODO: consider `keys = onlyList(keys)`.
+// TODO: consider renaming to `omitByKeys` or `omit`.
 export function omitKeys(struct, keys) {
   validateEach(keys, isKey)
   const out = {}
@@ -794,47 +805,47 @@ function deleteAt(key, _i, out) {
   delete out[key]
 }
 
-export function findVal(struct, fun, a, b, c, d, e) {
+export function findVal(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
     const value = struct[key]
-    if (fun(value, key, a, b, c, d, e)) return value
+    if (fun(value, key, ...args)) return value
   }
   return undefined
 }
 
-export function findKey(struct, fun, a, b, c, d, e) {
+export function findKey(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    if (fun(struct[key], key, a, b, c, d, e)) return key
+    if (fun(struct[key], key, ...args)) return key
   }
   return undefined
 }
 
-export function everyVal(struct, fun, a, b, c, d, e) {
+export function everyVal(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    if (!fun(struct[key], key, a, b, c, d, e)) return false
+    if (!fun(struct[key], key, ...args)) return false
   }
   return true
 }
 
-export function someVal(struct, fun, a, b, c, d, e) {
+export function someVal(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    if (fun(struct[key], key, a, b, c, d, e)) return true
+    if (fun(struct[key], key, ...args)) return true
   }
   return false
 }
@@ -843,14 +854,14 @@ export function invert(struct) {
   return invertBy(struct, id)
 }
 
-export function invertBy(struct, fun, a, b, c, d, e) {
+export function invertBy(struct, fun, ...args) {
   struct = onlyStruct(struct)
   validate(fun, isFunction)
   const out = {}
   const inputKeys = keys(struct)
   for (let i = 0; i < inputKeys.length; i += 1) {
     const key = inputKeys[i]
-    const newKey = fun(struct[key], key, a, b, c, d, e)
+    const newKey = fun(struct[key], key, ...args)
     if (isKey(newKey)) out[newKey] = key
   }
   return out
@@ -858,8 +869,13 @@ export function invertBy(struct, fun, a, b, c, d, e) {
 
 /** Coll **/
 
-// Only collections (lists and objects) have a size. Functions and primitives,
-// including strings, are considered empty.
+/*
+Only collections (lists and objects) have a size. Functions and primitives,
+including strings, are considered empty.
+
+TODO consider requiring the input to be a collection or nil, and producing an
+exception otherwise.
+*/
 export function size(value) {
   return isList(value)
     ? value.length
@@ -889,7 +905,7 @@ export function dec(a)    {return a - 1}
 /** Misc **/
 
 // The "pure" annotation allows UglifyJS to drop this if the result is unused.
-export const global = /* #__PURE__ */Function('return this')()  // eslint-disable-line no-new-func
+export const global = /* #__PURE__ */Function('return this')() // eslint-disable-line no-new-func
 
 export function id(value) {
   return value
@@ -964,13 +980,17 @@ export function validateInstance(value, Class) {
 }
 
 export function show(value) {
-  return (
-    isFunction(value) && value.name
-    ? value.name
-    : isArray(value) || isDict(value)
-    ? JSON.stringify(value)
-    : isString(value)
-    ? `"${value}"`
-    : String(value)
-  )
+  if (isFunction(value) && value.name) return value.name
+
+  // Plain data becomes JSON, if possible.
+  if (isArray(value) || isDict(value) || isString(value)) {
+    try {
+      return JSON.stringify(value)
+    }
+    catch (__) {
+      return `${value}`
+    }
+  }
+
+  return `${value}`
 }

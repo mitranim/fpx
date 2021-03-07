@@ -4,14 +4,14 @@
 
 Lightweight replacement for Lodash, Underscore, etc. Differences:
 
-  * One small file (≈ 12 KiB minified, versus ≈ 73 KiB in Lodash 4+)
+  * One small file (≈ 13 KiB minified, versus ≈ 73 KiB in Lodash 4+)
   * Extremely simple source code
   * Relatively space-efficient, minifies well
   * Compatible with tree shaking
 
 Doesn't have complete feature parity with Lodash, and probably never will. More functions may be added on demand. Open a GitHub issue or a pull request if something useful is missing.
 
-Written as an ES2015 module for compatibility with tree shaking. When building a browser bundle, Webpack 4+ or Rollup automatically pick the ES2015 version. In Node.js, you automatically get the CommonJS version. A properly configured bundler should strip out the unused code, leaving only what you actually use.
+Fpx is written as a single native JS module, compatible with `<script type="module">` and Node `.mjs` modules. CommonJS is available in versions prior to `0.8.0`.
 
 See sibling libraries:
 
@@ -28,8 +28,6 @@ All examples on this page imply an import:
 
 ```js
 import * as f from 'fpx'
-// or
-const f = require('fpx')
 ```
 
 On this page, Fpx is globally available as `f` or `fpx`. You can run the examples in the browser console.
@@ -48,7 +46,7 @@ The current version of Lodash is incompatible with techniques like tree shaking 
 
 > Programs must be written for people to read, and only incidentally for machines to execute.
 >
-> _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
+> _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
 
 I believe that _all code_ should strive to be simple and educational. This gives me a massive distaste for most code ever written. For example, reading Lodash's source might teach you code obfuscation, but not much else.
 
@@ -56,7 +54,7 @@ In Fpx, I strive to keep the code and the algorithms dead simple, with as few un
 
 ### Strictness
 
-Fpx functions tend to be somewhat stricter than their built-in counterparts, and _much_ stricter than the Lodash counterparts. They tend to work _either_ on lists ([`fold`](#fold-list-init-fun-a-b-c-)) _or_ dicts ([`foldVals`](#foldvals-dict-init-fun-a-b-c-)), not both. List functions also don't accept strings. This prevents subtle gotchas.
+Fpx functions tend to be somewhat stricter than their built-in counterparts, and _much_ stricter than the Lodash counterparts. They tend to work _either_ on lists ([`fold`](#fold-list-init-fun-args-)) _or_ dicts ([`foldVals`](#foldvals-dict-init-fun-args-)), not both. Collection functions don't accept strings. This prevents subtle gotchas.
 
 On the other hand, collection functions accept `null` and `undefined`, which is very useful in practice. This would not be possible with methods, since methods must be invoked on an object.
 
@@ -70,7 +68,9 @@ Here's the traditional way of doing assertions:
 
 ```js
 function someFunction(input) {
-  if (typeof input !== 'function') throw Error(`Expected a function, got ${input}`)
+  if (typeof input !== 'function') {
+    throw Error(`expected a function, got ${input}`)
+  }
 }
 
 someFunction({one: 10})
@@ -87,7 +87,7 @@ function someFunction(input) {
 }
 
 someFunction({one: 10})
-// Error: Expected {"one":10} to satisfy test isFunction
+// Error: expected {"one":10} to satisfy test isFunction
 ```
 
 So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which is good for bundle size. The mangled name is a non-issue with a source map, which you need for debugging anyway.
@@ -109,7 +109,7 @@ There's potential for improvement, but I don't have infinite spare time for micr
 
 ## Bonus Arguments
 
-In Fpx, most collection functions, such as [`map`](#map-list-fun-a-b-c-), pass up to 3 additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
+In Fpx, most collection functions, such as [`map`](#map-list-fun-args-), pass additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
 
 ```js
 // local context
@@ -429,7 +429,7 @@ f.isKey(undefined)
 
 In other words, this is a subset of [`isPrimitive`](#isprimitive-value-) that excludes `null`, `undefined`, `NaN`, and `±Infinity`. These values are often produced on accident, and you almost never want them as your dict keys.
 
-Fpx uses `isKey` to validate keys in functions like [`keyBy`](#keyby-list-fun-a-b-c-).
+Fpx uses `isKey` to validate keys in functions like [`keyBy`](#keyby-list-fun-args-).
 
 ---
 
@@ -639,7 +639,7 @@ f.isInvalidDate(new Date(NaN))  // true
 
 ### `isPromise(value)`
 
-True if the value [quacks](https://en.wikipedia.org/wiki/Duck_test) like an ES2015 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). Not limited to built-in promises.
+True if the value [quacks](https://en.wikipedia.org/wiki/Duck_test) like an ES2015 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). The value doesn't have to belong to the built-in `Promise` class.
 
 ```js
 f.isPromise(new Promise(() => {}))
@@ -895,15 +895,15 @@ Note that _strings are not considered lists_.
 
 ---
 
-### `each(list, fun, a, b, c)`
+### `each(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach), but works on `null`, `undefined`, and array-likes.
 
 ```js
-function report(value, index, a, b, c) {
-  console.info(value, index, a, b, c)
+function report(value, index, ...args) {
+  console.info(value, index, ...args)
 }
 
 f.each(['one', 'two'], report, 10, 20, 30)
@@ -913,9 +913,9 @@ f.each(['one', 'two'], report, 10, 20, 30)
 
 ---
 
-### `fold(list, init, fun, a, b, c)`
+### `fold(list, init, fun, ...args)`
 
-where `fun: ƒ(accumulator, value, index, a, b, c)`
+where `fun: ƒ(accumulator, value, index, ...args)`
 
 Like [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), with the following differences:
 
@@ -930,9 +930,9 @@ f.fold([10, 20], 5, f.add)
 
 ---
 
-### `foldRight(list, init, fun, a, b, c)`
+### `foldRight(list, init, fun, ...args)`
 
-where `fun: ƒ(accumulator, value, index, a, b, c)`
+where `fun: ƒ(accumulator, value, index, ...args)`
 
 Like [`Array.prototype.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight), with the following differences:
 
@@ -947,9 +947,9 @@ f.foldRight([1, 5, 20], 100, f.sub)
 
 ---
 
-### `map(list, fun, a, b, c)`
+### `map(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map), but works on `null`, `undefined`, and array-likes.
 
@@ -976,9 +976,9 @@ f.map([{value: 10}, {value: 20}], f.getter('value'))
 
 ---
 
-### `flatMap(list, fun, a, b, c)`
+### `flatMap(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Similar to `map`, but flattens any lists returned by `fun` into the output array. Equivalent to `flatten(map(...arguments))`.
 
@@ -989,9 +989,9 @@ f.flatMap([10, [20], [[30]]], x => x)
 
 ---
 
-### `flatMapDeep(list, fun, a, b, c)`
+### `flatMapDeep(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Similar to `map`, but deeply flattens any lists returned by `fun`, returning a completely flat array. Equivalent to `flattenDeep(map(...arguments))`.
 
@@ -1002,9 +1002,9 @@ f.flatMapDeep([10, [20], [[[30]]]], x => x)
 
 ---
 
-### `mapFilter(list, fun, a, b, c)`
+### `mapFilter(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Similar to `map`, but drops any "falsy" values from the output. Equivalent to `compact(map(...arguments))`.
 
@@ -1015,9 +1015,9 @@ f.mapFilter([10, 0, 20, 0], x => x * 2)
 
 ---
 
-### `filter(list, test, a, b, c)`
+### `filter(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), but works on `null`, `undefined`, and array-likes.
 
@@ -1044,9 +1044,9 @@ Be wary that it's slower than a hand-coded test.
 
 ---
 
-### `reject(list, test, a, b, c)`
+### `reject(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Opposite of `filter`: drops elements that don't satisfy `test`.
 
@@ -1068,9 +1068,9 @@ f.compact([10, 0, 20, NaN, 30, undefined])
 
 ---
 
-### `find(list, test, a, b, c)`
+### `find(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find), but works on `null`, `undefined`, and array-likes.
 
@@ -1081,9 +1081,9 @@ f.find([10, true, 20, false, 30], f.isBoolean)
 
 ---
 
-### `findRight(list, test, a, b, c)`
+### `findRight(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like `find`, but iterates from the _end_ of the list. Returns the rightmost element that satisfies `test`, or `undefined` if none do.
 
@@ -1094,9 +1094,9 @@ f.findRight([10, true, 20, false, 30], f.isBoolean)
 
 ---
 
-### `findIndex(list, test, a, b, c)`
+### `findIndex(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.findIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex), but works on `null`, `undefined`, and array-likes.
 
@@ -1107,9 +1107,9 @@ f.findIndex([10, true, 20, false, 30], f.isBoolean)
 
 ---
 
-### `findIndexRight(list, test, a, b, c)`
+### `findIndexRight(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like `findIndex`, but iterates from the _end_ of the list. Returns the index of the rightmost element that satisfies `test`, or `-1` if none do.
 
@@ -1162,11 +1162,11 @@ f.includes([10, 20, NaN], NaN)
 
 ---
 
-### `procure(list, fun, a, b, c)`
+### `procure(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
-Similar to [`find`](#find-list-test-a-b-c-), but returns the first truthy result of calling `fun`, rather than the corresponding list element.
+Similar to [`find`](#find-list-test-args-), but returns the first truthy result of calling `fun`, rather than the corresponding list element.
 
 ```js
 function double(num) {return num * 2}
@@ -1177,9 +1177,9 @@ f.procure([0, 0, 10, 100], double)
 
 ---
 
-### `every(list, test, a, b, c)`
+### `every(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every), but works on `null`, `undefined`, and array-likes.
 
@@ -1196,9 +1196,9 @@ f.every([true, false, 10, 20], f.isBoolean)
 
 ---
 
-### `some(list, test, a, b, c)`
+### `some(list, test, ...args)`
 
-where `test: ƒ(value, index, a, b, c)`
+where `test: ƒ(value, index, ...args)`
 
 Like [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some), but works on `null`, `undefined`, and array-likes.
 
@@ -1495,9 +1495,9 @@ f.sort([3, 22, 111], f.sub)
 
 ---
 
-### `sortBy(list, fun, a, b, c)`
+### `sortBy(list, fun, ...args)`
 
-where `fun: ƒ(value, a, b, c)`
+where `fun: ƒ(value, ...args)`
 
 Returns a version of `list` sorted by the order of values returned by `fun`, which is called on every element with the bonus arguments. Kinda like mapping `list` to `fun`, sorting the result, then changing the element order in the original list the same way.
 
@@ -1528,9 +1528,9 @@ f.intersection([10, 20], undefined)
 
 ---
 
-### `keyBy(list, fun, a, b, c)`
+### `keyBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Returns a dict where `list`'s values are assigned to the keys created by `fun`.
 
@@ -1545,9 +1545,9 @@ f.keyBy([10, 20, 30], double)
 
 ---
 
-### `groupBy(list, fun, a, b, c)`
+### `groupBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Similar to `keyBy`: returns a dict where keys have been created by calling `fun`. Unlike `keyBy`, it groups values into lists, accumulating them for repeating keys instead of overwriting.
 
@@ -1573,9 +1573,9 @@ f.uniq([10, 20, NaN, 20, NaN, 30])
 
 ---
 
-### `uniqBy(list, fun, a, b, c)`
+### `uniqBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Returns a version of `list` where no two elements have produced the same result when `fun` was called on them. The results are compared via [`is`](#is-one-other-).
 
@@ -1588,9 +1588,9 @@ f.uniqBy([10, 13, 16, 19], isOdd)
 
 ---
 
-### `partition(list, fun, a, b, c)`
+### `partition(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Splits `list` into "accepted" and "rejected" groups. The accepted group contains elements for which `fun` returned something truthy, and the rejected group contains the rest.
 
@@ -1614,9 +1614,9 @@ f.sum([10, NaN, 20, '5'])
 
 ---
 
-### `sumBy(list, fun, a, b, c)`
+### `sumBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Calls `fun` on every element of the list and sums the results. Like `sum`, ignores values that don't satisfy [`isFinite`](#isfinite-value-).
 
@@ -1655,9 +1655,9 @@ f.max(['10', 20, '30', Infinity, NaN])
 
 ---
 
-### `minBy(list, fun, a, b, c)`
+### `minBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Calls `fun` on every element of the list and returns the smallest result, using the same rules as [`min`](#min-list-).
 
@@ -1672,9 +1672,9 @@ f.minBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 ---
 
-### `maxBy(list, fun, a, b, c)`
+### `maxBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Calls `fun` on every element of the list and returns the largest result, using the same rules as [`max`](#max-list-).
 
@@ -1689,9 +1689,9 @@ f.maxBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 ---
 
-### `findMinBy(list, fun, a, b, c)`
+### `findMinBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Calls `fun` on every element of the list and returns the element for which `fun` returned the smallest value, using the same rules as [`min`](#min-list-).
 
@@ -1706,9 +1706,9 @@ f.findMinBy([{num: 10}, {num: 20}, {num: 30}], getNum)
 
 ---
 
-### `findMaxBy(list, fun, a, b, c)`
+### `findMaxBy(list, fun, ...args)`
 
-where `fun: ƒ(value, index, a, b, c)`
+where `fun: ƒ(value, index, ...args)`
 
 Calls `fun` on every element of the list and returns the element for which `fun` returned the largest value, using the same rules as [`max`](#max-list-).
 
@@ -1889,15 +1889,15 @@ f.entries([10, 20])
 
 ---
 
-### `eachVal(dict, fun, a, b, c)`
+### `eachVal(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
 Iterates for side effects, calling `fun` with every property and key. Returns `undefined`.
 
 ```js
-function report(value, key, a, b, c) {
-  console.info(value, key, a, b, c)
+function report(value, key, ...args) {
+  console.info(value, key, ...args)
 }
 
 f.eachVal({one: 10, two: 20}, report, 10, 20, 30)
@@ -1907,11 +1907,11 @@ f.eachVal({one: 10, two: 20}, report, 10, 20, 30)
 
 ---
 
-### `foldVals(dict, init, fun, a, b, c)`
+### `foldVals(dict, init, fun, ...args)`
 
-where `fun: ƒ(accumulator, value, key, a, b, c)`
+where `fun: ƒ(accumulator, value, key, ...args)`
 
-Similar to [`fold`](#fold-list-init-fun-a-b-c-), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.
+Similar to [`fold`](#fold-list-init-fun-args-), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.
 
 ```js
 f.foldVals({one: 10, two: 20}, 5, f.add)
@@ -1920,11 +1920,11 @@ f.foldVals({one: 10, two: 20}, 5, f.add)
 
 ---
 
-### `mapVals(dict, fun, a, b, c)`
+### `mapVals(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`map`](#map-list-fun-a-b-c-), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`.
+Similar to [`map`](#map-list-fun-args-), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`.
 
 ```js
 function bang(value) {return value + '!'}
@@ -1935,15 +1935,15 @@ f.mapVals({ping: 'ping', pong: 'pong'}, bang)
 
 ---
 
-### `mapKeys(dict, fun, a, b, c)`
+### `mapKeys(dict, fun, ...args)`
 
-where `fun: ƒ(key, value, a, b, c)`
+where `fun: ƒ(key, value, ...args)`
 
-Similar to [`mapVals`](#mapvals-dict-fun-a-b-c-), but replaces keys rather than values.
+Similar to [`mapVals`](#mapvals-dict-fun-args-), but replaces keys rather than values.
 
 Major difference from Lodash's `_.mapKeys`: keys must pass the [`isKey`](#iskey-value-) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
 
-Another major difference from Lodash's `_.mapKeys`: the operator receives `key, value, a, b, c` rather than `value, key, dict`.
+Another major difference from Lodash's `_.mapKeys`: the operator receives `key, value, ...args` rather than `value, key, dict`.
 
 ```js
 f.mapKeys({one: 10, two: 20}, f.head)
@@ -1952,9 +1952,9 @@ f.mapKeys({one: 10, two: 20}, f.head)
 
 ---
 
-### `mapValsSort(dict, fun, a, b, c)`
+### `mapValsSort(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
 Maps `dict` to a _list_, sorted by key order.
 
@@ -1967,11 +1967,11 @@ f.mapValsSort({3: 'three', 22: 'two', 111: 'one'}, f.id)
 
 ---
 
-### `pickBy(dict, fun, a, b, c)`
+### `pickBy(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`filter`](#filter-list-test-a-b-c-), but for dicts. Returns a version of `dict` with properties for which `fun` returned something truthy.
+Similar to [`filter`](#filter-list-test-args-), but for dicts. Returns a version of `dict` with properties for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -1982,11 +1982,11 @@ f.pickBy({one: 10, two: 13, three: 16, four: 19}, isOdd)
 
 ---
 
-### `omitBy(dict, fun, a, b, c)`
+### `omitBy(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`reject`](#reject-list-test-a-b-c-), but for dicts. Returns a version of `dict` without properties for which `fun` returned something truthy.
+Similar to [`reject`](#reject-list-test-args-), but for dicts. Returns a version of `dict` without properties for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -2023,11 +2023,11 @@ f.omitKeys({one: 10, two: 20}, ['one'])
 
 ---
 
-### `findVal(dict, fun, a, b, c)`
+### `findVal(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`find`](#find-list-test-a-b-c-), but for dicts. Returns the first value for which `fun` returned something truthy.
+Similar to [`find`](#find-list-test-args-), but for dicts. Returns the first value for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -2038,11 +2038,11 @@ f.findVal({one: 10, two: 13}, isOdd)
 
 ---
 
-### `findKey(dict, fun, a, b, c)`
+### `findKey(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`findIndex`](#findindex-list-test-a-b-c-), but for dicts. Returns the first key for which `fun` returned something truthy.
+Similar to [`findIndex`](#findindex-list-test-args-), but for dicts. Returns the first key for which `fun` returned something truthy.
 
 ```js
 function isOdd(value) {return Boolean(value % 2)}
@@ -2053,11 +2053,11 @@ f.findKey({one: 10, two: 13}, isOdd)
 
 ---
 
-### `everyVal(dict, fun, a, b, c)`
+### `everyVal(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`every`](#every-list-test-a-b-c-), but for dict values:
+Similar to [`every`](#every-list-test-args-), but for dict values:
 
 ```js
 f.everyVal({}, f.isBoolean)
@@ -2072,11 +2072,11 @@ f.everyVal({one: true, two: false, three: 10}, f.isBoolean)
 
 ---
 
-### `someVal(dict, fun, a, b, c)`
+### `someVal(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
-Similar to [`some`](#some-list-test-a-b-c-), but for dict values:
+Similar to [`some`](#some-list-test-args-), but for dict values:
 
 ```js
 f.someVal({}, f.isBoolean)
@@ -2102,9 +2102,9 @@ f.invert({one: 10, two: 20})
 
 ---
 
-### `invertBy(dict, fun, a, b, c)`
+### `invertBy(dict, fun, ...args)`
 
-where `fun: ƒ(value, key, a, b, c)`
+where `fun: ƒ(value, key, ...args)`
 
 Similar to `invert`, but calls `fun` on each value to produce a key. The resulting keys must satisfy [`isKey`](#iskey-value-) or be silently dropped from the output.
 

@@ -1,7 +1,5 @@
-'use strict'
-
-const {eq, is, throws} = require('./utils')
-const f = require('../dist/fpx')
+import {eq, is, throws} from './utils.mjs'
+import * as f from '../fpx.mjs'
 
 function args() {return arguments}
 
@@ -10,7 +8,7 @@ eq(f.onlyString(undefined),  '')
 eq(f.onlyString('string'),   'string')
 throws(f.onlyString, 10)
 throws(f.onlyString, ['not string'])
-throws(f.onlyString, new String('not string'))
+throws(f.onlyString, new String('not string')) // eslint-disable-line no-new-wrappers
 
 eq(f.onlyList(null),         [])
 eq(f.onlyList(undefined),    [])

@@ -1,12 +1,10 @@
-'use strict'
-
 /* eslint-disable no-self-compare */
 
-const {eq} = require('./utils')
-const f = require('../dist/fpx')
+import {eq} from './utils.mjs'
+import * as f from '../fpx.mjs'
 
 eq(f.add(),       undefined + undefined)
-eq(f.add('7', 3), '7' + 3)
+eq(f.add('7', 3), `7${3}`)
 eq(f.add(7, 3),   7 + 3)
 
 eq(f.sub(),       undefined - undefined)
@@ -64,7 +62,7 @@ eq(f.gte(10, 20),   10 >= 20)
 eq(f.gte(20, 10),   20 >= 10)
 
 eq(f.inc(),      undefined + 1)
-eq(f.inc('one'), 'one' + 1)
+eq(f.inc('one'), `one${1}`)
 eq(f.inc(NaN),   NaN + 1)
 eq(f.inc(-2),    -2 + 1)
 eq(f.inc(1),     1 + 1)

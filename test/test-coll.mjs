@@ -1,7 +1,5 @@
-'use strict'
-
-const {eq} = require('./utils')
-const f = require('../dist/fpx')
+import {eq} from './utils.mjs'
+import * as f from '../fpx.mjs'
 
 function id(a) {return a}
 

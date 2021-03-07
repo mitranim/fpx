@@ -1,7 +1,5 @@
-'use strict'
-
-const {eq, throws} = require('./utils')
-const f = require('../dist/fpx')
+import {eq, throws} from './utils.mjs'
+import * as f from '../fpx.mjs'
 
 function add(a, b) {return a + b}
 

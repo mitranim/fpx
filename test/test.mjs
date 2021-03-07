@@ -1,0 +1,8 @@
+import './test-bool.mjs'
+import './test-casts.mjs'
+import './test-coll.mjs'
+import './test-fun.mjs'
+import './test-list.mjs'
+import './test-misc.mjs'
+import './test-ops.mjs'
+import './test-struct.mjs'

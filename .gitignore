@@ -1,14 +1,10 @@
 /*
 !/docs
-!/src
 !/test
-!/.babelrc
 !/.eslintrc
 !/.gitignore
 !/.npmignore
 !/.travis.yml
-!/gulpfile.js
-!/impl.md
-!/md.js
 !/package.json
-!/readme.md
+!/*.md
+!/*.mjs

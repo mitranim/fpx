@@ -1,10 +1,7 @@
-'use strict'
+import hljs from 'highlight.js'
+import marked from 'marked'
 
-const hljs = require('highlight.js')
-const marked = require('marked')
-
-exports.md = md
-function md(content) {
+export function md(content) {
   return marked(content, markedOptions)
     .replace(/<pre><code class="(.*)">|<pre><code>/g, '<pre><code class="hljs $1">')
     .replace(/<!--\s*:((?:[^:]|:(?!\s*-->))*):\s*-->/g, '$1')

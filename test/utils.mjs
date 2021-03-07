@@ -1,10 +1,7 @@
-'use strict'
+import {AssertionError} from 'assert'
+import {equal} from 'emerge'
 
-const {AssertionError} = require('assert')
-const {equal} = require('emerge')
-
-exports.eq = eq
-function eq(actual, expected) {
+export function eq(actual, expected) {
   if (!equal(actual, expected)) {
     throw new AssertionError({
       actual,
@@ -15,8 +12,7 @@ function eq(actual, expected) {
   }
 }
 
-exports.is = is
-function is(actual, expected) {
+export function is(actual, expected) {
   if (!Object.is(actual, expected)) {
     throw new AssertionError({
       actual,
@@ -27,8 +23,7 @@ function is(actual, expected) {
   }
 }
 
-exports.throws = throws
-function throws(fun, ...args) {
+export function throws(fun, ...args) {
   if (typeof fun !== 'function') {
     throw Error(`Expected a function, got ${fun}`)
   }

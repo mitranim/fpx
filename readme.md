@@ -1,8 +1,8 @@
 ## Overview
 
-`fpx`: **f**unctional **p**rogramming e**x**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 12 KiB minified.
+`fpx`: **F**unctional **P**rogramming e**X**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 13 KiB minified.
 
-Uses ES2015 exports, compatible with tree shaking.
+Compatible with native JS modules.
 
 Documentation: https://mitranim.com/fpx/.
 
@@ -13,14 +13,24 @@ npm i -E fpx
 ```
 
 ```js
-const f = require('fpx')
-// or
 import * as f from 'fpx'
 ```
 
 See the API reference: https://mitranim.com/fpx/.
 
 ## Changelog
+
+### 0.8.0
+
+Now _only_ a native JS module. Moved from `src/fpx.mjs` to `./fpx.mjs` to make it easier to load directly, such as when using native JS modules in the browser.
+
+* Additional arguments now use native rest and spread instead of hardcoding `a, b, c, d, e`. In modern engines, this should perform similarly in most scenarios.
+* `take` and `drop` now allow `Infinity` as count.
+* `testBy` and `test` now compare `Date` instances by `.valueOf`.
+* `range` now requires start and end to be integers.
+* `pickKeys` allows nil in place of key list (equivalent to `[]`).
+* `show` now catches `JSON.stringify` exceptions, falling back on default stringification.
+* `call`, `apply`, `bind` now use native spread, and no longer set `this` to the function itself.
 
 ### 0.7.3
 

@@ -1,7 +1,5 @@
-'use strict'
-
-const {eq, throws} = require('./utils')
-const f = require('../dist/fpx')
+import {eq, throws} from './utils.mjs'
+import * as f from '../fpx.mjs'
 
 const STASH = []
 function stash(value, key, a, b, c) {STASH.push([value, key, a, b, c])}
@@ -314,8 +312,8 @@ eq(f.take([10, 20], 0),        [])
 eq(f.take([10, 20], 1),        [10])
 eq(f.take([10, 20], 2),        [10, 20])
 eq(f.take([10, 20], 3),        [10, 20])
+eq(f.take([10, 20], Infinity), [10, 20])
 throws(f.take, 'not list', 0)
-throws(f.take, [10, 20], Infinity)
 throws(f.take, [10, 20], -1)
 
 eq(f.drop(undefined, 0),        [])
@@ -323,8 +321,8 @@ eq(f.drop([], 1),               [])
 eq(f.drop([10, 20], 0),         [10, 20])
 eq(f.drop([10, 20], 1),         [20])
 eq(f.drop([10, 20], 2),         [])
+eq(f.drop([10, 20], Infinity),  [])
 throws(f.drop, 'not list', 0)
-throws(f.drop, [10, 20], Infinity)
 throws(f.drop, [10, 20], -1)
 
 eq(f.reverse(),                     [])
@@ -343,7 +341,7 @@ throws(f.sort, {'not list': true})
 eq(f.sortBy(undefined, id), [])
 eq(
   f.sortBy([{id: 3}, {id: 22}, {id: 111}], x => x.id),
-  [{id: 111}, {id: 22}, {id: 3}]
+  [{id: 111}, {id: 22}, {id: 3}],
 )
 f.sortBy(['arg', 'arg'], stash, 10, 20, 30)
 eq(unstash(), [['arg', 10, 20, 30, undefined], ['arg', 10, 20, 30, undefined]])
@@ -365,7 +363,7 @@ eq(f.keyBy(undefined, id), {})
 eq(f.keyBy([10, 20], id), {10: 10, 20: 20})
 eq(
   f.keyBy(['one', null, undefined, 20, {}, NaN], id),
-  {one: 'one', 20: 20}
+  {one: 'one', 20: 20},
 )
 f.keyBy(['one', 'two'], stash, 10, 20, 30)
 eq(unstash(), [['one', 0, 10, 20, 30], ['two', 1, 10, 20, 30]])
@@ -379,7 +377,7 @@ eq(f.groupBy([], id), {})
 eq(f.groupBy([10, 20, 20], id), {10: [10], 20: [20, 20]})
 eq(
   f.groupBy(['one', null, undefined, 20, {}, NaN], id),
-  {one: ['one'], 20: [20]}
+  {one: ['one'], 20: [20]},
 )
 f.groupBy(['one', 'two'], stash, 10, 20, 30)
 eq(unstash(), [['one', 0, 10, 20, 30], ['two', 1, 10, 20, 30]])
@@ -408,7 +406,7 @@ eq(f.partition(undefined, id), [[], []])
 eq(f.partition([], id), [[], []])
 eq(
   f.partition([10, undefined, 20, NaN, 30], id),
-  [[10, 20, 30], [undefined, NaN]]
+  [[10, 20, 30], [undefined, NaN]],
 )
 f.partition(['one', 'two'], stash, 10, 20, 30)
 eq(unstash(), [['one', 0, 10, 20, 30], ['two', 1, 10, 20, 30]])

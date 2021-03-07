@@ -1,7 +1,5 @@
-'use strict'
-
-const {eq, is, throws} = require('./utils')
-const f = require('../dist/fpx')
+import {eq, is, throws} from './utils.mjs'
+import * as f from '../fpx.mjs'
 
 function dupe (a) {return a + a}
 function args ()  {return arguments}
@@ -44,7 +42,7 @@ eq(f.maskBy({},        'one'),          'one')
 eq(f.maskBy('one',             /./),    ['o'])
 eq(f.maskBy('one',             /./g),   ['o', 'n', 'e'])
 eq(f.maskBy(undefined,         /./),    null)
-throws(f.maskBy, new String('not string'), /./)
+throws(f.maskBy, new String('not string'), /./) // eslint-disable-line no-new-wrappers
 
 // List: only nil or list, apply masks recursively, drop remainder
 eq(f.maskBy(undefined,       []),           [])

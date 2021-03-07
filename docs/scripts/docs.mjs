@@ -1,4 +1,7 @@
-const {f} = window
+import * as f from './fpx.mjs'
+
+f.global.f = f
+f.global.fpx = f
 
 /**
  * Init
