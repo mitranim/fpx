@@ -1,10 +1,8 @@
 /*
-!/docs
 !/test
-!/.eslintrc
-!/.gitignore
-!/.npmignore
-!/.travis.yml
-!/package.json
-!/*.md
+!/gh-pages
+!/.*rc
+!/.*ignore
 !/*.mjs
+!/*.md
+!/package.json

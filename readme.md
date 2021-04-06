@@ -1,24 +1,146 @@
 ## Overview
 
-`fpx`: **F**unctional **P**rogramming e**X**tensions for JavaScript. Lightweight replacement for Lodash: ≈ 13 KiB minified.
+`fpx`: **F**unctional **P**rogramming e**X**tensions for JavaScript. Lightweight replacement for Lodash. Large amount of FP-oriented utility functions and type assertions. The kinda stuff that should come with the language.
 
-Compatible with native JS modules.
+Small, dependency-free, single file, native module.
 
-Documentation: https://mitranim.com/fpx/.
+## TOC
 
-## Installation and Usage
+* [Usage](#usage)
+* [API](#api)
+* [Changelog](#changelog)
+* [Misc](#misc)
+
+## Usage
 
 ```sh
 npm i -E fpx
 ```
 
+Fpx is a single file, a native JS module usable anywhere. In Node or with a bundler like Webpack:
+
 ```js
 import * as f from 'fpx'
+````
+
+In browsers without a bundler, use either the following, or an importmap:
+
+```js
+import * as f from './node_modules/fpx/fpx.mjs'
+
+import * as f from 'https://unpkg.com/fpx@0.9.0/fpx.mjs'
 ```
 
-See the API reference: https://mitranim.com/fpx/.
+## API
+
+The API docs got invalidated by `0.9.0` ([changelog](#090)), and haven't been rewritten yet. Sorry!
+
+While the docs are missing, peruse the source of `fpx.mjs`. Almost every function is exported. If you're familiar with common utility functions from Lodash of Haskell, the code should be self-describing.
+
+You can also check the old documentation in `docs/templates/index.md`. It's slightly out of date.
 
 ## Changelog
+
+### `0.9.0`
+
+Breaking revision: shorter names, removed a few ƒs, added many more ƒs, stricter validation.
+
+* Renamed:
+  * `isBoolean` → `isBool`
+  * `isNumber` → `isNum`
+  * `isFinite` → `isFin`
+  * `isInteger` → `isInt`
+  * `isNatural` → `isNat`
+  * `isInfinity` → `isInf`
+  * `isString` → `isStr`
+  * `isPrimitive` → `isPrim`
+  * `isComplex` → `isComp`
+  * `isFunction` → `isFun`
+  * `isObject` → `isObj`
+  * `isArray` → `isArr`
+  * `isRegExp` → `isReg`
+  * `isSymbol` → `isSym`
+  * `isInstance` → `isInst`
+  * `isIterator` → `isIter`
+  * `isSomething` → `isSome`
+  * `validate` → `valid`
+  * `validateEach` → `eachValid`
+  * `validateInstance` → `validInst`
+  * `onlyStruct` → `struct`
+  * `onlyList` → `list`
+  * `onlyString` → `str`
+  * `onlyDict` → `dict`
+  * `flatMap` → `mapFlat`
+  * `flatMapDeep` → `mapFlatDeep`
+  * `flatten` → `flat`
+  * `flattenDeep` → `flatDeep`
+  * `insertAtIndex` → `insertAt`
+  * `removeAtIndex` → `removeAt`
+  * `intersection` → `intersect`
+  * `pick` → `pickKeys`
+  * `pickBy` → `pick`
+  * `omit` → `omitKeys`
+  * `omitBy` → `omit`
+  * `noop` → `nop`
+  * `values` → `vals`
+  * `toArray` → `toArr`
+  * `bool` → `truthy` (the name `bool` got reused for an assertion, see below)
+  * `has` → `hasOwn`
+* Removed:
+  * `mask`
+  * `maskBy`
+  * `negate` (just use `falsy`)
+  * `first` (just use `head`)
+  * `isEmpty` (split into `hasLen` and `hasSize`)
+* Added:
+  * `isOpt`
+  * `isNatPos`
+  * `True`
+  * `False`
+  * `cwk`
+  * `neg`
+  * `mapMut`
+  * `mapValsMut`
+  * `fold1`
+  * `replaceAt`
+  * `takeWhile`
+  * `dropWhile`
+  * `count`
+  * `countWhile`
+  * `times`
+  * `sortCompare` (previously private)
+  * `only`
+  * `onlyInst`
+  * `eachValValid`
+  * `validOpt`
+  * `prim`
+  * `num`
+  * `fin`
+  * `int`
+  * `nat`
+  * `natPos`
+  * `arr`
+  * `dict`
+  * `comp`
+  * `opt`
+  * `toStr`
+  * `len` (split off from `size`, only for lists)
+  * `hasLen` (split off from `isEmpty`, only for lists)
+  * `hasSize` (split off from `isEmpty`, only for structs)
+  * `zip`
+* Laxer:
+  * `getIn` now treats nil paths as `[]`, for consistency with other functions.
+* Stricter:
+  * `get`, `scan`, `getIn`, `pickKeys`, `omitKeys` now validate keys via `isKey`.
+  * `size` now accepts only dicts. Use `len` for lists.
+  * `bool` converts nil to `false`, otherwise asserts that the input is a bool.
+* Misc:
+  * `call`, `apply`, `bind`, `not` now preserve `this`.
+  * `assign` now returns the target.
+  * Iteration functions access an element by a key only once (relevant for getters and proxies).
+  * `isList` now returns `false` for `new String` objects and subclasses.
+  * `isStruct` now returns `false` for primitive object wrappers such as `new String`.
+  * Probably a few other tweaks I forgot to mention.
 
 ### 0.8.0
 
@@ -276,6 +398,10 @@ Rule/mnemonic for argument order: primary operand first. Motivation:
 In list functions, the argument order is now similar to `Array.prototype` built-ins.
 
 Removed the preservation of `this` from all higher-order functions that create a new function: `bind`, `and`, `or`, `not`, `ifelse`, `ifthen`, `ifonly`, `ifexists`, `cond`, `pipe`, `comp`, `seq`, `pipeAnd`, `juxt`, `rest`. Motivation: too implicit to rely on, tends to be unused, no tests.
+
+## License
+
+https://unlicense.org
 
 ## Misc
 

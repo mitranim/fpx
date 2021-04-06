@@ -1,3 +1,15 @@
+~~~
+Documentation before the 0.9.0 revision.
+
+Kept as reference. Should be simplified and moved to `readme.md`.
+~~~
+
+
+
+
+
+
+
 ## Overview
 
 `fpx`: Functional Programming eXtensions for JavaScript. [Source on GitHub](https://github.com/mitranim/fpx).
