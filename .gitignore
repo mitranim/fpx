@@ -1,6 +1,7 @@
 /*
 !/test
-!/gh-pages
+!/docs
+!/docs-outdated
 !/.*rc
 !/.*ignore
 !/*.mjs

@@ -37,7 +37,7 @@ The API docs got invalidated by `0.9.0` ([changelog](#090)), and haven't been re
 
 While the docs are missing, peruse the source of `fpx.mjs`. Almost every function is exported. If you're familiar with common utility functions from Lodash of Haskell, the code should be self-describing.
 
-You can also check the old documentation in `docs/templates/index.md`. It's slightly out of date.
+You can also check the old documentation in `docs-outdated/templates/index.md`. It's slightly out of date.
 
 ## Changelog
 
