@@ -1,11 +1,11 @@
 {
   "name": "fpx",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Functional Programming eXtensions for JavaScript. Lightweight replacement for Lodash.",
   "type": "module",
   "main": "./fpx.mjs",
   "scripts": {
-    "watch": "watchexec -c -r -d=0 -e mjs 'node test/test.mjs'",
+    "watch": "watchexec -c -r -d=0 -e=mjs -n -- node test/test.mjs",
     "test": "node test/test.mjs",
     "prepublishOnly": "npm test"
   },

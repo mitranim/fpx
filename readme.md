@@ -41,6 +41,14 @@ You can also check the old documentation in `docs-outdated/templates/index.md`. 
 
 ## Changelog
 
+### `0.9.1`
+
+`times` now calls `ƒ(i, ...args)` instead of `ƒ(undefined, i, ...args)`. This was always intended, but the error was incorrectly codified in tests.
+
+Type assertions now throw `TypeError` instead of `Error`.
+
+`isInst` error message now includes the name of the failing value's constructor, if possible.
+
 ### `0.9.0`
 
 Breaking revision: shorter names, removed a few ƒs, added many more ƒs, stricter validation.

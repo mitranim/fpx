@@ -3,8 +3,6 @@
 import {eq, is, throws} from './utils.mjs'
 import * as f from '../fpx.mjs'
 
-function args() {return arguments}
-
 eq(f.only(undefined, f.isNil), undefined)
 eq(f.only('str',     f.isStr), 'str')
 throws(f.only, 'not nil',                    f.isNil)

@@ -131,7 +131,7 @@ export function only(val, test)    {valid(val, test); return val}
 export function onlyInst(val, Cls) {validInst(val, Cls); return val}
 
 export function valid(val, test) {
-  if (!isFun(test)) throw Error(`expected validator function, got ${show(test)}`)
+  if (!isFun(test)) throw TypeError(`expected validator function, got ${show(test)}`)
   if (!test(val)) invalid(val, test)
 }
 
@@ -155,7 +155,7 @@ export function True() {return true}
 export function False() {return false}
 
 // Short for "call without key".
-export function cwk(val, key, fun, ...args) {return fun(val, ...args)}
+export function cwk(val, _key, fun, ...args) {return fun(val, ...args)}
 
 /** List **/
 
@@ -176,7 +176,7 @@ export function map(val, fun, ...args) {
 export function mapMut(val, fun, ...args) {
   valid(val, isList)
   valid(fun, isFun)
-  for (let i = 0; i < val.length; i += 1) val[i] = fun(val[i], i, ...args)
+  for (let i = 0; i < val.length; i++) val[i] = fun(val[i], i, ...args)
   return val
 }
 
@@ -196,7 +196,7 @@ export function filter(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
   const out = []
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     if (fun(elem, i, ...args)) out.push(elem)
   }
@@ -215,14 +215,14 @@ function notBy(val, key, fun, ...args) {
 export function fold(val, acc, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
-  for (let i = 0; i < val.length; i += 1) acc = fun(acc, val[i], i, ...args)
+  for (let i = 0; i < val.length; i++) acc = fun(acc, val[i], i, ...args)
   return acc
 }
 
 export function foldRight(val, acc, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
-  for (let i = val.length - 1; i >= 0; i -= 1) acc = fun(acc, val[i], i, ...args)
+  for (let i = val.length - 1; i >= 0; i--) acc = fun(acc, val[i], i, ...args)
   return acc
 }
 
@@ -230,7 +230,7 @@ export function fold1(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
   let acc = val[0]
-  for (let i = 1; i < val.length; i += 1) acc = fun(acc, val[i], i, ...args)
+  for (let i = 1; i < val.length; i++) acc = fun(acc, val[i], i, ...args)
   return acc
 }
 
@@ -253,7 +253,7 @@ export function findRight(val, fun, ...args) {
 export function findIndex(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     if (fun(val[i], i, ...args)) return i
   }
   return -1
@@ -287,7 +287,7 @@ export function includes(val, elem) {
 export function procure(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const res = fun(val[i], i, ...args)
     if (res) return res
   }
@@ -297,7 +297,7 @@ export function procure(val, fun, ...args) {
 export function every(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     if (!fun(val[i], i, ...args)) return false
   }
   return true
@@ -306,7 +306,7 @@ export function every(val, fun, ...args) {
 export function some(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     if (fun(val[i], i, ...args)) return true
   }
   return false
@@ -379,7 +379,7 @@ export function flat(val) {
 }
 
 function pushFlat(val, _i, out) {
-  if (isList(val)) for (let i = 0; i < val.length; i += 1) out.push(val[i])
+  if (isList(val)) for (let i = 0; i < val.length; i++) out.push(val[i])
   else out.push(val)
 }
 
@@ -450,8 +450,11 @@ export function countWhile(val, fun, ...args) {
 }
 
 export function times(count, fun, ...args) {
+  valid(fun, isFun)
   valid(count, isNat)
-  return mapMut(Array(count), fun, ...args)
+  const out = Array(count)
+  for (let i = 0; i < count; i++) out[i] = fun(i, ...args)
+  return out
 }
 
 export function reverse(val) {
@@ -504,7 +507,7 @@ export function keyBy(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
   const out = {}
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     const key = fun(elem, i, ...args)
     if (isKey(key)) out[key] = elem
@@ -516,7 +519,7 @@ export function groupBy(val, fun, ...args) {
   val = list(val)
   valid(fun, isFun)
   const out = {}
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     const groupKey = fun(elem, i, ...args)
     if (isKey(groupKey)) {
@@ -536,7 +539,7 @@ export function uniqBy(val, fun, ...args) {
   valid(fun, isFun)
   const out = []
   const attrs = []
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     const attr = fun(elem, i, ...args)
     if (!includes(attrs, attr)) {
@@ -552,7 +555,7 @@ export function partition(val, fun, ...args) {
   valid(fun, isFun)
   const accepted = []
   const rejected = []
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     if (fun(elem, i, ...args)) accepted.push(elem)
     else rejected.push(elem)
@@ -618,7 +621,7 @@ function findNumBy(val, compare, fun, ...args) {
   valid(fun, isFun)
   let winningValue = undefined
   let winningAttr = undefined
-  for (let i = 0; i < val.length; i += 1) {
+  for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     const attr = fun(elem, i, ...args)
     if (isFin(attr) && (isNil(winningAttr) || compare(attr, winningAttr))) {
@@ -757,7 +760,7 @@ export function findKey(val, fun, ...args) {
   val = struct(val)
   valid(fun, isFun)
   const inputKeys = keys(val)
-  for (let i = 0; i < inputKeys.length; i += 1) {
+  for (let i = 0; i < inputKeys.length; i++) {
     const key = inputKeys[i]
     if (fun(val[key], key, ...args)) return key
   }
@@ -775,7 +778,7 @@ export function someVal(val, fun, ...args) {
   val = struct(val)
   valid(fun, isFun)
   const inputKeys = keys(val)
-  for (let i = 0; i < inputKeys.length; i += 1) {
+  for (let i = 0; i < inputKeys.length; i++) {
     const key = inputKeys[i]
     if (fun(val[key], key, ...args)) return true
   }
@@ -791,7 +794,7 @@ export function invertBy(val, fun, ...args) {
   valid(fun, isFun)
   const out = {}
   const inputKeys = keys(val)
-  for (let i = 0; i < inputKeys.length; i += 1) {
+  for (let i = 0; i < inputKeys.length; i++) {
     const key = inputKeys[i]
     const newKey = fun(val[key], key, ...args)
     if (isKey(newKey)) out[newKey] = key
@@ -859,16 +862,17 @@ function validAt(val, key, test) {
 }
 
 function invalid(val, test) {
-  throw Error(`expected ${show(val)} to satisfy test ${show(test)}`)
+  throw TypeError(`expected ${show(val)} to satisfy test ${show(test)}`)
 }
 
 function invalidAt(val, key, test) {
-  throw Error(`expected ${show(val)} at key ${key} to satisfy test ${show(test)}`)
+  throw TypeError(`expected ${show(val)} at key ${key} to satisfy test ${show(test)}`)
 }
 
 export function validInst(val, Cls) {
   if (!isInst(val, Cls)) {
-    throw Error(`expected ${show(val)} to be an instance of ${show(Cls)}`)
+    const cons = isComp(val) ? val.constructor : undefined
+    throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(Cls)}`)
   }
 }
 
