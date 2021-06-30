@@ -49,12 +49,14 @@ export function isDict(val) {
 }
 
 export function isList(val) {
-  if (!isObj(val))         return false
-  if (isArr(val))          return true
-  if (!isNat(val.length))  return false
-  if (isDict(val))         return hasOwn(val, 'callee')
-  if (isInst(val, String)) return false
-  return true
+  if (!isObj(val))                 return false
+  if (isArr(val))                  return true
+  if (!isNat(val.length))          return false
+  if (isDict(val))                 return hasOwn(val, 'callee')
+  if (isInst(val, String))         return false
+  if (isFun(val.forEach))          return true
+  if (isFun(val[Symbol.iterator])) return true
+  return false
 }
 
 export function isIter(val) {
@@ -659,7 +661,7 @@ export function size(val)    {return keys(val).length}
 export function keys(val)    {return Object.keys(struct(val))}
 export function vals(val)    {return Object.values(struct(val))}
 export function entries(val) {return Object.entries(struct(val))}
-export function hasSize(val) {return isStruct(val) && truthy(keys(val).length)}
+export function hasSize(val) {return isStruct(val) && truthy(size(val))}
 
 export function eachVal(val, fun, ...args) {
   val = struct(val)
@@ -820,7 +822,8 @@ export function dec(a)    {return a - 1}
 /** Misc **/
 
 // The "pure" annotation allows minifiers to drop this if the var is unused.
-export const global = /* #__PURE__ */Function('return this')() // eslint-disable-line no-new-func
+// eslint-disable-next-line no-new-func
+export const global = /* #__PURE__ */Function('return this')()
 
 export function nop()        {}
 export function id(val)      {return val}

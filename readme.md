@@ -41,6 +41,10 @@ You can also check the old documentation in `docs-outdated/templates/index.md`. 
 
 ## Changelog
 
+### `0.9.2`
+
+Slightly stricter `isList`, with fewer false positives. For example, it no longer erroneously returns `true` for a DOM `window`.
+
 ### `0.9.1`
 
 `times` now calls `ƒ(i, ...args)` instead of `ƒ(undefined, i, ...args)`. This was always intended, but the error was incorrectly codified in tests.
