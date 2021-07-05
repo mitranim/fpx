@@ -1,6 +1,6 @@
 {
   "name": "fpx",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "description": "Functional Programming eXtensions for JavaScript. Lightweight replacement for Lodash.",
   "type": "module",
   "main": "./fpx.mjs",

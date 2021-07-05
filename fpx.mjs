@@ -98,29 +98,22 @@ function isNatOrInf(val) {return isNat(val) || isInf(val)}
 
 /** Opt Conversions **/
 
-export function prim(val)   {return isNil(val) ? undefined : only(val, isPrim)}
-export function bool(val)   {return isNil(val) ? false     : only(val, isBool)}
-export function num(val)    {return isNil(val) ? 0         : only(val, isNum)}
-export function fin(val)    {return isNil(val) ? 0         : only(val, isFin)}
-export function int(val)    {return isNil(val) ? 0         : only(val, isInt)}
-export function nat(val)    {return isNil(val) ? 0         : only(val, isNat)}
-export function natPos(val) {return isNil(val) ? 0         : only(val, isNatPos)}
-export function str(val)    {return isNil(val) ? ''        : only(val, isStr)}
-export function list(val)   {return isNil(val) ? []        : only(val, isList)}
-export function arr(val)    {return isNil(val) ? []        : only(val, isArr)}
-export function dict(val)   {return isNil(val) ? {}        : only(val, isDict)}
-export function struct(val) {return isNil(val) ? {}        : only(val, isStruct)}
-export function comp(val)   {return isNil(val) ? {}        : only(val, isComp)}
+export function prim(val)   {return optDef(val, undefined, isPrim)}
+export function bool(val)   {return optDef(val, false,     isBool)}
+export function num(val)    {return optDef(val, 0,         isNum)}
+export function fin(val)    {return optDef(val, 0,         isFin)}
+export function int(val)    {return optDef(val, 0,         isInt)}
+export function nat(val)    {return optDef(val, 0,         isNat)}
+export function natPos(val) {return optDef(val, 0,         isNatPos)}
+export function str(val)    {return optDef(val, '',        isStr)}
+export function list(val)   {return optDef(val, [],        isList)}
+export function arr(val)    {return optDef(val, [],        isArr)}
+export function dict(val)   {return optDef(val, {},        isDict)}
+export function struct(val) {return optDef(val, {},        isStruct)}
+export function comp(val)   {return optDef(val, {},        isComp)}
 
-export function opt(val, test) {
-  valid(test, isFun)
-  return isNil(val) ? undefined : only(val, test)
-}
-
-export function optInst(val, Cls) {
-  valid(Cls, isFun)
-  return isNil(val) ? undefined : onlyInst(val, Cls)
-}
+// Might export later. Seems fiddly.
+function optDef(val, def, test) {return isNil(val) ? def : valid(val, test)}
 
 /** Cross-Type Conversions **/
 
@@ -129,26 +122,44 @@ export function toArr(val) {return isArr(val) ? val : slice(val)}
 
 /** Assertions **/
 
-export function only(val, test)    {valid(val, test); return val}
-export function onlyInst(val, Cls) {validInst(val, Cls); return val}
-
-export function valid(val, test) {
-  if (!isFun(test)) throw TypeError(`expected validator function, got ${show(test)}`)
-  if (!test(val)) invalid(val, test)
+export function valid(val, test, ...args) {
+  if (!isFun(test, ...args)) {
+    throw TypeError(`expected validator function, got ${show(test)}`)
+  }
+  if (!test(val)) {
+    throw TypeError(`expected ${show(val)} to satisfy test ${show(test)}`)
+  }
+  return val
 }
 
-export function validOpt(val, test) {
-  if (!isNil(val)) valid(val, test)
-}
-
-export function eachValid(val, test) {
+export function opt(val, test, ...args) {
   valid(test, isFun)
-  each(val, validAt, test)
+  return isNil(val) ? val : valid(val, test, ...args)
 }
 
-export function eachValValid(val, test) {
+export function validInst(val, Cls) {
+  if (!isInst(val, Cls)) {
+    const cons = isComp(val) ? val.constructor : undefined
+    throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(Cls)}`)
+  }
+  return val
+}
+
+export function optInst(val, Cls) {
+  valid(Cls, isFun)
+  return isNil(val) ? val : validInst(val, Cls)
+}
+
+export function validEach(val, test, ...args) {
   valid(test, isFun)
-  eachVal(val, validAt, test)
+  each(val, validAt, test, ...args)
+  return val
+}
+
+export function validEachVal(val, test, ...args) {
+  valid(test, isFun)
+  eachVal(val, validAt, test, ...args)
+  return val
 }
 
 /** Misc **/
@@ -651,7 +662,7 @@ export function zip(entries) {
 function zipAdd(acc, pair) {
   valid(pair, isList)
   const key = pair[0]
-  if (!isNil(key)) acc[only(key, isKey)] = pair[1]
+  if (!isNil(key)) acc[valid(key, isKey)] = pair[1]
   return acc
 }
 
@@ -860,22 +871,9 @@ function mut(tar, src) {
   return tar
 }
 
-function validAt(val, key, test) {
-  if (!test(val)) invalidAt(val, key, test)
-}
-
-function invalid(val, test) {
-  throw TypeError(`expected ${show(val)} to satisfy test ${show(test)}`)
-}
-
-function invalidAt(val, key, test) {
-  throw TypeError(`expected ${show(val)} at key ${key} to satisfy test ${show(test)}`)
-}
-
-export function validInst(val, Cls) {
-  if (!isInst(val, Cls)) {
-    const cons = isComp(val) ? val.constructor : undefined
-    throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(Cls)}`)
+function validAt(val, key, test, ...args) {
+  if (!test(val, ...args)) {
+    throw TypeError(`expected ${show(val)} at key ${key} to satisfy test ${show(test)}`)
   }
 }
 
@@ -884,12 +882,8 @@ export function show(val) {
 
   // Plain data becomes JSON, if possible.
   if (isArr(val) || isDict(val) || isStr(val)) {
-    try {
-      return JSON.stringify(val)
-    }
-    catch (__) {
-      return String(val)
-    }
+    try {return JSON.stringify(val)}
+    catch (_) {return String(val)}
   }
 
   return String(val)

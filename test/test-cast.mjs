@@ -62,34 +62,6 @@ throws(f.arr, 'not list')
 throws(f.arr, {length: 0})
 throws(f.arr, args())
 
-eq(f.opt(null,      f.isStr), undefined)
-eq(f.opt(undefined, f.isStr), undefined)
-eq(f.opt('str',     f.isStr), 'str')
-eq(f.opt(null,      f.isList), undefined)
-eq(f.opt(undefined, f.isList), undefined)
-eq(f.opt([10],      f.isList), [10])
-throws(f.opt)
-throws(f.opt, null)
-throws(f.opt, undefined)
-throws(f.opt, 'str')
-throws(f.opt, ['str but in list'], f.isStr)
-throws(f.opt, 'not list', f.isList)
-
-eq(f.optInst(null,      String), undefined)
-eq(f.optInst(undefined, String), undefined)
-{const x = {};             is(f.optInst(x, Object), x)}
-{const x = [];             is(f.optInst(x, Object), x)}
-{const x = [];             is(f.optInst(x, Array),  x)}
-{const x = new String(''); is(f.optInst(x, Object), x)}
-{const x = new String(''); is(f.optInst(x, String), x)}
-throws(f.optInst)
-throws(f.optInst, null)
-throws(f.optInst, undefined)
-throws(f.optInst, 'str')
-throws(f.optInst, 'str', Object)
-throws(f.optInst, 'str', String)
-throws(f.optInst, {}, Array)
-
 eq(f.toStr(null),      '')
 eq(f.toStr(undefined), '')
 eq(f.toStr(10),        '10')

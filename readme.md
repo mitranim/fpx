@@ -41,6 +41,23 @@ You can also check the old documentation in `docs-outdated/templates/index.md`. 
 
 ## Changelog
 
+### `0.10.0`
+
+* Renamed `eachValid` → `validEach` (reverted `0.9.0`).
+* Renamed `eachValValid` → `validEachVal` (reverted `0.9.0`).
+
+More flexible assertions:
+
+* `valid` now returns the validated value.
+* `validInst` now returns the validated value.
+* `validEach` now returns the validated value.
+* `validEachVal` now returns the validated value.
+* `opt(null, test)` now returns `null`, rather than `undefined`.
+* `optInst(null, test)` now returns `null`, rather than `undefined`.
+* Removed `only` (now part of `valid`).
+* Removed `onlyInst` (now part of `validInst`).
+* All assertion funs now take additional args for the test function.
+
 ### `0.9.2`
 
 Slightly stricter `isList`, with fewer false positives. For example, it no longer erroneously returns `true` for a DOM `window`.
