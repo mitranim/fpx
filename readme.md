@@ -28,7 +28,7 @@ In browsers without a bundler, use either the following, or an importmap:
 ```js
 import * as f from './node_modules/fpx/fpx.mjs'
 
-import * as f from 'https://unpkg.com/fpx@0.9.0/fpx.mjs'
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.10.0/fpx.mjs'
 ```
 
 ## API
