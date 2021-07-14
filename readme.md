@@ -28,7 +28,7 @@ In browsers without a bundler, use either the following, or an importmap:
 ```js
 import * as f from './node_modules/fpx/fpx.mjs'
 
-import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.10.0/fpx.mjs'
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.10.1/fpx.mjs'
 ```
 
 ## API
@@ -40,6 +40,10 @@ While the docs are missing, peruse the source of `fpx.mjs`. Almost every functio
 You can also check the old documentation in `docs-outdated/templates/index.md`. It's slightly out of date.
 
 ## Changelog
+
+### `0.10.1`
+
+Added `isCls`, stricter `isInst`, extra args in `isOpt`.
 
 ### `0.10.0`
 

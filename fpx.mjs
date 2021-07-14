@@ -24,12 +24,17 @@ export function isObj(val)         {return val !== null && typeof val === 'objec
 export function isStruct(val)      {return isObj(val) && !isList(val) && !isInst(val, String)}
 export function isArr(val)         {return isInst(val, Array)}
 export function isReg(val)         {return isInst(val, RegExp)}
-export function isDate(val)        {return isInst(val, Date)}
 export function isSym(val)         {return typeof val === 'symbol'}
+export function isDate(val)        {return isInst(val, Date)}
 export function isValidDate(val)   {return isDate(val) && isFin(val.valueOf())}
 export function isInvalidDate(val) {return isDate(val) && !isValidDate(val)}
 export function isPromise(val)     {return isComp(val) && isFun(val.then) && isFun(val.catch)}
-export function isInst(val, Cls)   {return isComp(val) && val instanceof Cls}
+export function isCls(val)         {return isFun(val) && typeof val.prototype === 'object'}
+
+export function isInst(val, Cls) {
+  valid(Cls, isCls)
+  return isComp(val) && val instanceof Cls
+}
 
 export function isDict(val) {
   if (!isObj(val)) return false
@@ -52,9 +57,9 @@ export function isIter(val) {
   return isObj(val) && isFun(val.next) && isFun(val.return) && isFun(val.throw)
 }
 
-export function isOpt(val, fun) {
+export function isOpt(val, fun, ...args) {
   valid(fun, isFun)
-  return isNil(val) || truthy(fun(val))
+  return isNil(val) || truthy(fun(val, ...args))
 }
 
 export function hasOwn(val, key) {

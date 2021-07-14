@@ -8,6 +8,7 @@ import {
 
 import * as f from '../fpx.mjs'
 
+// TODO test extra args.
 eq(f.valid(undefined, f.isNil), undefined)
 eq(f.valid('str',     f.isStr), 'str')
 throws(() => f.valid('not nil',                    f.isNil))
@@ -25,6 +26,7 @@ throws(() => f.validInst(undefined, Object))
 throws(() => f.validInst('str',     String))
 throws(() => f.validInst({},        String))
 
+// TODO test extra args.
 eq(f.opt(null,      f.isStr), null)
 eq(f.opt(undefined, f.isStr), undefined)
 eq(f.opt('str',     f.isStr), 'str')
