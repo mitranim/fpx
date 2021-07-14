@@ -1,22 +1,12 @@
 // See implementation notes in `impl.md`.
 
-/** Fun **/
-
-export function call(fun, ...args) {return fun.apply(this, args)}
-export function apply(fun, args)   {return fun.apply(this, args)}
-export function bind(fun, ...args) {return fun.bind(this, ...args)}
-
-export function not(fun) {
-  valid(fun, isFun)
-  return function not_() {return !fun.apply(this, arguments)}
-}
-
 /** Bool **/
 
 export function truthy(val)        {return Boolean(val)}
 export function falsy(val)         {return !val}
-export function is(one, other)     {return one === other || (isNaN(one) && isNaN(other))}
+export function is(a, b)           {return a === b || (isNaN(a) && isNaN(b))}
 export function isNil(val)         {return val == null}
+export function isSome(val)        {return !isNil(val)}
 export function isBool(val)        {return typeof val === 'boolean'}
 export function isNum(val)         {return typeof val === 'number'}
 export function isFin(val)         {return isNum(val) && !isNaN(val) && !isInf(val)}
@@ -39,7 +29,6 @@ export function isSym(val)         {return typeof val === 'symbol'}
 export function isValidDate(val)   {return isDate(val) && isFin(val.valueOf())}
 export function isInvalidDate(val) {return isDate(val) && !isValidDate(val)}
 export function isPromise(val)     {return isComp(val) && isFun(val.then) && isFun(val.catch)}
-export function isSome(val)        {return val != null}
 export function isInst(val, Cls)   {return isComp(val) && val instanceof Cls}
 
 export function isDict(val) {
@@ -85,9 +74,7 @@ export function testBy(val, pattern) {
   )
 }
 
-function testAt(pattern, key, val) {
-  return testBy(val[key], pattern)
-}
+function testAt(pattern, key, val) {return testBy(val[key], pattern)}
 
 export function test(pattern) {
   return function test_(val) {return testBy(val, pattern)}
@@ -162,19 +149,30 @@ export function validEachVal(val, test, ...args) {
   return val
 }
 
+/** Fun **/
+
+export function call(fun, ...args) {return fun.apply(this, args)}
+export function apply(fun, args)   {return fun.apply(this, args)}
+export function bind(fun, ...args) {return fun.bind(this, ...args)}
+
+export function not(fun) {
+  valid(fun, isFun)
+  return function not_() {return !fun.apply(this, arguments)}
+}
+
+// Short for "call without key".
+export function cwk(val, _key, fun, ...args) {return fun(val, ...args)}
+
 /** Misc **/
 
 export function True() {return true}
 export function False() {return false}
 
-// Short for "call without key".
-export function cwk(val, _key, fun, ...args) {return fun(val, ...args)}
-
 /** List **/
 
-export function len(val)     {return isNil(val) ? 0 : list(val).length}
-export function hasLen(val)  {return isList(val) && truthy(val.length)}
-export function vacate(val)  {return hasLen(val) ? val : undefined}
+export function len(val)    {return isNil(val) ? 0 : list(val).length}
+export function hasLen(val) {return isList(val) && truthy(val.length)}
+export function vacate(val) {return hasLen(val) ? val : undefined}
 
 export function each(val, fun, ...args) {
   val = list(val)
@@ -847,23 +845,15 @@ export function get(val, key) {
   return isComp(val) ? val[key] : undefined
 }
 
-export function scan(val, ...path) {
-  return fold(path, val, get)
-}
-
-export function getIn(val, path) {
-  return fold(path, val, get)
-}
+export function scan(val, ...path) {return fold(path, val, get)}
+export function getIn(val, path) {return fold(path, val, get)}
 
 export function getter(key) {
   valid(key, isKey)
   return function get_(val) {return get(val, key)}
 }
 
-export function assign(tar, ...args) {
-  valid(tar, isComp)
-  return fold(args, tar, mut)
-}
+export function assign(tar, ...args) {return fold(args, valid(tar, isComp), mut)}
 
 function mut(tar, src) {
   src = struct(src)
