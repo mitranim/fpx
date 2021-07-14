@@ -1,6 +1,11 @@
 /* eslint-disable no-self-compare */
 
-import {eq} from './utils.mjs'
+import {
+  // assertStrictEquals as is,
+  assertEquals as eq,
+  // assertThrows as throws,
+} from 'assert'
+
 import * as f from '../fpx.mjs'
 
 eq(f.add(),       undefined + undefined)

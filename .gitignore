@@ -7,3 +7,5 @@
 !/*.mjs
 !/*.md
 !/package.json
+!/importmap.json
+!/makefile

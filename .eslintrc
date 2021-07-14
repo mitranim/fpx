@@ -3,7 +3,6 @@
   "env": {
     "es2020": true,
     "browser": true,
-    "node": true
   },
   "rules": {
     "no-restricted-globals": ["error",

@@ -1,10 +1,15 @@
-import {eq, is, throws} from './utils.mjs'
+import {
+  assertStrictEquals as is,
+  assertEquals as eq,
+  assertThrows as throws,
+} from 'assert'
+
 import * as f from '../fpx.mjs'
 
 function args ()     {return arguments}
 function join (a, b) {return a.concat([b])}
 
-is(f.global, global)
+is(f.global, globalThis)
 
 eq(f.id(),           undefined)
 eq(f.id(10),         10)
@@ -28,7 +33,7 @@ eq(f.scan(undefined, 'one'),               undefined)
 eq(f.scan(10),                             10)
 eq(f.scan({one: 10}, 'one'),               10)
 eq(f.scan({one: {two: 20}}, 'one', 'two'), 20)
-throws(f.scan, {}, undefined)
+throws(() => f.scan({}, undefined))
 
 eq(f.getIn(undefined, []),                        undefined)
 eq(f.getIn(undefined, ['one']),                   undefined)
@@ -37,7 +42,7 @@ eq(f.getIn({one: 10}, []),                        {one: 10})
 eq(f.getIn({one: 10}, ['one']),                   10)
 eq(f.getIn({one: {two: 20}}, ['one', 'two']),     20)
 eq(f.getIn({one: {two: 20}}, args('one', 'two')), 20)
-throws(f.getIn, {}, [undefined])
+throws(() => f.getIn({}, [undefined]))
 
 eq(f.getter('one')({one: 10}), 10)
 eq(f.getter('one')(),          undefined)
@@ -56,4 +61,4 @@ eq(f.getter(1)([10, 20]),      20)
   eq(tar, {one: 10, two: 20})
 }
 throws(f.assign)
-throws(f.assign, 'not object')
+throws(() => f.assign('not object'))

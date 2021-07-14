@@ -1,7 +1,13 @@
 /* eslint-disable no-implicit-coercion, no-new-wrappers */
 
-import {eq, throws} from './utils.mjs'
+import {
+  // assertStrictEquals as is,
+  assertEquals as eq,
+  assertThrows as throws,
+} from 'assert'
+
 import * as f from '../fpx.mjs'
+
 const {create} = Object
 
 function id(a) {return a}
@@ -237,9 +243,9 @@ eq(f.isOpt(undefined, f.isStr), true)
 eq(f.isOpt('str',     f.isStr), true)
 eq(f.isOpt(10,        f.isStr), false)
 throws(f.isOpt)
-throws(f.isOpt, null)
-throws(f.isOpt, undefined)
-throws(f.isOpt, 'str')
+throws(() => f.isOpt(null))
+throws(() => f.isOpt(undefined))
+throws(() => f.isOpt('str'))
 
 /** testBy **/
 
