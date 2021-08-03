@@ -62,3 +62,14 @@ eq(f.getter(1)([10, 20]),      20)
 }
 throws(f.assign)
 throws(() => f.assign('not object'))
+
+// TODO wrap all tests into named funs.
+void function test_vac() {
+  eq(f.vac(),      undefined)
+  eq(f.vac(0),     undefined)
+  eq(f.vac(false), undefined)
+  eq(f.vac(null),  undefined)
+  eq(f.vac(1),     1)
+  eq(f.vac(true),  true)
+  eq(f.vac('str'), 'str')
+}()

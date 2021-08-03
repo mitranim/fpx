@@ -170,6 +170,7 @@ export function cwk(val, _key, fun, ...args) {return fun(val, ...args)}
 
 /** Misc **/
 
+export function vac(val) {return val || undefined}
 export function True() {return true}
 export function False() {return false}
 
@@ -250,9 +251,7 @@ export function fold1(val, fun, ...args) {
   return acc
 }
 
-export function compact(val) {
-  return filter(val, id)
-}
+export function compact(val) {return filter(val, id)}
 
 export function find(val, fun, ...args) {
   val = list(val)
