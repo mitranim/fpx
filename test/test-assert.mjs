@@ -9,22 +9,22 @@ import {
 import * as f from '../fpx.mjs'
 
 // TODO test extra args.
-eq(f.valid(undefined, f.isNil), undefined)
-eq(f.valid('str',     f.isStr), 'str')
-throws(() => f.valid('not nil',                    f.isNil))
-throws(() => f.valid(undefined,                    f.isStr))
-throws(() => f.valid(new String('wrapped string'), f.isStr))
+eq(f.req(undefined, f.isNil), undefined)
+eq(f.req('str',     f.isStr), 'str')
+throws(() => f.req('not nil',                    f.isNil))
+throws(() => f.req(undefined,                    f.isStr))
+throws(() => f.req(new String('wrapped string'), f.isStr))
 
-{const x = {};             is(f.validInst(x, Object), x)}
-{const x = [];             is(f.validInst(x, Object), x)}
-{const x = [];             is(f.validInst(x, Array),  x)}
-{const x = new String(''); is(f.validInst(x, Object), x)}
-{const x = new String(''); is(f.validInst(x, String), x)}
-throws(f.validInst)
-throws(() => f.validInst({}))
-throws(() => f.validInst(undefined, Object))
-throws(() => f.validInst('str',     String))
-throws(() => f.validInst({},        String))
+{const x = {};             is(f.reqInst(x, Object), x)}
+{const x = [];             is(f.reqInst(x, Object), x)}
+{const x = [];             is(f.reqInst(x, Array),  x)}
+{const x = new String(''); is(f.reqInst(x, Object), x)}
+{const x = new String(''); is(f.reqInst(x, String), x)}
+throws(f.reqInst)
+throws(() => f.reqInst({}))
+throws(() => f.reqInst(undefined, Object))
+throws(() => f.reqInst('str',     String))
+throws(() => f.reqInst({},        String))
 
 // TODO test extra args.
 eq(f.opt(null,      f.isStr), null)

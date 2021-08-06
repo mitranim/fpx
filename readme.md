@@ -28,7 +28,7 @@ In browsers without a bundler, use either the following, or an importmap:
 ```js
 import * as f from './node_modules/fpx/fpx.mjs'
 
-import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.10.2/fpx.mjs'
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.11.0/fpx.mjs'
 ```
 
 ## API
@@ -40,6 +40,15 @@ While the docs are missing, peruse the source of `fpx.mjs`. Almost every functio
 You can also check the old documentation in `docs-outdated/templates/index.md`. It's slightly out of date.
 
 ## Changelog
+
+### `0.11.0`
+
+Breaking: renamed each "valid" to "req" (short for "required") for brevity and symmetry with "opt" (short for "optional"):
+
+    valid        -> req        | symmetric with `opt`
+    validInst    -> reqInst    | symmetric with `optInst`
+    validEach    -> reqEach    |
+    validEachVal -> reqEachVal |
 
 ### `0.10.2`
 

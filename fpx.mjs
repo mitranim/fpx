@@ -32,7 +32,7 @@ export function isPromise(val)     {return isComp(val) && isFun(val.then) && isF
 export function isCls(val)         {return isFun(val) && typeof val.prototype === 'object'}
 
 export function isInst(val, Cls) {
-  valid(Cls, isCls)
+  req(Cls, isCls)
   return isComp(val) && val instanceof Cls
 }
 
@@ -58,12 +58,12 @@ export function isIter(val) {
 }
 
 export function isOpt(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return isNil(val) || truthy(fun(val, ...args))
 }
 
 export function hasOwn(val, key) {
-  valid(key, isKey)
+  req(key, isKey)
   return isComp(val) && Object.prototype.hasOwnProperty.call(val, key)
 }
 
@@ -90,22 +90,19 @@ function isNatOrInf(val) {return isNat(val) || isInf(val)}
 
 /** Opt Conversions **/
 
-export function prim(val)   {return optDef(val, undefined, isPrim)}
-export function bool(val)   {return optDef(val, false,     isBool)}
-export function num(val)    {return optDef(val, 0,         isNum)}
-export function fin(val)    {return optDef(val, 0,         isFin)}
-export function int(val)    {return optDef(val, 0,         isInt)}
-export function nat(val)    {return optDef(val, 0,         isNat)}
-export function natPos(val) {return optDef(val, 0,         isNatPos)}
-export function str(val)    {return optDef(val, '',        isStr)}
-export function list(val)   {return optDef(val, [],        isList)}
-export function arr(val)    {return optDef(val, [],        isArr)}
-export function dict(val)   {return optDef(val, {},        isDict)}
-export function struct(val) {return optDef(val, {},        isStruct)}
-export function comp(val)   {return optDef(val, {},        isComp)}
-
-// Might export later. Seems fiddly.
-function optDef(val, def, test) {return isNil(val) ? def : valid(val, test)}
+export function prim(val)   {return isNil(val) ? undefined : req(val, isPrim)}
+export function bool(val)   {return isNil(val) ? false     : req(val, isBool)}
+export function num(val)    {return isNil(val) ? 0         : req(val, isNum)}
+export function fin(val)    {return isNil(val) ? 0         : req(val, isFin)}
+export function int(val)    {return isNil(val) ? 0         : req(val, isInt)}
+export function nat(val)    {return isNil(val) ? 0         : req(val, isNat)}
+export function natPos(val) {return isNil(val) ? 0         : req(val, isNatPos)}
+export function str(val)    {return isNil(val) ? ''        : req(val, isStr)}
+export function list(val)   {return isNil(val) ? []        : req(val, isList)}
+export function arr(val)    {return isNil(val) ? []        : req(val, isArr)}
+export function dict(val)   {return isNil(val) ? {}        : req(val, isDict)}
+export function struct(val) {return isNil(val) ? {}        : req(val, isStruct)}
+export function comp(val)   {return isNil(val) ? {}        : req(val, isComp)}
 
 /** Cross-Type Conversions **/
 
@@ -114,9 +111,9 @@ export function toArr(val) {return isArr(val) ? val : slice(val)}
 
 /** Assertions **/
 
-export function valid(val, test, ...args) {
+export function req(val, test, ...args) {
   if (!isFun(test, ...args)) {
-    throw TypeError(`expected validator function, got ${show(test)}`)
+    throw TypeError(`expected reqator function, got ${show(test)}`)
   }
   if (!test(val)) {
     throw TypeError(`expected ${show(val)} to satisfy test ${show(test)}`)
@@ -125,11 +122,11 @@ export function valid(val, test, ...args) {
 }
 
 export function opt(val, test, ...args) {
-  valid(test, isFun)
-  return isNil(val) ? val : valid(val, test, ...args)
+  req(test, isFun)
+  return isNil(val) ? val : req(val, test, ...args)
 }
 
-export function validInst(val, Cls) {
+export function reqInst(val, Cls) {
   if (!isInst(val, Cls)) {
     const cons = isComp(val) ? val.constructor : undefined
     throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(Cls)}`)
@@ -138,19 +135,19 @@ export function validInst(val, Cls) {
 }
 
 export function optInst(val, Cls) {
-  valid(Cls, isFun)
-  return isNil(val) ? val : validInst(val, Cls)
+  req(Cls, isFun)
+  return isNil(val) ? val : reqInst(val, Cls)
 }
 
-export function validEach(val, test, ...args) {
-  valid(test, isFun)
-  each(val, validAt, test, ...args)
+export function reqEach(val, test, ...args) {
+  req(test, isFun)
+  each(val, reqAt, test, ...args)
   return val
 }
 
-export function validEachVal(val, test, ...args) {
-  valid(test, isFun)
-  eachVal(val, validAt, test, ...args)
+export function reqEachVal(val, test, ...args) {
+  req(test, isFun)
+  eachVal(val, reqAt, test, ...args)
   return val
 }
 
@@ -161,7 +158,7 @@ export function apply(fun, args)   {return fun.apply(this, args)}
 export function bind(fun, ...args) {return fun.bind(this, ...args)}
 
 export function not(fun) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return function not_() {return !fun.apply(this, arguments)}
 }
 
@@ -182,7 +179,7 @@ export function vacate(val) {return hasLen(val) ? val : undefined}
 
 export function each(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) fun(val[i], i, ...args)
 }
 
@@ -191,8 +188,8 @@ export function map(val, fun, ...args) {
 }
 
 export function mapMut(val, fun, ...args) {
-  valid(val, isList)
-  valid(fun, isFun)
+  req(val, isList)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) val[i] = fun(val[i], i, ...args)
   return val
 }
@@ -211,7 +208,7 @@ export function mapFilter(val, fun, ...args) {
 
 export function filter(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const out = []
   for (let i = 0; i < val.length; i++) {
     const elem = val[i]
@@ -221,7 +218,7 @@ export function filter(val, fun, ...args) {
 }
 
 export function reject(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return filter(val, notBy, fun, ...args)
 }
 
@@ -231,21 +228,21 @@ function notBy(val, key, fun, ...args) {
 
 export function fold(val, acc, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) acc = fun(acc, val[i], i, ...args)
   return acc
 }
 
 export function foldRight(val, acc, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = val.length - 1; i >= 0; i--) acc = fun(acc, val[i], i, ...args)
   return acc
 }
 
 export function fold1(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   let acc = val[0]
   for (let i = 1; i < val.length; i++) acc = fun(acc, val[i], i, ...args)
   return acc
@@ -255,19 +252,19 @@ export function compact(val) {return filter(val, id)}
 
 export function find(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   return val[findIndex(val, fun, ...args)]
 }
 
 export function findRight(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   return val[findIndexRight(val, fun, ...args)]
 }
 
 export function findIndex(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) {
     if (fun(val[i], i, ...args)) return i
   }
@@ -276,7 +273,7 @@ export function findIndex(val, fun, ...args) {
 
 export function findIndexRight(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = val.length; --i >= 0;) {
     if (fun(val[i], i, ...args)) return i
   }
@@ -301,7 +298,7 @@ export function includes(val, elem) {
 
 export function procure(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) {
     const res = fun(val[i], i, ...args)
     if (res) return res
@@ -311,7 +308,7 @@ export function procure(val, fun, ...args) {
 
 export function every(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) {
     if (!fun(val[i], i, ...args)) return false
   }
@@ -320,7 +317,7 @@ export function every(val, fun, ...args) {
 
 export function some(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (let i = 0; i < val.length; i++) {
     if (fun(val[i], i, ...args)) return true
   }
@@ -353,20 +350,20 @@ export function toggle(val, elem) {
 
 export function insertAt(val, ind, elem) {
   val = slice(val)
-  validBounded(val.length, ind)
+  reqBounded(val.length, ind)
   val.splice(ind, 0, elem)
   return val
 }
 
 export function replaceAt(val, ind, elem) {
   val = slice(val)
-  valid(ind, isNat)
+  req(ind, isNat)
   val[ind] = elem
   return val
 }
 
-function validBounded(len, ind) {
-  valid(ind, isNat)
+function reqBounded(len, ind) {
+  req(ind, isNat)
   if (!(ind <= len)) {
     throw Error(`index ${ind} out of bounds for length ${len}`)
   }
@@ -374,7 +371,7 @@ function validBounded(len, ind) {
 
 export function removeAt(val, ind) {
   val = list(val)
-  valid(ind, isInt)
+  req(ind, isInt)
   if (isNat(ind) && ind < val.length) {
     val = slice(val)
     val.splice(ind, 1)
@@ -428,29 +425,29 @@ export function last(val) {
 }
 
 export function take(val, count) {
-  valid(count, isNatOrInf)
+  req(count, isNatOrInf)
   return slice(val, 0, count)
 }
 
 export function takeWhile(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   const ind = findIndex(val, notBy, fun, ...args)
   return isNat(ind) ? slice(val, 0, ind) : list(val)
 }
 
 export function drop(val, count) {
-  valid(count, isNatOrInf)
+  req(count, isNatOrInf)
   return slice(val, count)
 }
 
 export function dropWhile(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   const ind = findIndex(val, notBy, fun, ...args)
   return isNat(ind) ? slice(val, ind) : []
 }
 
 export function count(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return fold(val, 0, incIf, fun, ...args)
 }
 
@@ -459,14 +456,14 @@ function incIf(acc, val, i, fun, ...args) {
 }
 
 export function countWhile(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   const ind = findIndex(val, notBy, fun, ...args)
   return isNat(ind) ? ind : len(val)
 }
 
 export function times(count, fun, ...args) {
-  valid(fun, isFun)
-  valid(count, isNat)
+  req(fun, isFun)
+  req(count, isNat)
   const out = Array(count)
   for (let i = 0; i < count; i++) out[i] = fun(i, ...args)
   return out
@@ -485,7 +482,7 @@ export function sort(val, comparator) {
 }
 
 export function sortBy(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return sort(val, function compareBy(left, right) {
     return sortCompare(fun(left, ...args), fun(right, ...args))
   })
@@ -520,7 +517,7 @@ function intersectAdd(val, _key, out, control) {
 
 export function keyBy(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const out = {}
   for (let i = 0; i < val.length; i++) {
     const elem = val[i]
@@ -532,7 +529,7 @@ export function keyBy(val, fun, ...args) {
 
 export function groupBy(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const out = {}
   for (let i = 0; i < val.length; i++) {
     const elem = val[i]
@@ -551,7 +548,7 @@ export function uniq(val) {
 
 export function uniqBy(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const out = []
   const attrs = []
   for (let i = 0; i < val.length; i++) {
@@ -567,7 +564,7 @@ export function uniqBy(val, fun, ...args) {
 
 export function partition(val, fun, ...args) {
   val = list(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const accepted = []
   const rejected = []
   for (let i = 0; i < val.length; i++) {
@@ -583,7 +580,7 @@ export function sum(val) {
 }
 
 export function sumBy(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return fold(val, 0, maybeAddBy, fun, ...args)
 }
 
@@ -601,12 +598,12 @@ export function max(val) {
 }
 
 export function minBy(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return fold(val, undefined, compareNumsBy, lt, fun, ...args)
 }
 
 export function maxBy(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return fold(val, undefined, compareNumsBy, gt, fun, ...args)
 }
 
@@ -620,20 +617,20 @@ function compareNumsBy(acc, val, key, compare, fun, ...args) {
 }
 
 export function findMinBy(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return findNumBy(val, lt, fun, ...args)
 }
 
 export function findMaxBy(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return findNumBy(val, gt, fun, ...args)
 }
 
 // WTF too large!
 function findNumBy(val, compare, fun, ...args) {
   val = list(val)
-  valid(compare, isFun)
-  valid(fun, isFun)
+  req(compare, isFun)
+  req(fun, isFun)
   let winningValue = undefined
   let winningAttr = undefined
   for (let i = 0; i < val.length; i++) {
@@ -648,8 +645,8 @@ function findNumBy(val, compare, fun, ...args) {
 }
 
 export function range(start, end) {
-  valid(start, isInt)
-  valid(end, isInt)
+  req(start, isInt)
+  req(end, isInt)
   let remaining = end - start
   // Note: this rejects negatives, producing a decent error message.
   const out = Array(remaining)
@@ -662,9 +659,9 @@ export function zip(entries) {
 }
 
 function zipAdd(acc, pair) {
-  valid(pair, isList)
+  req(pair, isList)
   const key = pair[0]
-  if (!isNil(key)) acc[valid(key, isKey)] = pair[1]
+  if (!isNil(key)) acc[req(key, isKey)] = pair[1]
   return acc
 }
 
@@ -678,13 +675,13 @@ export function hasSize(val) {return isStruct(val) && truthy(size(val))}
 
 export function eachVal(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (const key in val) fun(val[key], key, ...args)
 }
 
 export function foldVals(val, acc, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (const key in val) acc = fun(acc, val[key], key, ...args)
   return acc
 }
@@ -694,15 +691,15 @@ export function mapVals(val, fun, ...args) {
 }
 
 export function mapValsMut(val, fun, ...args) {
-  valid(val, isStruct)
-  valid(fun, isFun)
+  req(val, isStruct)
+  req(fun, isFun)
   for (const key in val) val[key] = fun(val[key], key, ...args)
   return val
 }
 
 export function mapKeys(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
 
   const out = {}
   for (let key in val) {
@@ -715,7 +712,7 @@ export function mapKeys(val, fun, ...args) {
 
 export function mapValsSort(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
 
   const out = keys(val).sort()
   for (let i = 0; i < out.length; i++) {
@@ -727,7 +724,7 @@ export function mapValsSort(val, fun, ...args) {
 
 export function pick(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
 
   const out = {}
   for (const key in val) {
@@ -738,7 +735,7 @@ export function pick(val, fun, ...args) {
 }
 
 export function omit(val, fun, ...args) {
-  valid(fun, isFun)
+  req(fun, isFun)
   return pick(val, notBy, fun, ...args)
 }
 
@@ -762,7 +759,7 @@ function deleteKnown(tar, key) {
 
 export function findVal(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
 
   for (const key in val) {
     const elem = val[key]
@@ -773,7 +770,7 @@ export function findVal(val, fun, ...args) {
 
 export function findKey(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const inputKeys = keys(val)
   for (let i = 0; i < inputKeys.length; i++) {
     const key = inputKeys[i]
@@ -784,14 +781,14 @@ export function findKey(val, fun, ...args) {
 
 export function everyVal(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   for (const key in val) if (!fun(val[key], key, ...args)) return false
   return true
 }
 
 export function someVal(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const inputKeys = keys(val)
   for (let i = 0; i < inputKeys.length; i++) {
     const key = inputKeys[i]
@@ -806,7 +803,7 @@ export function invert(val) {
 
 export function invertBy(val, fun, ...args) {
   val = struct(val)
-  valid(fun, isFun)
+  req(fun, isFun)
   const out = {}
   const inputKeys = keys(val)
   for (let i = 0; i < inputKeys.length; i++) {
@@ -845,7 +842,7 @@ export function val(val)     {return bind(id, val)}
 export function rethrow(val) {throw val}
 
 export function get(val, key) {
-  valid(key, isKey)
+  req(key, isKey)
   return isComp(val) ? val[key] : undefined
 }
 
@@ -853,11 +850,11 @@ export function scan(val, ...path) {return fold(path, val, get)}
 export function getIn(val, path) {return fold(path, val, get)}
 
 export function getter(key) {
-  valid(key, isKey)
+  req(key, isKey)
   return function get_(val) {return get(val, key)}
 }
 
-export function assign(tar, ...args) {return fold(args, valid(tar, isComp), mut)}
+export function assign(tar, ...args) {return fold(args, req(tar, isComp), mut)}
 
 function mut(tar, src) {
   src = struct(src)
@@ -865,7 +862,7 @@ function mut(tar, src) {
   return tar
 }
 
-function validAt(val, key, test, ...args) {
+function reqAt(val, key, test, ...args) {
   if (!test(val, ...args)) {
     throw TypeError(`expected ${show(val)} at key ${key} to satisfy test ${show(test)}`)
   }
