@@ -113,7 +113,7 @@ export function toArr(val) {return isArr(val) ? val : slice(val)}
 
 export function req(val, test, ...args) {
   if (!isFun(test, ...args)) {
-    throw TypeError(`expected reqator function, got ${show(test)}`)
+    throw TypeError(`expected validator function, got ${show(test)}`)
   }
   if (!test(val)) {
     throw TypeError(`expected ${show(val)} to satisfy test ${show(test)}`)
@@ -833,7 +833,7 @@ export function dec(a)    {return a - 1}
 
 // The "pure" annotation allows minifiers to drop this if the var is unused.
 // eslint-disable-next-line no-new-func
-export const global = /* #__PURE__ */Function('return this')()
+export const global = /* @__PURE__ */Function('return this')()
 
 export function nop()        {}
 export function id(val)      {return val}
