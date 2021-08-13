@@ -62,6 +62,16 @@ export function isOpt(val, fun, ...args) {
   return isNil(val) || truthy(fun(val, ...args))
 }
 
+export function isListOf(val, fun, ...args) {
+  req(fun, isFun)
+  return isList(val) && every(val, cwk, fun, ...args)
+}
+
+export function isDictOf(val, fun, ...args) {
+  req(fun, isFun)
+  return isDict(val) && everyVal(val, cwk, fun, ...args)
+}
+
 export function hasOwn(val, key) {
   req(key, isKey)
   return isComp(val) && Object.prototype.hasOwnProperty.call(val, key)
