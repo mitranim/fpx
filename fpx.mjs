@@ -1,5 +1,11 @@
 // See implementation notes in `impl.md`.
 
+/** Var **/
+
+// The "pure" annotation allows minifiers to drop this if the var is unused.
+// eslint-disable-next-line no-new-func
+export const global = /* @__PURE__ */Function('return this')()
+
 /** Bool **/
 
 export function truthy(val)        {return Boolean(val)}
@@ -98,7 +104,7 @@ export function test(pattern) {
 // Internal for now.
 function isNatOrInf(val) {return isNat(val) || isInf(val)}
 
-/** Opt Conversions **/
+/** Casts **/
 
 export function prim(val)   {return isNil(val) ? undefined : req(val, isPrim)}
 export function bool(val)   {return isNil(val) ? false     : req(val, isBool)}
@@ -113,8 +119,6 @@ export function arr(val)    {return isNil(val) ? []        : req(val, isArr)}
 export function dict(val)   {return isNil(val) ? {}        : req(val, isDict)}
 export function struct(val) {return isNil(val) ? {}        : req(val, isStruct)}
 export function comp(val)   {return isNil(val) ? {}        : req(val, isComp)}
-
-/** Cross-Type Conversions **/
 
 export function toStr(val) {return isNil(val) ? '' : String(prim(val))}
 export function toArr(val) {return isArr(val) ? val : slice(val)}
@@ -174,12 +178,6 @@ export function not(fun) {
 
 // Short for "call without key".
 export function cwk(val, _key, fun, ...args) {return fun(val, ...args)}
-
-/** Misc **/
-
-export function vac(val) {return val || undefined}
-export function True() {return true}
-export function False() {return false}
 
 /** List **/
 
@@ -654,10 +652,10 @@ function findNumBy(val, compare, fun, ...args) {
   return winningValue
 }
 
-export function range(start, end) {
+export function range(start, next) {
   req(start, isInt)
-  req(end, isInt)
-  let remaining = end - start
+  req(next, isInt)
+  let remaining = next - start
   // Note: this rejects negatives, producing a decent error message.
   const out = Array(remaining)
   while (--remaining >= 0) out[remaining] = start + remaining
@@ -841,11 +839,10 @@ export function dec(a)    {return a - 1}
 
 /** Misc **/
 
-// The "pure" annotation allows minifiers to drop this if the var is unused.
-// eslint-disable-next-line no-new-func
-export const global = /* @__PURE__ */Function('return this')()
-
 export function nop()        {}
+export function True()       {return true}
+export function False()      {return false}
+export function vac(val)     {return val || undefined}
 export function id(val)      {return val}
 export function di(_, val)   {return val}
 export function val(val)     {return bind(id, val)}
@@ -864,7 +861,9 @@ export function getter(key) {
   return function get_(val) {return get(val, key)}
 }
 
-export function assign(tar, ...args) {return fold(args, req(tar, isComp), mut)}
+export function assign(tar, ...args) {
+  return fold(args, req(tar, isComp), mut)
+}
 
 function mut(tar, src) {
   src = struct(src)
