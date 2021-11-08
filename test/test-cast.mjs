@@ -31,10 +31,12 @@ eq(f.list(['list']),     ['list'])
 throws(() => f.list('not list'))
 throws(() => f.list({length: 0}))
 
-eq(f.dict(null),                  {})
-eq(f.dict(undefined),             {})
-eq(f.dict({dict: true}),          {dict: true})
-eq(f.dict(Object.create(null)),   {})
+eq(Object.getPrototypeOf(f.dict(null)),      null)
+eq(Object.getPrototypeOf(f.dict(undefined)), null)
+eq(f.dict(null),                             {})
+eq(f.dict(undefined),                        {})
+eq(f.dict({dict: true}),                     {dict: true})
+eq(f.dict(Object.create(null)),              {})
 {
   const input = {}
   is(f.dict(input), input)
@@ -43,9 +45,11 @@ throws(() => f.dict('not dict'))
 throws(() => f.dict(['not dict']))
 throws(() => f.dict(Object.create({})))
 
-eq(f.struct(null),                {})
-eq(f.struct(undefined),           {})
-eq(f.struct({struct: true}),      {struct: true})
+eq(Object.getPrototypeOf(f.struct(null)),      null)
+eq(Object.getPrototypeOf(f.struct(undefined)), null)
+eq(f.struct(null),                             {})
+eq(f.struct(undefined),                        {})
+eq(f.struct({struct: true}),                   {struct: true})
 {
   const input = {}
   is(f.struct(input), input)

@@ -116,9 +116,9 @@ export function natPos(val) {return isNil(val) ? 0         : req(val, isNatPos)}
 export function str(val)    {return isNil(val) ? ''        : req(val, isStr)}
 export function list(val)   {return isNil(val) ? []        : req(val, isList)}
 export function arr(val)    {return isNil(val) ? []        : req(val, isArr)}
-export function dict(val)   {return isNil(val) ? {}        : req(val, isDict)}
-export function struct(val) {return isNil(val) ? {}        : req(val, isStruct)}
-export function comp(val)   {return isNil(val) ? {}        : req(val, isComp)}
+export function dict(val)   {return isNil(val) ? npo()     : req(val, isDict)}
+export function struct(val) {return isNil(val) ? npo()     : req(val, isStruct)}
+export function comp(val)   {return isNil(val) ? npo()     : req(val, isComp)}
 
 export function toStr(val) {return isNil(val) ? '' : String(prim(val))}
 export function toArr(val) {return isArr(val) ? val : slice(val)}
@@ -526,7 +526,7 @@ function intersectAdd(val, _key, out, control) {
 export function keyBy(val, fun, ...args) {
   val = list(val)
   req(fun, isFun)
-  const out = {}
+  const out = npo()
   for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     const key = fun(elem, i, ...args)
@@ -538,7 +538,7 @@ export function keyBy(val, fun, ...args) {
 export function groupBy(val, fun, ...args) {
   val = list(val)
   req(fun, isFun)
-  const out = {}
+  const out = npo()
   for (let i = 0; i < val.length; i++) {
     const elem = val[i]
     const groupKey = fun(elem, i, ...args)
@@ -663,7 +663,7 @@ export function range(start, next) {
 }
 
 export function zip(entries) {
-  return fold(entries, {}, zipAdd)
+  return fold(entries, npo(), zipAdd)
 }
 
 function zipAdd(acc, pair) {
@@ -674,6 +674,9 @@ function zipAdd(acc, pair) {
 }
 
 /** Struct **/
+
+// TODO good short name.
+function npo() {return Object.create(null)}
 
 export function size(val)    {return keys(val).length}
 export function keys(val)    {return Object.keys(struct(val))}
@@ -695,7 +698,7 @@ export function foldVals(val, acc, fun, ...args) {
 }
 
 export function mapVals(val, fun, ...args) {
-  return mapValsMut(assign({}, val), fun, ...args)
+  return mapValsMut(assign(npo(), val), fun, ...args)
 }
 
 export function mapValsMut(val, fun, ...args) {
@@ -709,7 +712,7 @@ export function mapKeys(val, fun, ...args) {
   val = struct(val)
   req(fun, isFun)
 
-  const out = {}
+  const out = npo()
   for (let key in val) {
     const elem = val[key]
     key = fun(key, elem, ...args)
@@ -734,7 +737,7 @@ export function pick(val, fun, ...args) {
   val = struct(val)
   req(fun, isFun)
 
-  const out = {}
+  const out = npo()
   for (const key in val) {
     const elem = val[key]
     if (fun(elem, key, ...args)) out[key] = elem
@@ -748,7 +751,7 @@ export function omit(val, fun, ...args) {
 }
 
 export function pickKeys(val, keys) {
-  return fold(keys, {}, pickKnown, struct(val))
+  return fold(keys, npo(), pickKnown, struct(val))
 }
 
 function pickKnown(tar, key, _i, src) {
@@ -757,7 +760,7 @@ function pickKnown(tar, key, _i, src) {
 }
 
 export function omitKeys(val, keys) {
-  return fold(keys, mut({}, val), deleteKnown)
+  return fold(keys, mut(npo(), val), deleteKnown)
 }
 
 function deleteKnown(tar, key) {
@@ -812,7 +815,7 @@ export function invert(val) {
 export function invertBy(val, fun, ...args) {
   val = struct(val)
   req(fun, isFun)
-  const out = {}
+  const out = npo()
   const inputKeys = keys(val)
   for (let i = 0; i < inputKeys.length; i++) {
     const key = inputKeys[i]
@@ -842,7 +845,7 @@ export function dec(a)    {return a - 1}
 export function nop()        {}
 export function True()       {return true}
 export function False()      {return false}
-export function vac(val)     {return val || undefined}
+export function vac(val)     {return val || undefined} // TODO consider replacing "||" with "??".
 export function id(val)      {return val}
 export function di(_, val)   {return val}
 export function val(val)     {return bind(id, val)}

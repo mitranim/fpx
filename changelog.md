@@ -1,3 +1,9 @@
+## `0.11.2`
+
+Instead of creating `{}`, always create `Object.create(null)`.
+
+When using plain JS objects as dictionaries, they should be null-prototype, to avoid accidentally accessing inherited properties by key. Most of the time this is a non-issue because `{}` has only non-enumerable inherited properties. But this could be violated in various edge cases.
+
 ## `0.11.1`
 
 Added `isListOf` and `isDictOf`.

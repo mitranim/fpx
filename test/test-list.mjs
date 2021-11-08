@@ -602,6 +602,7 @@ eq(f.range(-2, 3), [-2, -1, 0, 1, 2])
 throws(() => f.range(undefined, 0))
 throws(() => f.range(0, undefined))
 
+eq(Object.getPrototypeOf(f.zip()),        null)
 eq(f.zip(),                               {})
 eq(f.zip([]),                             {})
 eq(f.zip([['one', 10]]),                  {one: 10})

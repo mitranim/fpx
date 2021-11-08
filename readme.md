@@ -218,7 +218,7 @@ In browsers without a bundler, use either the following, or an importmap:
 ```js
 import * as f from './node_modules/fpx/fpx.mjs'
 
-import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.11.1/fpx.mjs'
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.11.2/fpx.mjs'
 ```
 
 ## Why
