@@ -1,0 +1,1 @@
+Shortcut for allocating an array with a sanity check. Same as `Array(N)` but ensures that the input is a [#natural number](#function-nat) suitable for array length. Avoids unintentionally passing any non-natural input such as `Array(-1)`. Allows [#nil](#function-isnil), replacing it with `0`.

@@ -1,3 +1,136 @@
+## `0.12.0`
+
+Massive revision:
+
+* Added support for arbitrary iterables such as sets and maps.
+* Consolidated lists, dicts, and iterables:
+  * Most functions that operate on data structures accept any of the above.
+  * Maps and dicts are considered sequences of their values, not entries.
+* Dropped support for additional arguments.
+  * Use closures instead.
+* Renamed various things for brevity and sanity.
+* Dropped and added various things, based on usefulness.
+
+Renamed:
+
+```
+isNatPos    -> isIntPos
+natPos      -> intPos
+mapFilter   -> mapCompact
+sortBy      -> sort
+keyBy       -> index
+groupBy     -> group
+sortCompare -> compare
+mapVals     -> mapDict
+rethrow     -> panic
+assign      -> mut
+toArr       -> arr
+```
+
+Removed:
+
+```diff
+- global (use built-in `globalThis`)
+- isOpt
+- isDictOf
+- testBy (perf hazard)
+- test (perf hazard)
+- list (use `arr`)
+- comp
+- toStr
+- reqEach
+- reqEachVal
+- call
+- apply
+- cwk
+- vacate (see `vac`)
+- mapFlat
+- mapFlatDeep
+- foldRight
+- fold1
+- findRight
+- findIndex
+- findIndexRight
+- lastIndexOf
+- adjoin (use sets)
+- toggle (use sets)
+- insertAt (use sets)
+- replaceAt (use sets)
+- removeAt (use sets)
+- flat
+- flatDeep
+- takeWhile
+- drop
+- dropWhile
+- countWhile
+- intersect (use sets)
+- uniq (use sets)
+- uniqBy (use sets)
+- min
+- max
+- minBy
+- maxBy
+- findMinBy
+- findMaxBy
+- size (see `len`)
+- vals (see `values`)
+- hasSize (see `hasLen`)
+- eachVal (see `each`)
+- foldVals (see `fold`)
+- mapValsMut
+- mapKeys
+- mapValsSort
+- findVal (see `find`)
+- findKey
+- everyVal (see `every`)
+- someVal (see `some`)
+- invert
+- invertBy
+- get
+- scan
+- getIn
+- getter
+```
+
+Added:
+
+```diff
++ isFinNeg
++ isFinPos
++ isIntNeg
++ isBigInt
++ isJunk
++ isSet
++ isMap
++ isIterAsync
++ isIterator
++ isIteratorAsync
++ isGen
++ isSeq
++ hasMeth
++ isEmpty
++ isVac
++ only
++ arrOf
++ inst
++ jsonDecode
++ jsonEncode
++ npo
++ hasOwnEnum
++ more
++ alloc
++ arrCopy
++ values
++ valuesCopy
++ reify
++ compareFin
++ mapFrom
++ span
++ repeat
++ set
++ setCopy
+```
+
 ## `0.11.2`
 
 Instead of creating `{}`, always create `Object.create(null)`.

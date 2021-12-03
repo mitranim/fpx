@@ -1,0 +1,1 @@
+Takes an arbitrary value and attempts to deeply materialize it. Any [#iterators](#function-iterator), or [#lists](#function-islist) that contain iterators, or lists that contain lists that contain iterators, etc., are converted to arrays. Does not inspect other data structures such as [#sets](#function-isset) or [#dicts](#function-isdict).

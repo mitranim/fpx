@@ -1,0 +1,1 @@
+Increments by `1`.

@@ -1,11 +1,13 @@
+.DS_Store
+
 /*
-!/test
-!/docs
-!/docs-outdated
 !/.*rc
 !/.*ignore
 !/*.mjs
 !/*.md
 !/package.json
-!/importmap.json
 !/makefile
+
+!/doc
+!/docs
+!/test

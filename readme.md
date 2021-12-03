@@ -1,235 +1,209 @@
 ## Overview
 
-`fpx`: **F**unctional **P**rogramming e**X**tensions for JavaScript. Lightweight replacement for Lodash. Large amount of FP-oriented utility functions and type assertions. Stuff that should be built into the language.
+`fpx`: **F**unctional **P**rogramming e**X**tensions for JavaScript. Lightweight replacement for Lodash. Stuff that should be built into the language.
 
-Small, dependency-free, single file, native module.
+Features:
+
+  * Higher-order functions for data structures.
+    * Common FP tools like `map`, `filter`, and many more.
+    * Compatible with arbitrary iterables such as lists, sets, maps, dicts.
+  * Boolean tests for common types and interfaces.
+  * Minifiable type assertions.
+  * Type conversions.
+  * Tuned for performance.
+  * Small and dependency-free. Single file. Native JS module.
+
+Differences from Lodash:
+
+  * Supports arbitrary iterables and iterators, including sets and maps.
+  * Type assertions and conversions.
+  * Much smaller and simpler.
 
 ## TOC
 
-* [Usage](#usage)
-* [Why](#why)
-* [Performance](#performance)
-* [API](#api)
-  * [Var](#var)
-    * [`const global`](#const-global)
-  * [Bool](#bool)
-    * [`function truthy`](#function-truthy)
-    * [`function falsy`](#function-falsy)
-    * [`function is`](#function-is)
-    * [`function isNil`](#function-isnil)
-    * [`function isSome`](#function-issome)
-    * [`function isBool`](#function-isbool)
-    * [`function isNum`](#function-isnum)
-    * [`function isFin`](#function-isfin)
-    * [`function isInt`](#function-isint)
-    * [`function isNat`](#function-isnat)
-    * [`function isNatPos`](#function-isnatpos)
-    * [`function isNaN`](#function-isnan)
-    * [`function isInf`](#function-isinf)
-    * [`function isStr`](#function-isstr)
-    * [`function isKey`](#function-iskey)
-    * [`function isPrim`](#function-isprim)
-    * [`function isComp`](#function-iscomp)
-    * [`function isFun`](#function-isfun)
-    * [`function isObj`](#function-isobj)
-    * [`function isStruct`](#function-isstruct)
-    * [`function isArr`](#function-isarr)
-    * [`function isReg`](#function-isreg)
-    * [`function isSym`](#function-issym)
-    * [`function isDate`](#function-isdate)
-    * [`function isValidDate`](#function-isvaliddate)
-    * [`function isInvalidDate`](#function-isinvaliddate)
-    * [`function isPromise`](#function-ispromise)
-    * [`function isCls`](#function-iscls)
-    * [`function isInst`](#function-isinst)
-    * [`function isDict`](#function-isdict)
-    * [`function isList`](#function-islist)
-    * [`function isIter`](#function-isiter)
-    * [`function isOpt`](#function-isopt)
-    * [`function isListOf`](#function-islistof)
-    * [`function isDictOf`](#function-isdictof)
-    * [`function hasOwn`](#function-hasown)
-    * [`function testBy`](#function-testby)
-    * [`function test`](#function-test)
-  * [Cast](#cast)
-    * [`function prim`](#function-prim)
-    * [`function bool`](#function-bool)
-    * [`function num`](#function-num)
-    * [`function fin`](#function-fin)
-    * [`function int`](#function-int)
-    * [`function nat`](#function-nat)
-    * [`function natPos`](#function-natpos)
-    * [`function str`](#function-str)
-    * [`function list`](#function-list)
-    * [`function arr`](#function-arr)
-    * [`function dict`](#function-dict)
-    * [`function struct`](#function-struct)
-    * [`function comp`](#function-comp)
-    * [`function toStr`](#function-tostr)
-    * [`function toArr`](#function-toarr)
-  * [Assert](#assert)
-    * [`function req`](#function-req)
-    * [`function opt`](#function-opt)
-    * [`function reqInst`](#function-reqinst)
-    * [`function optInst`](#function-optinst)
-    * [`function reqEach`](#function-reqeach)
-    * [`function reqEachVal`](#function-reqeachval)
-  * [Fun](#fun)
-    * [`function call`](#function-call)
-    * [`function apply`](#function-apply)
-    * [`function bind`](#function-bind)
-    * [`function not`](#function-not)
-    * [`function cwk`](#function-cwk)
-  * [List](#list)
-    * [`function len`](#function-len)
-    * [`function hasLen`](#function-haslen)
-    * [`function vacate`](#function-vacate)
-    * [`function each`](#function-each)
-    * [`function map`](#function-map)
-    * [`function mapMut`](#function-mapmut)
-    * [`function mapFlat`](#function-mapflat)
-    * [`function mapFlatDeep`](#function-mapflatdeep)
-    * [`function mapFilter`](#function-mapfilter)
-    * [`function filter`](#function-filter)
-    * [`function reject`](#function-reject)
-    * [`function fold`](#function-fold)
-    * [`function foldRight`](#function-foldright)
-    * [`function fold1`](#function-fold1)
-    * [`function compact`](#function-compact)
-    * [`function find`](#function-find)
-    * [`function findRight`](#function-findright)
-    * [`function findIndex`](#function-findindex)
-    * [`function findIndexRight`](#function-findindexright)
-    * [`function indexOf`](#function-indexof)
-    * [`function lastIndexOf`](#function-lastindexof)
-    * [`function includes`](#function-includes)
-    * [`function procure`](#function-procure)
-    * [`function every`](#function-every)
-    * [`function some`](#function-some)
-    * [`function slice`](#function-slice)
-    * [`function append`](#function-append)
-    * [`function prepend`](#function-prepend)
-    * [`function remove`](#function-remove)
-    * [`function adjoin`](#function-adjoin)
-    * [`function toggle`](#function-toggle)
-    * [`function insertAt`](#function-insertat)
-    * [`function replaceAt`](#function-replaceat)
-    * [`function removeAt`](#function-removeat)
-    * [`function concat`](#function-concat)
-    * [`function flat`](#function-flat)
-    * [`function flatDeep`](#function-flatdeep)
-    * [`function head`](#function-head)
-    * [`function tail`](#function-tail)
-    * [`function init`](#function-init)
-    * [`function last`](#function-last)
-    * [`function take`](#function-take)
-    * [`function takeWhile`](#function-takewhile)
-    * [`function drop`](#function-drop)
-    * [`function dropWhile`](#function-dropwhile)
-    * [`function count`](#function-count)
-    * [`function countWhile`](#function-countwhile)
-    * [`function times`](#function-times)
-    * [`function reverse`](#function-reverse)
-    * [`function sort`](#function-sort)
-    * [`function sortBy`](#function-sortby)
-    * [`function sortCompare`](#function-sortcompare)
-    * [`function intersect`](#function-intersect)
-    * [`function keyBy`](#function-keyby)
-    * [`function groupBy`](#function-groupby)
-    * [`function uniq`](#function-uniq)
-    * [`function uniqBy`](#function-uniqby)
-    * [`function partition`](#function-partition)
-    * [`function sum`](#function-sum)
-    * [`function sumBy`](#function-sumby)
-    * [`function min`](#function-min)
-    * [`function max`](#function-max)
-    * [`function minBy`](#function-minby)
-    * [`function maxBy`](#function-maxby)
-    * [`function findMinBy`](#function-findminby)
-    * [`function findMaxBy`](#function-findmaxby)
-    * [`function range`](#function-range)
-    * [`function zip`](#function-zip)
-  * [Struct](#struct)
-    * [`function size`](#function-size)
-    * [`function keys`](#function-keys)
-    * [`function vals`](#function-vals)
-    * [`function entries`](#function-entries)
-    * [`function hasSize`](#function-hassize)
-    * [`function eachVal`](#function-eachval)
-    * [`function foldVals`](#function-foldvals)
-    * [`function mapVals`](#function-mapvals)
-    * [`function mapValsMut`](#function-mapvalsmut)
-    * [`function mapKeys`](#function-mapkeys)
-    * [`function mapValsSort`](#function-mapvalssort)
-    * [`function pick`](#function-pick)
-    * [`function omit`](#function-omit)
-    * [`function pickKeys`](#function-pickkeys)
-    * [`function omitKeys`](#function-omitkeys)
-    * [`function findVal`](#function-findval)
-    * [`function findKey`](#function-findkey)
-    * [`function everyVal`](#function-everyval)
-    * [`function someVal`](#function-someval)
-    * [`function invert`](#function-invert)
-    * [`function invertBy`](#function-invertby)
-  * [Operator](#operator)
-    * [`function neg`](#function-neg)
-    * [`function add`](#function-add)
-    * [`function sub`](#function-sub)
-    * [`function mul`](#function-mul)
-    * [`function div`](#function-div)
-    * [`function rem`](#function-rem)
-    * [`function lt`](#function-lt)
-    * [`function gt`](#function-gt)
-    * [`function lte`](#function-lte)
-    * [`function gte`](#function-gte)
-    * [`function inc`](#function-inc)
-    * [`function dec`](#function-dec)
-  * [Misc](#misc)
-    * [`function vac`](#function-vac)
-    * [`function True`](#function-true)
-    * [`function False`](#function-false)
-    * [`function nop`](#function-nop)
-    * [`function id`](#function-id)
-    * [`function di`](#function-di)
-    * [`function val`](#function-val)
-    * [`function rethrow`](#function-rethrow)
-    * [`function get`](#function-get)
-    * [`function scan`](#function-scan)
-    * [`function getIn`](#function-getin)
-    * [`function getter`](#function-getter)
-    * [`function assign`](#function-assign)
-    * [`function show`](#function-show)
-* [Miscellaneous](#miscellaneous)
+* [#Usage](#usage)
+* [#Why](#why)
+* [#Perf](#perf)
+* [#API](#api)
+   * [#`function bind`](#function-bind)
+   * [#`function not`](#function-not)
+   * [#`function is`](#function-is)
+   * [#`function truthy`](#function-truthy)
+   * [#`function falsy`](#function-falsy)
+   * [#`function isNil`](#function-isnil)
+   * [#`function isSome`](#function-issome)
+   * [#`function isBool`](#function-isbool)
+   * [#`function isNum`](#function-isnum)
+   * [#`function isFin`](#function-isfin)
+   * [#`function isFinNeg`](#function-isfinneg)
+   * [#`function isFinPos`](#function-isfinpos)
+   * [#`function isInt`](#function-isint)
+   * [#`function isNat`](#function-isnat)
+   * [#`function isIntNeg`](#function-isintneg)
+   * [#`function isIntPos`](#function-isintpos)
+   * [#`function isNaN`](#function-isnan)
+   * [#`function isInf`](#function-isinf)
+   * [#`function isBigInt`](#function-isbigint)
+   * [#`function isStr`](#function-isstr)
+   * [#`function isSym`](#function-issym)
+   * [#`function isKey`](#function-iskey)
+   * [#`function isJunk`](#function-isjunk)
+   * [#`function isComp`](#function-iscomp)
+   * [#`function isPrim`](#function-isprim)
+   * [#`function isFun`](#function-isfun)
+   * [#`function isObj`](#function-isobj)
+   * [#`function isStruct`](#function-isstruct)
+   * [#`function isArr`](#function-isarr)
+   * [#`function isReg`](#function-isreg)
+   * [#`function isDate`](#function-isdate)
+   * [#`function isValidDate`](#function-isvaliddate)
+   * [#`function isInvalidDate`](#function-isinvaliddate)
+   * [#`function isSet`](#function-isset)
+   * [#`function isMap`](#function-ismap)
+   * [#`function isPromise`](#function-ispromise)
+   * [#`function isIter`](#function-isiter)
+   * [#`function isIterAsync`](#function-isiterasync)
+   * [#`function isIterator`](#function-isiterator)
+   * [#`function isIteratorAsync`](#function-isiteratorasync)
+   * [#`function isGen`](#function-isgen)
+   * [#`function isCls`](#function-iscls)
+   * [#`function isDict`](#function-isdict)
+   * [#`function isList`](#function-islist)
+   * [#`function isSeq`](#function-isseq)
+   * [#`function isInst`](#function-isinst)
+   * [#`function hasMeth`](#function-hasmeth)
+   * [#`function isListOf`](#function-islistof)
+   * [#`function isEmpty`](#function-isempty)
+   * [#`function isVac`](#function-isvac)
+   * [#`function req`](#function-req)
+   * [#`function opt`](#function-opt)
+   * [#`function reqInst`](#function-reqinst)
+   * [#`function optInst`](#function-optinst)
+   * [#`function only`](#function-only)
+   * [#`function arrOf`](#function-arrof)
+   * [#`function prim`](#function-prim)
+   * [#`function bool`](#function-bool)
+   * [#`function num`](#function-num)
+   * [#`function fin`](#function-fin)
+   * [#`function int`](#function-int)
+   * [#`function nat`](#function-nat)
+   * [#`function intPos`](#function-intpos)
+   * [#`function str`](#function-str)
+   * [#`function dict`](#function-dict)
+   * [#`function struct`](#function-struct)
+   * [#`function inst`](#function-inst)
+   * [#`function add`](#function-add)
+   * [#`function sub`](#function-sub)
+   * [#`function mul`](#function-mul)
+   * [#`function div`](#function-div)
+   * [#`function rem`](#function-rem)
+   * [#`function lt`](#function-lt)
+   * [#`function gt`](#function-gt)
+   * [#`function lte`](#function-lte)
+   * [#`function gte`](#function-gte)
+   * [#`function neg`](#function-neg)
+   * [#`function inc`](#function-inc)
+   * [#`function dec`](#function-dec)
+   * [#`function nop`](#function-nop)
+   * [#`function True`](#function-true)
+   * [#`function False`](#function-false)
+   * [#`function id`](#function-id)
+   * [#`function di`](#function-di)
+   * [#`function val`](#function-val)
+   * [#`function panic`](#function-panic)
+   * [#`function jsonDecode`](#function-jsondecode)
+   * [#`function jsonEncode`](#function-jsonencode)
+   * [#`function show`](#function-show)
+   * [#`function npo`](#function-npo)
+   * [#`function hasOwn`](#function-hasown)
+   * [#`function hasOwnEnum`](#function-hasownenum)
+   * [#`function mut`](#function-mut)
+   * [#`function mapDict`](#function-mapdict)
+   * [#`function pick`](#function-pick)
+   * [#`function omit`](#function-omit)
+   * [#`function pickKeys`](#function-pickkeys)
+   * [#`function omitKeys`](#function-omitkeys)
+   * [#`function more`](#function-more)
+   * [#`function alloc`](#function-alloc)
+   * [#`function arr`](#function-arr)
+   * [#`function arrCopy`](#function-arrcopy)
+   * [#`function slice`](#function-slice)
+   * [#`function keys`](#function-keys)
+   * [#`function values`](#function-values)
+   * [#`function valuesCopy`](#function-valuescopy)
+   * [#`function entries`](#function-entries)
+   * [#`function reify`](#function-reify)
+   * [#`function vac`](#function-vac)
+   * [#`function indexOf`](#function-indexof)
+   * [#`function includes`](#function-includes)
+   * [#`function concat`](#function-concat)
+   * [#`function append`](#function-append)
+   * [#`function prepend`](#function-prepend)
+   * [#`function len`](#function-len)
+   * [#`function hasLen`](#function-haslen)
+   * [#`function each`](#function-each)
+   * [#`function map`](#function-map)
+   * [#`function mapMut`](#function-mapmut)
+   * [#`function mapCompact`](#function-mapcompact)
+   * [#`function filter`](#function-filter)
+   * [#`function reject`](#function-reject)
+   * [#`function compact`](#function-compact)
+   * [#`function remove`](#function-remove)
+   * [#`function fold`](#function-fold)
+   * [#`function find`](#function-find)
+   * [#`function procure`](#function-procure)
+   * [#`function every`](#function-every)
+   * [#`function some`](#function-some)
+   * [#`function head`](#function-head)
+   * [#`function last`](#function-last)
+   * [#`function init`](#function-init)
+   * [#`function tail`](#function-tail)
+   * [#`function take`](#function-take)
+   * [#`function count`](#function-count)
+   * [#`function compare`](#function-compare)
+   * [#`function compareFin`](#function-comparefin)
+   * [#`function sort`](#function-sort)
+   * [#`function reverse`](#function-reverse)
+   * [#`function index`](#function-index)
+   * [#`function group`](#function-group)
+   * [#`function partition`](#function-partition)
+   * [#`function sum`](#function-sum)
+   * [#`function zip`](#function-zip)
+   * [#`function mapFrom`](#function-mapfrom)
+   * [#`function range`](#function-range)
+   * [#`function span`](#function-span)
+   * [#`function times`](#function-times)
+   * [#`function repeat`](#function-repeat)
+   * [#`function set`](#function-set)
+   * [#`function setCopy`](#function-setcopy)
+* [#License](#license)
+* [#Misc](#misc)
 
 ## Usage
+
+In browsers and Deno, import by URL:
+
+```js
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.12.0/fpx.mjs'
+```
+
+When using Node or NPM-oriented bundlers like Esbuild:
 
 ```sh
 npm i -E fpx
 ```
 
-Fpx is a single file, a native JS module usable anywhere. In Node or with a bundler like Webpack or Esbuild:
-
 ```js
 import * as f from 'fpx'
-````
-
-In browsers without a bundler, use either the following, or an importmap:
-
-```js
 import * as f from './node_modules/fpx/fpx.mjs'
-
-import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.11.2/fpx.mjs'
 ```
 
 ## Why
 
-Why a library: the built-ins are not sufficient. Fpx replaces some common code patterns with small functions, significantly reducing the code size. It also enables assertions that are desired but missing from most JS code.
-
-### Size
-
-Why not just use Lodash? It's way, **way**, **WAY** too huge. You just want a few functions and BAM, you get ≈ 73 KiB minified. You could make a custom bundle, but most folks just import the whole thing. For a web developer, shipping so much useless code to your users is irresponsible. It's also space-inefficient, bloated with avoidable code, and judging by the source, this seems unlikely to change. If you care about size, you need a replacement.
-
-Last I checked, Lodash was incompatible with techniques like tree shaking / dead code elimination / live code inclusion, which pick just the functions you actually use, dropping the rest. These techniques work perfectly on Fpx. When using a module bundler that supports them, such as Esbuild or Webpack, you automatically get a "custom version" of Fpx without any unused stuff.
+* Built-ins are insufficient.
+* Other libraries are too large.
+* Other libraries are annoying to use.
+* Other libraries lack vital tools.
 
 ### Simplicity
 
@@ -237,931 +211,63 @@ Last I checked, Lodash was incompatible with techniques like tree shaking / dead
 >
 > _— Abelson & Sussman, "Structure and Interpretation of Computer Programs"_
 
-I believe that _all code_ should strive to be simple and educational. This gives me a massive distaste for most code ever written. For example, reading Lodash's source might teach you code obfuscation, but not much else.
+I believe that _all code_ should strive to be simple and educational. This gives me a massive distaste for most code.
 
-In Fpx, I strive to keep the code and the algorithms dead simple, with as few unnecessary elements and indirections as possible. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
+Fpx is tuned for brevity, readability, clarity in addition to performance. If you want to understand how this kind of library works, how higher-order functions work, how to manipulate JS data structures, Fpx should hopefully provide a good read.
 
-### Strictness
-
-Fpx functions tend to be somewhat stricter than their built-in counterparts, and _much_ stricter than the Lodash counterparts. They tend to work _either_ on lists ([`fold`](#function-fold)) _or_ dicts ([`foldVals`](#function-foldvals)), not both. Collection functions don't accept strings. This prevents subtle gotchas.
-
-On the other hand, collection functions accept `null` and `undefined`, which is very useful in practice. This would not be possible with methods, since methods must be invoked on an object.
-
-Unlike Lodash, higher-order functions always require an operator function. There's no implicit fallback on the identity function, and no implicit conversion of data patterns into functions.
-
-### Minifiable Assertions
+### Assertions
 
 Assertions go a **long** way in debugging. Fail fast, catch bugs early. In asynchronous code, validating inputs as early as possible, instead of letting it fail mysteriously later, can save you hours of debugging.
 
 Here's the traditional way of doing assertions:
 
 ```js
-function someFunction(input) {
-  if (typeof input !== 'function') {
-    throw Error(`expected a function, got ${input}`)
+function someHigherOrderFunction(fun) {
+  if (typeof fun !== 'function') {
+    throw TypeError(`expected a function, got ${fun}`)
   }
+  // Actual code after the assertion.
 }
 
-someFunction({one: 10})
-// Error: Expected a function, got [object Object]
+someHigherOrderFunction({one: 10})
+// uncaught TypeError: expected a function, got [object Object]
 ```
 
 Annoying to type and **really** bad for minification. Some folks strip assertions from production builds, but I find the idea flawed. Even in production, failing fast is better than failing mysteriously, and assertions help with debugging when it inevitably fails.
 
-Fpx provides a much better alternative:
+Fpx provides a better alternative:
 
 ```js
-function someFunction(input) {
-  f.req(input, f.isFun)
+function someHigherOrderFunction(fun) {
+  f.req(fun, f.isFun)
+  // Actual code after the assertion.
 }
 
-someFunction({one: 10})
-// TypeError: expected {"one":10} to satisfy test isFun
+someHigherOrderFunction({one: 10})
+// uncaught TypeError: expected {"one":10} to satisfy test isFun
 ```
 
-So much better! Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which is good for bundle size. The mangled name is a non-issue with a source map, which you need for debugging anyway.
+Much better. Easy to type with editor autocompletion, produces good error messages, and minifies really well. In a minified build, the function name will be mangled, which is good for bundle size. The mangled name is a non-issue with a source map, which you need for debugging anyway.
 
-To support this style of coding, Fpx provides [`req`](#function-req) and a bevy of boolean tests.
+To support this style of coding, Fpx provides [#`req`](#function-req) and a bevy of boolean tests.
 
-## Performance
+## Perf
 
-Fpx functions tend to be faster than equivalent "native" methods. It shouldn't be your bottleneck.
+Fpx is carefully tuned for performance. Functions covered by benchmarks appear comparable to their native or Lodash equivalents. Many appear significantly faster.
 
-There's potential for improvement, but I don't have infinite spare time for microbenchmark contests. Suggestions are welcome.
-
-### Bonus Arguments
-
-In Fpx, most collection functions, such as [`map`](#function-map), pass additional arguments to the operator function. Use this to define your functions statically and avoid local closures:
-
-```js
-// local context
-const a = 1
-const b = 2
-const c = 3
-
-
-// bonus args (recommended)
-
-function add5(val, key, a, b, c) {
-  return val + key + a + b + c
-}
-f.map([10, 20, 30], add5, a, b, c)
-// [16, 27, 38]
-
-
-// closure (not recommended)
-
-function add5(val, key) {
-  return val + key + a + b + c
-}
-f.map([10, 20, 30], add5)
-// [16, 27, 38]
-```
-
-Broadly speaking, closures have a cost; defining functions statically avoids that cost.
-
-This doesn't always improve performance, and can even make it worse. A smart engine can sometimes optimize a closure away. Closures may accidentally enable optimizations like function specialization. However, such optimizations can be unreliable. As a rule of thumb, memory allocation beats most other costs. Avoiding closure allocation is reliable and predictable at improving performance.
-
-This may change with future advancements in JS engines.
-
----
+JS performance is complicated and _very_ unstable, Fpx's benchmark suite is limited and checked only in V8. When in doubt, measure in your particular environment.
 
 ## API
 
-For changes between versions, see [changelog.md](changelog.md).
+Also see changelog: [changelog.md](changelog.md).
 
-### Var
+### `function bind`
 
-#### `const global`
+Links: [source](fpx.mjs#L3); [test/example](test/test.mjs#L63).
 
-Same as [`globalThis`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis), but works in IE.
+Like [`Function.prototype.bind`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind), but instead of taking `this` as an argument, takes it contextually. By default `this` is `undefined`. To set it, use `f.bind.call`.
 
-  * Node → `global`
-  * Deno → `window`
-  * Browser → `window`
-  * Service worker, extension script → `self`
-
-### Bool
-
-Various boolean tests.
-
-#### `function truthy`
-
-`ƒ(val) => bool`
-
-Same as `!!` or `Boolean`. Sometimes useful with higher-order functions.
-
-```js
-f.truthy(null)
-// false
-
-f.truthy(1)
-// true
-```
-
-#### `function falsy`
-
-`ƒ(val) => bool`
-
-Same as `!`. Sometimes useful with higher-order functions.
-
-```js
-f.falsy(null)
-// true
-
-f.falsy(1)
-// false
-```
-
-#### `function is`
-
-`ƒ(a, b) => bool`
-
-Identity test: same as `===`, but considers `NaN` equal to `NaN`. Equivalent to [_SameValueZero_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero) as defined by the language spec.
-
-Note that [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) implements [_SameValue_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevalue), which treats `-0` and `+0` as _distinct values_. This is typically undesirable. As a result, you should prefer `f.is` over `===` or `Object.is`.
-
-Used internally in Fpx for all identity tests.
-
-```js
-f.is(1, '1')
-// false
-
-f.is(NaN, NaN)
-// true
-```
-
-#### `function isNil`
-
-`ƒ(val) => bool`
-
-True for `null` and `undefined`. Same as `value == null`.
-
-Incidentally, these are the only values that produce an exception when attempting to read a property: `null.someProperty`.
-
-```js
-// Definition
-function isNil(value) {return value == null}
-
-f.isNil(null)
-// true
-
-f.isNil(undefined)
-// true
-
-f.isNil(false)
-// false
-```
-
-#### `function isSome`
-
-`ƒ(val) => bool`
-
-True for everything except `null` and `undefined`.
-
-```js
-// Definition
-function isSome(value) {return value != null}
-
-f.isSome(null)
-// false
-f.isSome(undefined)
-// false
-f.isSome(false)
-// true
-```
-
-#### `function isBool`
-
-`ƒ(val) => bool`
-
-```js
-f.isBool(false)
-// true
-```
-
-#### `function isNum`
-
-`ƒ(val) => bool`
-
-Same as `typeof val === 'number'`. Returns `true` for `NaN` and `±Infinity`. In most cases, you should use `isFin` instead.
-
-```js
-f.isNum(1)
-// true
-f.isNum('1')
-// false
-f.isNum(NaN)
-// true <-- WTF
-```
-
-#### `function isFin`
-
-`ƒ(val) => bool`
-
-Same as ES2015's [`Number.isFinite`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite).
-
-Returns `true` if `val` is a number and is _not_ `NaN` or `±Infinity`. In most cases, you should prefer `isFin` over `isNum`.
-
-```js
-f.isFin(1)
-// true
-f.isFin('1')
-// false
-f.isFin(NaN)
-// false
-```
-
-#### `function isInt`
-
-`ƒ(val) => bool`
-
-True if `val` is an integer: finite without a fractional part.
-
-```js
-f.isInt(0)
-// true
-f.isInt(1)
-// true
-f.isInt(-1)
-// true
-f.isInt(1.1)
-// false
-f.isInt('1')
-// false
-```
-
-#### `function isNat`
-
-`ƒ(val) => bool`
-
-True if `val` is a natural number: a positive integer, starting with `0`.
-
-```js
-f.isNat(0)
-// true
-f.isNat(1)
-// true
-f.isNat(-1)
-// false
-f.isNat(1.1)
-// false
-f.isNat('1')
-// false
-```
-
-#### `function isNatPos`
-
-`ƒ(val) => bool`
-
-True if `val` is a natural positive integer, starting with `1`.
-
-```js
-f.isNatPos(0)
-// false
-f.isNatPos(1)
-// true
-f.isNatPos(-1)
-// false
-f.isNatPos(1.1)
-// false
-f.isNatPos('1')
-// false
-```
-
-#### `function isNaN`
-
-`ƒ(val) => bool`
-
-Same as ES2015's [`Number.isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN). True if `val` is _actually_ `NaN`. Doesn't coerce non-numbers to numbers, unlike `global.isNaN` / `window.isNaN`.
-
-```js
-f.isNaN(NaN)
-// true
-f.isNaN(undefined)
-// false
-```
-
-#### `function isInf`
-
-`ƒ(val) => bool`
-
-True if `val` is `-Infinity` or `Infinity`.
-
-```js
-f.isInf(Infinity)
-// true
-f.isInf(-Infinity)
-// true
-f.isInf(10)
-// false
-f.isInf(NaN)
-// false
-f.isInf(undefined)
-// false
-```
-
-#### `function isStr`
-
-`ƒ(val) => bool`
-
-```js
-f.isStr('blah')
-// true
-```
-
-#### `function isKey`
-
-`ƒ(val) => bool`
-
-True if `val` could, with some suspension of disbelief, claim to be usable as a dict key. Must satisfy either of:
-
-  * `isStr`
-  * `isSym`
-  * `isBool`
-  * `isFin`
-
-```js
-f.isKey('key')
-// true
-f.isKey(Symbol('key'))
-// true
-f.isKey(10)
-// true
-f.isKey(undefined)
-// false
-```
-
-In other words, this is a subset of [`isPrim`](#function-isprim) that excludes `null`, `undefined`, `NaN`, and `±Infinity`. These values are often produced on accident, and you almost never want them as your dict keys.
-
-Fpx uses `isKey` to validate keys in functions like [`keyBy`](#function-keyby).
-
-#### `function isPrim`
-
-`ƒ(val) => bool`
-
-Short for "is primitive". Opposite of `isComp`. One of:
-
-  * `isNil`
-  * `isStr`
-  * `isSym`
-  * `isBool`
-  * `isNum`
-
-#### `function isComp`
-
-`ƒ(val) => bool`
-
-Short for "is complex". Definition:
-
-```js
-function isComp(val) {return isObj(val) || isFun(val)}
-```
-
-This covers all mutable objects in the true JavaScript sense, including functions.
-
-#### `function isFun`
-
-`ƒ(val) => bool`
-
-```js
-f.isFun(f.isFun)
-// true
-```
-
-#### `function isObj`
-
-`ƒ(val) => bool`
-
-True if `val` is a non-`null` object. This includes plain dicts, arrays, regexps, user-defined "classes", built-in classes, and so on. Doesn't count functions as objects, even though _technically_ they are.
-
-Note: this is _not_ equivalent to lodash's `_.isObject`, which counts functions as objects. See [`isComp`](#function-iscomplex) for that.
-
-For plain objects used as dictionaries, see [`isDict`](#function-isdict). For fancy non-list objects, see [`isStruct`](#function-isstruct).
-
-```js
-f.isObj('blah')
-// false
-
-f.isObj(/blah/)
-// true
-
-f.isObj([])
-// true
-
-f.isObj(Object.create(null))
-// true
-
-f.isObj(() => {})
-// false
-```
-
-#### `function isStruct`
-
-`ƒ(val) => bool`
-
-True if `val` is a non-list object. In Fpx lingo, such objects are called "structs". There's an entire category of functions dedicated to them, similar to "object" functions in Lodash.
-
-Note that anything that satisfies `isDict` automatically satisfies `isStruct`, but not vice versa.
-
-```js
-f.isStruct({})
-// true
-
-f.isStruct(new RegExp())
-// true
-
-f.isStruct([])
-// false
-
-f.isStruct(f.isStruct)
-// false
-```
-
-#### `function isArr`
-
-`ƒ(val) => bool`
-
-True if `val` inherits from `Array.prototype`.
-
-```js
-f.isArr([])
-// true
-```
-
-#### `function isReg`
-
-`ƒ(val) => bool`
-
-Short for "is regex".
-
-```js
-f.isReg(/blah/)
-// true
-```
-
-#### `function isSym`
-
-`ƒ(val) => bool`
-
-```js
-f.isSym(Symbol('blah'))
-// true
-```
-
-#### `function isDate`
-
-`ƒ(val) => bool`
-
-```js
-f.isDate(new Date())             // true
-f.isDate(new Date().toString())  // false
-```
-
-#### `function isValidDate`
-
-`ƒ(val) => bool`
-
-```js
-f.isValidDate(new Date())     // true
-f.isValidDate(new Date(NaN))  // false
-```
-
-#### `function isInvalidDate`
-
-`ƒ(val) => bool`
-
-```js
-f.isInvalidDate(new Date())     // false
-f.isInvalidDate(new Date(NaN))  // true
-```
-
-#### `function isPromise`
-
-`ƒ(val) => bool`
-
-True if the value [quacks](https://en.wikipedia.org/wiki/Duck_test) like an ES2015 [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). The value doesn't have to inherit from the global `Promise`, if any.
-
-```js
-f.isPromise(new Promise(() => {}))
-// true
-
-f.isPromise({then() {}, catch() {}})
-// true
-
-f.isPromise({then() {}})
-// false
-```
-
-#### `function isCls`
-
-`ƒ(val) => bool`
-
-#### `function isInst`
-
-`ƒ(val, Cls) => bool`
-
-Same as `instanceof` but more efficient for primitives.
-
-When the left operand to `instanceof` is a primitive, it creates a temporary wrapper object, wasting CPU cycles on allocation and garbage collection, even though `false` was guaranteed. `isInst` avoids this mistake. At the time of writing, the improvement is measurable in V8.
-
-```js
-f.isInst([],         Array)  // true
-f.isInst(new Date(), Date)   // true
-f.isInst(1,          Number) // false, cheaper than instanceof
-f.isInst(undefined,  Object) // false, cheaper than instanceof
-```
-
-#### `function isDict`
-
-`ƒ(val) => bool`
-
-True if `val` is a normal, honest-to-goodness dictionary and not something fancy-shmancy.
-
-Roughly equivalent to Lodash's `_.isPlainObject`.
-
-```js
-f.isDict({})
-// true
-
-f.isDict(Object.create(null))
-// true
-
-f.isDict(Object.create({}))
-// false
-
-f.isDict([])
-// false
-
-f.isDict(new class {}())
-// false
-```
-
-#### `function isList`
-
-`ƒ(val) => bool`
-
-True if `val` looks array-like, such as:
-
-  * `[]`
-  * `arguments`
-  * `TypedArray`
-  * `NodeList`
-  * etc.
-
-Used internally for most list checks. Note that _strings are not considered lists_.
-
-```js
-f.isList([])
-// true
-
-function args() {return arguments}
-f.isList(args())
-// true
-
-f.isList(new Uint8Array())
-// true
-
-f.isList(document.querySelectorAll('div'))
-// true
-
-f.isList('string')
-// false
-```
-
-#### `function isIter`
-
-`ƒ(val) => bool`
-
-True if the value [quacks](https://en.wikipedia.org/wiki/Duck_test) like an ES2015 [iterator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator). _Iterators_, also called _generator objects_, are created by calling a _generator function_.
-
-```js
-function* myGenerator() {
-  yield 10
-  yield 20
-  return 30
-}
-
-f.isIter(myGenerator())
-// true
-
-f.isIter(myGenerator)
-// false
-```
-
-#### `function isOpt`
-
-`ƒ(val, fun, ...args) => bool`
-
-#### `function isListOf`
-
-`ƒ(val, fun, ...args) => bool`
-
-#### `function isDictOf`
-
-`ƒ(val, fun, ...args) => bool`
-
-#### `function hasOwn`
-
-`ƒ(val, key) => bool`
-
-#### `function testBy`
-
-`ƒ(val, pattern) => bool`
-
-Limited form of pattern testing. Together with ES2015 destructuring, it lets you crudely approximate pattern matching, a feature common in functional languages but missing from JavaScript.
-
-Most of the time, using `testBy` is _much_ slower than an equivalent "hardcoded" test function. It can be your bottleneck. Avoid using this in hotspots.
-
-Tests `val` against `pattern`, using the following rules:
-
-```js
-// Function pattern: call it, convert result to boolean
-
-f.testBy(10, f.inc)  ≡  !!f.inc(10)
-
-// Primitive pattern: test for identity via `f.is`
-
-f.testBy(x, null)  ≡  f.is(x, null)
-f.testBy(x, 10)    ≡  f.is(x, 10)
-f.testBy(x, NaN)   ≡  f.is(x, NaN)
-
-// Regexp pattern:
-//   input must be a string
-//   use `RegExp.prototype.test`
-
-f.testBy(x, /blah/)  ≡  f.isString(x) && /blah/.test(x)
-
-// List pattern:
-//   input must be a list
-//   recursively apply sub-patterns
-
-f.testBy(x, [])             ≡  f.isList(x)
-f.testBy(x, [/blah/])       ≡  f.isList(x) && f.testBy(x[0], /blah/)
-f.testBy(x, [/blah/, 'c'])  ≡  f.isList(x) && f.testBy(x[0], /blah/) && f.testBy(x[1], 'c')
-
-// Struct pattern:
-//   input must a struct (a non-list object)
-//   recursively apply sub-patterns
-
-f.testBy(x, {})             ≡  f.isStruct(x)
-f.testBy(x, {one: /blah/})  ≡  f.isStruct(x) && f.testBy(x.one, /blah/)
-f.testBy(x, {a: {b: 'c'}})  ≡  f.isStruct(x) && f.testBy(x.a, {b: 'c'})
-```
-
-#### `function test`
-
-`ƒ(pattern) => (any) => bool`
-
-Takes a pattern and returns a version of [`testBy`](#function-testby) bound to that pattern. See the rules above.
-
-Most of the time, using `test` is _much_ slower than an equivalent "hardcoded" test function. It can be your bottleneck. Avoid using this in hotspots.
-
-```js
-f.test(pattern)
-// ≡ function(x) {return f.testBy(x, pattern)}
-
-f.test(pattern)(input)
-// ≡ f.testBy(input, pattern)
-```
-
-### Cast
-
-Functions for type conversion. Most of them convert from `?T` to `T`.
-
-#### `function prim`
-
-`ƒ(val) => impl<isPrim>`
-
-Similar to `val ?? undefined`, but throws if `val` was a non-nil non-primitive.
-
-#### `function bool`
-
-`ƒ(val) => bool`
-
-Similar to `val ?? false`, but throws if `val` was a non-nil non-boolean.
-
-#### `function num`
-
-`ƒ(val) => number`
-
-Similar to `val ?? 0`, but throws if `val` was a non-nil non-number.
-
-#### `function fin`
-
-`ƒ(val) => impl<isFin>`
-
-Similar to `val ?? 0`, but throws if `val` was a non-nil non-finite-number.
-
-#### `function int`
-
-`ƒ(val) => impl<isInt>`
-
-Similar to `val ?? 0`, but throws if `val` was a non-nil non-integer.
-
-#### `function nat`
-
-`ƒ(val) => impl<isNat>`
-
-Similar to `val ?? 0`, but throws if `val` was a non-nil non-natural-number.
-
-#### `function natPos`
-
-`ƒ(val) => impl<isNatPos>`
-
-Similar to `val ?? 0`, but throws if `val` was a non-nil non-positive-integer.
-
-#### `function str`
-
-`ƒ(val) => string`
-
-Similar to `val ?? ''`, but throws if `val` was a non-nil non-string.
-
-#### `function list`
-
-`ƒ(val) => impl<isList>`
-
-Similar to `val ?? []`, but throws if `val` was a non-nil non-list. Used internally in various [list functions](#list).
-
-```js
-f.list()
-// []
-
-f.list([10, 20])
-// [10, 20]
-
-f.list('not list')
-// TypeError: expected "not list" to satisfy test isList
-```
-
-#### `function arr`
-
-`ƒ(val) => Array`
-
-Similar to `val ?? []`, but throws if `val` was a non-nil non-array.
-
-#### `function dict`
-
-`ƒ(val) => impl<isDict>`
-
-Similar to `val ?? {}`, but throws if `val` was a non-nil non-dict.
-
-#### `function struct`
-
-`ƒ(val) => impl<isStruct>`
-
-Similar to `val ?? {}`, but throws if `val` was a non-nil non-struct. Used internally in various [struct functions](#struct).
-
-```js
-f.struct()
-// {}
-
-f.struct({one: 10})
-// {one: 10}
-
-f.struct('not struct')
-// TypeError: expected "not struct" to satisfy test isDict
-```
-
-#### `function comp`
-
-`ƒ(val) => impl<isComp>`
-
-Similar to `val ?? {}`, but throws if `val` was a non-nil primitive.
-
-#### `function toStr`
-
-`ƒ(val) => string`
-
-Similar to `String(val ?? '')`, but throws if `val` was a non-nil non-primitive.
-
-#### `function toArr`
-
-`ƒ(val) => Array`
-
-Nil-tolerant conversion. Converts any [list](#function-islist) into an `Array`. If the input is already an `Array`, it's returned as-is. Converts `null` and `undefined` to `[]`.
-
-```js
-f.toArr()
-// []
-
-f.toArr([10, 20])
-// [10, 20]
-
-f.toArr(function args() {return arguments}(10, 20))
-// [10, 20]
-```
-
-### Assert
-
-Assertion utilities.
-
-#### `function req`
-
-`ƒ(val, test, ...args) => typeof val`
-
-where `test: ƒ(val) => bool`
-
-Short for "require". Minification-friendly assertion. If `!test(value)`, throws an exception with a message including `val` and the name of the test function. Otherwise, returns `val` as-is. Since the assertion doesn't contain any strings, it can be minified to just a few characters.
-
-```js
-f.req({}, f.isObj)
-// {}
-
-f.req('blah', f.isFun)
-// TypeError: expected "blah" to satisfy test isFun
-```
-
-#### `function opt`
-
-`ƒ(val, test, ...args) => typeof val | null | undefined`
-
-where `test: ƒ(val) => bool`
-
-Short for "optional". Similar to `req`, but allows nil values. Performs a type assertion only if `val` is non-nil. Always returns `val` as-is.
-
-#### `function reqInst`
-
-`ƒ(val, Cls) => Cls`
-
-Short for "require instance". Asserts that `val` is an instance of the given class. Returns `val` as-is.
-
-```js
-f.reqInst([10, 20], Array)
-// [10, 20]
-
-f.reqInst(undefined, Array)
-// TypeError: expected undefined to be an instance of Array
-```
-
-#### `function optInst`
-
-`ƒ(val, Cls) => Cls | null | undefined`
-
-Short for "optional instance". Similar to `optInst`, but allows nil values. Performs a type assertion only if `val` is non-nil. Returns `val` as-is.
-
-#### `function reqEach`
-
-`ƒ(list, test, ...args) => typeof list`
-
-Short for "require each". Same as `req` but asserts each value in the provided `list`. Includes the list index in the error message.
-
-```js
-f.reqEach([10, 20], f.isNum)
-// [10, 20]
-
-f.reqEach(['blah'], f.isFun)
-// TypeError: expected "blah" at index 0 to satisfy test isFun
-```
-
-#### `function reqEachVal`
-
-`ƒ(struct, test, ...args) => typeof struct`
-
-Short for "require each value". Similar to `reqEach` but for structs.
-
-### Fun
-
-Miscellaneous utilities and transforms for functions.
-
-#### `function call`
-
-`ƒ(fun, ...args) => any`
-
-Like [`Function.prototype.call`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call). Sometimes useful with higher-order functions.
-
-```js
-f.call(f.add, 10, 20)
-// 3
-
-// equivalent:
-f.add(10, 20)
-f.call(f.add, 10, 20)
-```
-
-#### `function apply`
-
-`ƒ(fun, args) => any`
-
-Like [`Function.prototype.apply`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply). Sometimes useful with higher-order functions.
-
-```js
-f.apply(f.add, [10, 20])
-// 3
-
-// equivalent:
-f.add(10, 20)
-f.add(...[10, 20])
-f.apply(f.add, [10, 20])
-```
-
-#### `function bind`
-
-`ƒ(fun, ...args) => ƒ(...args) => any`
-
-Like [`Function.prototype.bind`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind), but sets implicit `this = fun` as a side effect of the implementation.
-
-Returns a new function that represents [partial application](https://en.wikipedia.org/wiki/Partial_application) of the given function, a common tool in functional programming. When called, it joins arguments from both calls and invokes the original function. Think of it like splitting a function call in two, or more.
+Returns a new function that represents [partial application](https://en.wikipedia.org/wiki/Partial_application) of the given function, a common tool in functional programming. When called, it joins arguments from both calls and invokes the original function. Think of it like splitting a function call in two, or more. Performance is inferior to closures; avoid in hotspots.
 
 ```js
 const inc = f.bind(f.add, 1)
@@ -1170,11 +276,11 @@ inc(2)
 // 3
 ```
 
-Note: Fpx no longer provides facilities for currying. Experience has shown it to be extremely error prone. Currying, as seen in purely functional languages such as Haskell, tends to care about the amount of arguments. Calling a curried function may either create a new function, or call the underlying function (possibly side-effectful). This approach works reasonably well in statically typed purely functional languages, but not in JS, where all functions are variadic, and it's conventional to sometimes pass extra utility arguments "just in case", which the callee may or may not care about. `bind` is different because the created function will always call the original function, regardless of how many arguments were passed.
+Note: Fpx no longer provides facilities for currying. Experience has shown it to be extremely error prone. Currying, as seen in purely functional languages such as Haskell, tends to care about the amount of arguments. Calling a curried function may either create a new function, or call the underlying function (possibly side-effectful). This approach works reasonably well in statically typed languages, but not in JS where all functions are variadic and it's conventional to sometimes pass extra utility arguments "just in case", which the callee may or may not care about. `bind` is different because the created function will always call the original function, regardless of how many arguments were passed.
 
-#### `function not`
+### `function not`
 
-`ƒ(fun) => ƒ(any) => bool`
+Links: [source](fpx.mjs#L5); [test/example](test/test.mjs#L82).
 
 Returns a new function that negates the result of the given function, like a delayed `!`.
 
@@ -1190,1694 +296,1189 @@ different(10, 20)
 function different(a, b) {return !eq(a, b)}
 ```
 
-#### `function cwk`
+### `function is`
 
-Short for "call without key".
+Links: [source](fpx.mjs#L12); [test/example](test/test.mjs#L106).
 
-`ƒ(val, _key, fun, ...args) => any` = `fun(val, ...args)`
+Identity test: same as `===`, but considers `NaN` equal to `NaN`. Equivalent to [_SameValueZero_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevaluezero) as defined by the language spec. Used internally in Fpx for all identity tests.
 
-Tool for omitting the "key" argument in various list and struct functions. Calls the provided function, skipping the second argument. Example from Fpx source:
-
-```js
-function isListOf(val, fun, ...args) {
-  req(fun, isFun)
-  return isList(val) && every(val, cwk, fun, ...args)
-}
-```
-
-### Misc
-
-Uncategorised utils.
-
-#### `function vac`
-
-`ƒ(val) => typeof val | undefined`
-
-Short for "vacuum" or "vacuous". Same as `val || undefined`. Don't confuse with [`vacate`](#function-vacate).
-
-#### `function True`
-
-`ƒ() => true`
-
-Always returns `true`. Sometimes useful in higher-order functions.
-
-#### `function False`
-
-`ƒ() => false`
-
-Always returns `false`. Sometimes useful in higher-order functions.
-
-### List
-
-List manipulation utils.
-
-Common rules:
-
-  * Accept `null` and `undefined`, treating them as `[]`.
-  * Accept inputs that satisfy [`isList`](#function-islist): `arguments`, typed arrays, Node buffers, DOM lists, etc.
-  * Reject other inputs with an exception.
-  * Don't modify the input; return a new version instead.
-  * Accept [bonus arguments](#bonus-arguments) for the operator function.
-
-Note that _strings are not considered lists_.
-
-#### `function len`
-
-`ƒ(list) => integer`
-
-Equivalent to `f.list(list).length`. Allows `null` and `undefined`. Rejects non-lists with an exception.
+Note that [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) implements [_SameValue_](https://www.ecma-international.org/ecma-262/6.0/#sec-samevalue), which treats `-0` and `+0` as _distinct values_. This is typically undesirable. As a result, you should prefer `f.is` over `===` or `Object.is`.
 
 ```js
-f.len()
-// 0
-
-f.len([10, 20])
-// 2
-
-f.len({one: 10, two: 20})
-// TypeError
-
-f.len('string')
-// TypeError
-```
-
-#### `function hasLen`
-
-`ƒ(val) => bool`
-
-True if `isList(val)` and `!len(val)`. For non-list objects, see [`hasSize`](#function-hassize)
-
-```js
-f.hasLen(undefined)
+f.is(1, '1')
 // false
 
-f.hasLen('blah')
-// false
-
-f.hasLen([10, 20])
-// true
-
-f.hasLen({one: 10, two: 20})
-// false
-```
-
-#### `function vacate`
-
-`ƒ(list) => typeof list | undefined`
-
-Takes a list, returns `undefined` if empty, otherwise returns `list` as-is.
-
-```js
-f.vacate()
-// undefined
-
-f.vacate([])
-// undefined
-
-f.vacate([10])
-// [10]
-```
-
-#### `function each`
-
-`ƒ(list, fun, ...args) => void`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Like [`Array.prototype.forEach`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach), but works on `null`, `undefined`, and array-likes.
-
-```js
-function report(val, index, ...args) {
-  console.info(val, index, ...args)
-}
-
-f.each(['one', 'two'], report, 10, 20, 30)
-// 'one' 0 10 20 30
-// 'two' 1 10 20 30
-```
-
-#### `function map`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(val, index, ...args)`
-
-Like [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map), but works on `null`, `undefined`, and array-likes.
-
-```js
-function double(num) {return num * 2}
-
-f.map([10, 20, 30], double)
-// [20, 40, 60]
-```
-
-#### `function mapMut`
-
-`ƒ(list, fun, ...args) => typeof list`
-
-where `fun: ƒ(elem, index, ...args) => any`
-
-Similar to `map`, but maps the input in-place and returns it as-is. The input must be a mutable list.
-
-#### `function mapFlat`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Similar to `map`, but flattens any lists returned by `fun` into the output array. Equivalent to `f.flat(f.map(...arguments))`.
-
-```js
-f.mapFlat([10, [20], [[30]]], x => x)
-// [10, 20, [30]]
-```
-
-#### `function mapFlatDeep`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Similar to `map`, but deeply flattens any lists returned by `fun`, returning a completely flat array. Equivalent to `f.flatDeep(f.map(...arguments))`.
-
-```js
-f.mapFlatDeep([10, [20], [[[30]]]], x => x)
-// [10, 20, 30]
-```
-
-#### `function mapFilter`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Similar to `map`, but drops any "falsy" values from the output. Equivalent to `f.compact(f.map(...arguments))`.
-
-```js
-f.mapFilter([10, 0, 20, 0], x => x * 2)
-// [20, 40]
-```
-
-#### `function filter`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Like [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), but works on `null`, `undefined`, and array-likes.
-
-```js
-f.filter([10, 20, true, false], f.isBool)
-// [true, false]
-```
-
-#### `function reject`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Opposite of `filter`: drops elements that don't satisfy `fun`.
-
-```js
-f.reject([10, 20, true, false], f.isNum)
-// [true, false]
-```
-
-#### `function fold`
-
-`ƒ(list, acc, fun, ...args) => typeof acc`
-
-where `fun: ƒ(acc, elem, index, ...args) => typeof acc`
-
-Like [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce), with the following differences:
-
-  * Accepts `null`, `undefined`, and array-likes.
-  * The argument order is `list, acc, fun` rather than `this=list, fun, acc`.
-  * The acc argument is mandatory.
-
-```js
-f.fold([10, 20], 5, f.add)
-// 5 + 10 + 20 = 35
-```
-
-#### `function foldRight`
-
-`ƒ(list, acc, fun, ...args) => typeof acc`
-
-where `fun: ƒ(acc, list, index, ...args) => typeof acc`
-
-Like [`Array.prototype.reduceRight`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight), with the following differences:
-
-  * Accepts `null`, `undefined`, and array-likes.
-  * The argument order is `list, acc, fun` rather than `this=list, fun, acc`.
-  * The acc argument is mandatory.
-
-```js
-f.foldRight([1, 5, 20], 100, f.sub)
-// 100 - 20 - 5 - 1 = 74
-```
-
-#### `function fold1`
-
-`ƒ(list, fun, ...args) => any`
-
-where `fun: ƒ(acc, elem, index, ...args) => any`
-
-Like [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) without the initial accumulator argument, with the following differences:
-
-  * Accepts `null`, `undefined`, and array-likes.
-  * Allows an empty list, returning `undefined`.
-  * The argument order is `list, fun` rather than `this=list, fun`.
-
-```js
-f.fold1([10, 20], f.add)
-// 10 + 20 = 30
-```
-
-#### `function compact`
-
-`ƒ(list) => Array`
-
-Returns a version of `list` without any "falsy" elements. Equivalent to `f.filter(list, id)`.
-
-```js
-f.compact([10, 0, 20, NaN, 30, undefined])
-// [10, 20, 30]
-```
-
-#### `function find`
-
-`ƒ(list, fun, ...args) => any`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Like [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find), but works on `null`, `undefined`, and array-likes.
-
-```js
-f.find([true, 10, false, 20, true], f.isNum)
-// 10
-```
-
-#### `function findRight`
-
-`ƒ(list, fun, ...args) => any`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Like `find`, but iterates from the _end_ of the list. Returns the rightmost element that satisfies `fun`, or `undefined` if none do.
-
-```js
-f.findRight([true, 10, false, 20, true], f.isNum)
-// 20
-```
-
-#### `function findIndex`
-
-`ƒ(list, fun, ...args) => integer`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Like [`Array.prototype.findIndex`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex), but works on `null`, `undefined`, and array-likes.
-
-```js
-f.findIndex([true, 10, false, 20, true], f.isNum)
-// 1
-```
-
-#### `function findIndexRight`
-
-`ƒ(list, fun, ...args) => integer`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Like `findIndex`, but iterates from the _end_ of the list. Returns the index of the rightmost element that satisfies `fun`, or `-1` if none do.
-
-```js
-f.findIndexRight([true, 10, false, 20, true], f.isNum)
-// 3
-```
-
-#### `function indexOf`
-
-`ƒ(list, elem) => integer`
-
-Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf), with the following differences:
-
-  * Works on `null`, `undefined`, and array-likes.
-  * Uses [`is`](#function-is) rather than `===` and therefore detects `NaN`.
-
-```js
-f.indexOf([10, NaN, NaN, 20], NaN)
-// 1
-```
-
-#### `function lastIndexOf`
-
-`ƒ(list, elem) => integer`
-
-Like [`Array.prototype.lastIndexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf), with the following differences:
-
-  * Works on `null`, `undefined`, and array-likes.
-  * Uses [`is`](#function-is) rather than `===` and therefore detects `NaN`.
-
-```js
-f.lastIndexOf([10, NaN, NaN, 20], NaN)
-// 2
-```
-
-#### `function includes`
-
-`ƒ(list, elem) => bool`
-
-Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes), but works on `null`, `undefined`, and array-likes.
-
-```js
-f.includes([10, 20, 30], NaN)
-// false
-
-f.includes([10, 20, NaN], NaN)
+f.is(NaN, NaN)
 // true
 ```
 
-#### `function procure`
+### `function truthy`
 
-`ƒ(list, fun, ...args) => any`
+Links: [source](fpx.mjs#L13); [test/example](test/test.mjs#L92).
 
-Similar to [`find`](#function-find), but returns the first truthy result of calling `fun`, rather than the corresponding list element.
+Same as `!!` or `Boolean`. Sometimes useful with higher-order functions.
 
-```js
-function double(num) {return num * 2}
+### `function falsy`
 
-f.procure([0, 0, 10, 100], double)
-// double(10) = 20
-```
+Links: [source](fpx.mjs#L14); [test/example](test/test.mjs#L99).
 
-#### `function every`
+Same as `!`. Sometimes useful with higher-order functions.
 
-`ƒ(list, fun, ...args) => bool`
+### `function isNil`
 
-where `fun: ƒ(elem, index, ...args)`
+Links: [source](fpx.mjs#L15); [test/example](test/test.mjs#L128).
 
-Like [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every), but works on `null`, `undefined`, and array-likes.
+True for `null` and `undefined`. Same as `value == null`. Incidentally, these are the only values that produce an exception when attempting to read a property: `null.someProperty`.
 
 ```js
-f.every([], f.isBool)
+// Definition
+function isNil(value) {return value == null}
+
+f.isNil(null)
 // true
 
-f.every([true, false], f.isBool)
+f.isNil(undefined)
 // true
 
-f.every([true, false, 10, 20], f.isBool)
+f.isNil(false)
 // false
 ```
 
-#### `function some`
+### `function isSome`
 
-`ƒ(list, fun, ...args) => bool`
+Links: [source](fpx.mjs#L16); [test/example](test/test.mjs#L136).
 
-where `fun: ƒ(elem, index, ...args)`
+Inverse of [#`isNil`](#function-isnil). False for `null` and `undefined`, true for other values.
 
-Like [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some), but works on `null`, `undefined`, and array-likes.
+### `function isBool`
+
+Links: [source](fpx.mjs#L17); [test/example](test/test.mjs#L144).
+
+Same as `typeof val === 'boolean'`.
+
+### `function isNum`
+
+Links: [source](fpx.mjs#L18); [test/example](test/test.mjs#L153).
+
+Same as `typeof val === 'number'`. True if the value is a primitive number, _including_ `NaN` and `±Infinity`. In most cases you should use `isFin` instead.
 
 ```js
-f.some([], f.isBool)
-// false
-
-f.some([10, 20], f.isBool)
-// false
-
-f.some([true, false, 10, 20], f.isBool)
+f.isNum(1)
 // true
-```
-
-#### `function slice`
-
-`ƒ(list, start, next) => Array`
-
-Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice), but also accepts `null` and `undefined`. `start` and `next` can be missing or negative; see the linked documentation.
-
-```js
-f.slice([10, 20, 30, 40, 50], 1, -1)
-// [20, 30, 40]
-```
-
-#### `function append`
-
-`ƒ(list, elem) => Array`
-
-Returns a version of `list` with `elem` appended at the end.
-
-```js
-f.append([10, 20], 30)
-// [10, 20, 30]
-```
-
-#### `function prepend`
-
-`ƒ(list, elem) => Array`
-
-Returns a version of `list` with `elem` prepended at the start.
-
-```js
-f.prepend([20, 30], 10)
-// [10, 20, 30]
-```
-
-#### `function remove`
-
-`ƒ(list, elem) => Array`
-
-Returns a version of `list` with one occurrence of `elem` removed. May return
-the original list.
-
-```js
-f.remove(['one', 'two', 'three'], 'two')
-// ['one', 'three']
-
-f.remove(['one', 'two', 'one'], 'one')
-// ['two', 'one']
-```
-
-#### `function adjoin`
-
-`ƒ(list, elem) => Array`
-
-Appends `elem` to `list`, duplicate-free. Returns the same `list` if it already [`includes`](#function-includes) `elem`. Always returns an `Array`, converting the input from a non-array list.
-
-```js
-f.adjoin([10, 20], 30)
-// [10, 20, 30]
-
-f.adjoin([10, 20, 30], 20)
-// [10, 20, 30]
-```
-
-#### `function toggle`
-
-`ƒ(list, elem) => Array`
-
-Appends or removes `elem`, depending on whether it's already [`included`](#function-includes).
-
-```js
-f.toggle([10, 20], 30)
-// [10, 20, 30]
-
-f.toggle([10, 20, 30], 30)
-// [10, 20]
-```
-
-#### `function insertAt`
-
-`ƒ(val, ind, elem) => Array`
-
-Returns a version of `list` with `val` inserted at `ind`, moving subsequent elements to the end. `ind` must be an integer within list bounds + 1, otherwise throws.
-
-```js
-f.insertAt(undefined, 0, 'zero')
-// ['zero']
-
-f.insertAt(['zero', 'one', 'two'], 0, 'absolute zero')
-// ['absolute zero', 'zero', 'one', 'two']
-
-f.insertAt(['zero', 'one', 'two'], 2, '...')
-// ['zero', 'one', '...', 'two']
-```
-
-#### `function replaceAt`
-
-`ƒ(val, ind, elem) => Array`
-
-Returns a version of `list` with the value at `ind` replaced with `elem`. Index must be within bounds, otherwise throws.
-
-```js
-f.replaceAt(['zero', 'two'], 0, 'one')
-// ['one', 'two']
-
-f.replaceAt(['one', 'two'], 1, 'three')
-// ['one', 'three']
-```
-
-#### `function removeAt`
-
-`ƒ(val, ind) => Array`
-
-Returns a version of `list` with the value at `ind` removed, if within bounds. `ind` must be an integer, otherwise throws.
-
-```js
-f.removeAt(['zero', 'one', 'two'], 0)
-// ['one', 'two']
-
-f.removeAt(['zero', 'one', 'two'], 1)
-// ['zero', 'two']
-
-f.removeAt(['zero', 'one', 'two'], 10)
-// ['zero', 'one', 'two']
-```
-
-#### `function concat`
-
-`ƒ(...lists) => Array`
-
-Concatenates lists, ignoring non-list arguments.
-
-**Different** from [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat), which inherited Scheme's hazardous mistake of appending non-list inputs while flattening list inputs. This leads to surprising errors and/or intentional abuse. Fpx's `concat` rejects non-lists, preventing this gotcha.
-
-Note: for individual elements, use [`append`](#function-append) and
-[`prepend`](#function-prepend) instead.
-
-```js
-f.concat()
-// []
-
-f.concat([10], [20], [30])
-// [10, 20, 30]
-
-f.concat([10, 20], 30)
-// TypeError: expected 30 to satisfy test isList
-```
-
-#### `function flat`
-
-`ƒ(list) => Array`
-
-Returns a version of `list` flattened one level down.
-
-```js
-f.flat([10, [20], [[30]]])
-// [10, 20, [30]]
-```
-
-#### `function flatDeep`
-
-`ƒ(list) => Array`
-
-Returns a version of `list` with all nested lists flattened into one result.
-
-```js
-f.flatDeep([10, [20], [[[30]]]])
-// [10, 20, 30]
-```
-
-#### `function head`
-
-`ƒ(list) => any`
-
-Returns the first element of the given list.
-
-```js
-f.head()
-// undefined
-
-f.head([10, 20, 30])
-// 10
-```
-
-#### `function tail`
-
-`ƒ(list) => Array`
-
-Returns all but first element of the given list.
-
-```js
-f.tail()
-// []
-
-f.tail([10, 20, 30])
-// [20, 30]
-```
-
-#### `function init`
-
-`ƒ(list) => Array`
-
-Returns all but last element of the given list.
-
-```js
-f.init()
-// []
-
-f.init([10, 20, 30])
-// [10, 20]
-```
-
-#### `function last`
-
-`ƒ(list) => any`
-
-Returns the last element of the given list.
-
-```js
-f.last()
-// undefined
-
-f.last([10, 20, 30])
-// 30
-```
-
-#### `function take`
-
-`ƒ(list, count) => Array`
-
-Returns a sub-`list` with `count` elements taken from the start. Equivalent to `f.slice(list, count)`.
-
-```js
-f.take(undefined, 0)
-// []
-
-f.take([10, 20, 30, 40], 2)
-// [10, 20]
-
-f.take([10, 20, 30, 40], Infinity)
-// [10, 20, 30, 40]
-```
-
-#### `function takeWhile`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args) => bool`
-
-Returns a sub-`list` with elements from the start for which `fun` returned something truthy. Stops taking elements as soon as `fun` returns something falsy.
-
-#### `function drop`
-
-`ƒ(list, count) => Array`
-
-Returns a sub-`list` with `count` elements removed from the start. Equivalent to `f.slice(list, 0, count)`.
-
-```js
-f.drop(undefined, 0)
-// []
-
-f.drop([10, 20, 30, 40], 2)
-// [30, 40]
-
-f.drop([10, 20, 30, 40], Infinity)
-// []
-```
-
-#### `function dropWhile`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args) => bool`
-
-Returns a sub-`list` without elements from the start for which `fun` returned something truthy. Stops dropping elements as soon as `fun` returns something falsy.
-
-#### `function count`
-
-`ƒ(list, fun, ...args) => integer`
-
-where `fun: ƒ(elem, index, ...args) => bool`
-
-Counts elements for which `fun` returns something truthy.
-
-#### `function countWhile`
-
-`ƒ(list, fun, ...args) => integer`
-
-where `fun: ƒ(elem, index, ...args) => bool`
-
-Counts elements for which `fun` returns something truthy, but stops counting as soon as it returns something falsy.
-
-#### `function times`
-
-`ƒ(count, fun, ...args) => Array`
-
-where `fun: ƒ(index, ...args) => any`
-
-Create a populates an array of the given size, where elements are created by calling `fun`.
-
-#### `function reverse`
-
-`ƒ(list) => Array`
-
-Like [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse), with the following differences:
-
-  * Works on `null`, `undefined`, and array-likes.
-  * Returns a new version instead of mutating the list.
-
-```js
-f.reverse()
-// []
-
-f.reverse([10, 20, 30])
-// [30, 20, 10]
-```
-
-#### `function sort`
-
-`ƒ(list, ?fun) => Array`
-
-where `fun: ƒ(any, any) => integer`
-
-Like [`Array.prototype.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort), with the following differences:
-
-  * Works on `null`, `undefined`, and array-likes.
-  * Returns a new version instead of mutating the list.
-
-```js
-// Messed-up default JS sorting.
-f.sort([3, 22, 111])
-// [111, 22, 3]
-
-// Use a custom comparator to sort numbers properly.
-f.sort([3, 22, 111], f.sub)
-// [3, 22, 111]
-```
-
-#### `function sortBy`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, ...args)`
-
-Returns a version of `list` sorted by the order of values returned by `fun`, which is called on every element with the bonus arguments. Kinda like mapping `list` to `fun`, sorting the result, then changing the element order in the original list the same way.
-
-The "virtual elements" are sorted the same way as in `.sort()`, i.e. by the Unicode code order of its stringified elements; see the relevant [part of the spec](https://tc39.github.io/ecma262/#sec-sortcompare). `sortBy` currently doesn't accept a custom comparator, although this could be changed if needed.
-
-Works on array-likes. Note that `fun` doesn't receive an element index.
-
-```js
-function getId({id}) {return id}
-
-f.sortBy([{id: 3}, {id: 22}, {id: 111}], getId)
-// [{id: 111}, {id: 22}, {id: 3}]
-```
-
-#### `function sortCompare`
-
-`ƒ(left, right) => integer`
-
-Default JS algorithm for comparing elements when sorting, as described in the spec. Reference: https://tc39.github.io/ecma262/#sec-sortcompare.
-
-#### `function intersect`
-
-`ƒ(left, right) => Array`
-
-Returns a list representing a [set intersection](https://en.wikipedia.org/wiki/Set_intersection) of the two lists. It contains only the elements that occur in both lists, tested via [`is`](#function-is), without any duplicates.
-
-```js
-f.intersect([10, 20, 20, 30], [20, 30, 30, 40])
-// [20, 30]
-
-f.intersect([10, 20], undefined)
-// []
-```
-
-#### `function keyBy`
-
-`ƒ(list, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Returns a dict where `list`'s values are assigned to the keys created by `fun`.
-
-Major difference from Lodash's `_.keyBy`: keys must pass the [`isKey`](#function-iskey) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
-
-```js
-function double(value) {return value * 2}
-
-f.keyBy([10, 20, 30], double)
-// {20: 10, 40: 20, 60: 30}
-```
-
-#### `function groupBy`
-
-`ƒ(list, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Similar to `keyBy`: returns a dict where keys have been created by calling `fun`. Unlike `keyBy`, it groups values into lists, accumulating them for repeating keys instead of overwriting.
-
-Just like `keyBy`, and unlike Lodash's `_.groupBy`, keys must pass the [`isKey`](#function-iskey) test or be ignored. This helps avoid accidental garbage in the output.
-
-```js
-function oddness(value) {return value % 2}
-
-f.groupBy([10, 13, 16, 19], oddness)
-// {0: [10, 16], 1: [13, 19]}
-```
-
-#### `function uniq`
-
-`ƒ(list) => Array`
-
-Returns a version of `list` without duplicate elements, compared via [`is`](#function-is).
-
-```js
-f.uniq([10, 20, NaN, 20, NaN, 30])
-// [10, 20, NaN, 30]
-```
-
-#### `function uniqBy`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Returns a version of `list` where no two elements have produced the same result when `fun` was called on them. The results are compared via [`is`](#function-is).
-
-```js
-function isOdd(value) {return !!(value % 2)}
-
-f.uniqBy([10, 13, 16, 19], isOdd)
-// [10, 13]
-```
-
-#### `function partition`
-
-`ƒ(list, fun, ...args) => [Array, Array]`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Splits `list` into "accepted" and "rejected" groups. The accepted group contains elements for which `fun` returned something truthy, and the rejected group contains the rest.
-
-```js
-function isOdd(value) {return !!(value % 2)}
-
-f.partition([10, 13, 16, 19], isOdd)
-// [[13, 19], [10, 16]]
-```
-
-#### `function sum`
-
-`ƒ(list) => impl<isFin>`
-
-Sums all elements of `list` that satisfy [`isFin`](#function-isfin), ignoring the rest.
-
-```js
-f.sum([10, NaN, 20, '5'])
-// 30
-```
-
-#### `function sumBy`
-
-`ƒ(list, fun, ...args) => impl<isFin>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Calls `fun` on every element of the list and sums the results. Like `sum`, ignores values that don't satisfy [`isFin`](#function-isfin).
-
-```js
-f.sumBy([10, undefined, '20'], Number)
-// 30
-```
-
-#### `function min`
-
-`ƒ(list) => impl<isFin>`
-
-Finds the smallest value in `list` that also satisfies [`isFin`](#function-isfin), or `undefined`. Note that it ignores `±Infinity`.
-
-```js
-f.min([])
-// undefined
-
-f.min(['10', 20, '30', -Infinity, NaN])
-// 20
-```
-
-#### `function max`
-
-`ƒ(list) => impl<isFin>`
-
-Finds the largest value in `list` that also satisfies [`isFin`](#function-isfin), or `undefined`. Note that it ignores `±Infinity`.
-
-```js
-f.max([])
-// undefined
-
-f.max(['10', 20, '30', Infinity, NaN])
-// 20
-```
-
-#### `function minBy`
-
-`ƒ(list, fun, ...args) => impl<isFin>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Calls `fun` on every element of the list and returns the smallest result, using the same rules as [`min`](#function-min).
-
-Note a major difference from Lodash's `_.minBy`: this returns the smallest value returned by `fun`, not its corresponding list element. I find this far more intuitive. See `findMinBy` for the counterpart to `_.minBy`.
-
-```js
-function getNum({num}) {return num}
-
-f.minBy([{num: 10}, {num: 20}, {num: 30}], getNum)
-// 10
-```
-
-#### `function maxBy`
-
-`ƒ(list, fun, ...args) => impl<isFin>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Calls `fun` on every element of the list and returns the largest result, using the same rules as [`max`](#function-max).
-
-Note a major difference from Lodash's `_.maxBy`: this returns the smallest value returned by `fun`, not its corresponding list element. I find this far more intuitive. See `findMaxBy` for the counterpart to `_.maxBy`.
-
-```js
-function getNum({num}) {return num}
-
-f.maxBy([{num: 10}, {num: 20}, {num: 30}], getNum)
-// 30
-```
-
-#### `function findMinBy`
-
-`ƒ(list, fun, ...args) => impl<isFin>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Calls `fun` on every element of the list and returns the element for which `fun` returned the smallest value, using the same rules as [`min`](#function-min).
-
-Similar to Lodash's `_.minBy`.
-
-```js
-function getNum({num}) {return num}
-
-f.findMinBy([{num: 10}, {num: 20}, {num: 30}], getNum)
-// {num: 10}
-```
-
-#### `function findMaxBy`
-
-`ƒ(list, fun, ...args) => impl<isFin>`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Calls `fun` on every element of the list and returns the element for which `fun` returned the largest value, using the same rules as [`max`](#function-max).
-
-Similar to Lodash's `_.maxBy`.
-
-```js
-function getNum({num}) {return num}
-
-f.findMaxBy([{num: 10}, {num: 20}, {num: 30}], getNum)
-// {num: 30}
-```
-
-#### `function range`
-
-`ƒ(start, next) => Array`
-
-Returns a list of integers from `start` (inclusive) to `next` (exclusive). Both inputs must be integers, with `start <= next`.
-
-```js
-f.range(5, 10)
-// [5, 6, 7, 8, 9]
-
-f.range(-10, 5)
-// [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4]
-```
-
-#### `function zip`
-
-`ƒ(entries) => Record<impl<isKey>, any>`
-
-Like [`Object.fromEntries`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries), but the input may be `null`, `undefined`, or array-like.
-
-### Struct
-
-Utils for dealing with non-list objects, called "structs" or "dictionaries" in Fpx.
-
-Common rules:
-
-  * Accept `null` and `undefined`, treating them as `{}`.
-  * Accept non-list objects; reject lists and all other inputs with an exception.
-  * Don't modify the input; return a new version instead.
-  * Accept [bonus arguments](#bonus-arguments) for the operator function.
-
-Property getters `get`, `scan`, `getIn` and `getter` work on _any_ input, even primitives.
-
-#### `function size`
-
-`ƒ(struct) => integer`
-
-Equivalent to `Object.keys(f.struct(struct)).length`. Allows `null` and `undefined`. Rejects non-structs with an exception.
-
-```js
-f.size()
-// 0
-
-f.size({one: 10, two: 20})
-// 2
-
-f.size([10, 20])
-// TypeError
-
-f.size('string')
-// TypeError
-```
-
-#### `function hasSize`
-
-`ƒ(val) => bool`
-
-True if `isStruct(val)` and `!size(val)`. For lists, see [`hasLen`](#function-haslen).
-
-```js
-f.hasSize(undefined)
+f.isNum('1')
 // false
+f.isNum(NaN)
+// true <-- WTF
+```
 
-f.hasSize('blah')
+### `function isFin`
+
+Links: [source](fpx.mjs#L19); [test/example](test/test.mjs#L164).
+
+Same as ES2015's [`Number.isFinite`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite). True if `val` is a primitive number and is _not_ `NaN` or `±Infinity`. In most cases you should prefer `isFin` over `isNum`.
+
+```js
+f.isFin(1)
+// true
+f.isFin('1')
 // false
-
-f.hasSize([10, 20])
+f.isFin(NaN)
 // false
+```
 
-f.hasSize({one: 10, two: 20})
+### `function isFinNeg`
+
+Links: [source](fpx.mjs#L20); [test/example](test/test.mjs#L178).
+
+True if value is finite (via [#`isFin`](#function-isfin)) and < 0.
+
+### `function isFinPos`
+
+Links: [source](fpx.mjs#L21); [test/example](test/test.mjs#L197).
+
+True if value is finite (via [#`isFin`](#function-isfin)) and > 0.
+
+### `function isInt`
+
+Links: [source](fpx.mjs#L22); [test/example](test/test.mjs#L216).
+
+True if value is an integer: finite via [#`isFin`](#function-isfin), without a fractional part.
+
+### `function isNat`
+
+Links: [source](fpx.mjs#L23); [test/example](test/test.mjs#L234).
+
+True if value is a natural number: integer >= 0. Also see [#`isIntPos`](#function-isintpos).
+
+### `function isIntNeg`
+
+Links: [source](fpx.mjs#L24); [test/example](test/test.mjs#L252).
+
+True if value is integer < 0. Also see [#`isFinNeg`](#function-isfinneg).
+
+### `function isIntPos`
+
+Links: [source](fpx.mjs#L25); [test/example](test/test.mjs#L271).
+
+True if value is integer > 0. Also see [#`isNat`](#function-isnat), [#`isFinPos`](#function-isfinpos).
+
+### `function isNaN`
+
+Links: [source](fpx.mjs#L26); [test/example](test/test.mjs#L290).
+
+Same as ES2015's [`Number.isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN). True if value is _actually_ `NaN`. Doesn't coerce non-numbers to numbers, unlike global `isNaN`.
+
+### `function isInf`
+
+Links: [source](fpx.mjs#L27); [test/example](test/test.mjs#L305).
+
+True if value is `-Infinity` or `Infinity`.
+
+### `function isBigInt`
+
+Links: [source](fpx.mjs#L28); [test/example](test/test.mjs#L320).
+
+True if value is a primitive [`BigInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt). False for all other inputs, including `BigInt` object wrappers.
+
+### `function isStr`
+
+Links: [source](fpx.mjs#L29); [test/example](test/test.mjs#L339).
+
+Same as `typeof val === 'string'`. True if value is a primitive string.
+
+### `function isSym`
+
+Links: [source](fpx.mjs#L30); [test/example](test/test.mjs#L346).
+
+Same as `typeof val === 'symbol'`. True if value is a primitive symbol.
+
+### `function isKey`
+
+Links: [source](fpx.mjs#L31); [test/example](test/test.mjs#L353).
+
+True if value qualifies as a dictionary key. True for all primitives excluding garbage values via [#`isJunk`](#function-isjunk).
+
+### `function isJunk`
+
+Links: [source](fpx.mjs#L32); [test/example](test/test.mjs#L373).
+
+True for garbage values: [#nil](#function-isnil), [#`NaN`](#function-isnan), [#`±Infinity`](#function-isinf).
+
+### `function isComp`
+
+Links: [source](fpx.mjs#L33); [test/example](test/test.mjs#L388).
+
+True if value is "composite" / "compound" / "complex". Opposite of [#`isPrim`](#function-isprim). Definition:
+
+```js
+function isComp(val) {return isObj(val) || isFun(val)}
+```
+
+### `function isPrim`
+
+Links: [source](fpx.mjs#L34); [test/example](test/test.mjs#L402).
+
+True if value is a JS primitive: not an object, not a function. Opposite of [#`isComp`](#function-iscomp).
+
+### `function isFun`
+
+Links: [source](fpx.mjs#L35); [test/example](test/test.mjs#L416).
+
+Same as `typeof val === 'function'`. True if value is a function.
+
+### `function isObj`
+
+Links: [source](fpx.mjs#L36); [test/example](test/test.mjs#L423).
+
+Same as `typeof val === 'object' && val !== null`. True for any JS object: plain dict, array, various other classes. Doesn't include functions, even though JS functions are extensible objects.
+
+Note: this is _not_ equivalent to Lodash's `_.isObject`, which counts functions as objects. Use [#`isComp`](#function-iscomp) for that.
+
+For plain objects used as dictionaries, see [#`isDict`](#function-isdict). For fancy non-list objects, see [#`isStruct`](#function-isstruct).
+
+### `function isStruct`
+
+Links: [source](fpx.mjs#L37); [test/example](test/test.mjs#L439).
+
+True if value is a non-iterable object. Excludes both [#sync iterables](#function-isiter) and [#async iterables](#function-isiterasync). Note that [#dicts](#function-isdict) are automatically structs, but not all structs are dicts.
+
+### `function isArr`
+
+Links: [source](fpx.mjs#L38); [test/example](test/test.mjs#L456).
+
+Alias for [`Array.isArray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray). Used internally for all array checks.
+
+True if value is an instance of [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) or its subclass. False for all other values, including non-array objects whose prototype is an array.
+
+### `function isReg`
+
+Links: [source](fpx.mjs#L39); [test/example](test/test.mjs#L468).
+
+True if value is an instance of [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) or its subclass.
+
+### `function isDate`
+
+Links: [source](fpx.mjs#L40); [test/example](test/test.mjs#L476).
+
+True of value is an instance of [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date). Most of the time you should prefer [#`isValidDate`](#function-isvaliddate).
+
+### `function isValidDate`
+
+Links: [source](fpx.mjs#L41); [test/example](test/test.mjs#L484).
+
+True of value is an instance of [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) and its timestamp is [#finite](#function-isfin) rather than `NaN`.
+
+### `function isInvalidDate`
+
+Links: [source](fpx.mjs#L42); [test/example](test/test.mjs#L491).
+
+True of value is an instance of [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) representing an invalid date whose timestamp is `NaN`.
+
+### `function isSet`
+
+Links: [source](fpx.mjs#L43); [test/example](test/test.mjs#L498).
+
+True if value is an instance of [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) or its subclass.
+
+### `function isMap`
+
+Links: [source](fpx.mjs#L44); [test/example](test/test.mjs#L508).
+
+True if value is an instance of [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) or its subclass.
+
+### `function isPromise`
+
+Links: [source](fpx.mjs#L45); [test/example](test/test.mjs#L518).
+
+True if the value satisfies the ES2015 [promise interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+
+### `function isIter`
+
+Links: [source](fpx.mjs#L46); [test/example](test/test.mjs#L527).
+
+True if the value satisfies the ES2015 [sync iterable interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols). For _iterator_ rather than _iterable_, use [#`isIterator`](#function-isiterator).
+
+### `function isIterAsync`
+
+Links: [source](fpx.mjs#L47); [test/example](test/test.mjs#L553).
+
+True if the value satisfies the ES2015 [async iterable interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of). For _iterator_ rather than _iterable_, use [#`isIteratorAsync`](#function-isiteratorasync).
+
+### `function isIterator`
+
+Links: [source](fpx.mjs#L48); [test/example](test/test.mjs#L570).
+
+True if the value satisfies the ES2015 [sync iterator interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols). For _iterable_ rather than _iterator_, use [#`isIter`](#function-isiter).
+
+### `function isIteratorAsync`
+
+Links: [source](fpx.mjs#L49); [test/example](test/test.mjs#L596).
+
+True if the value satisfies the ES2015 [async iterator interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of). For _iterable_ rather than _iterator_, use [#`isIterAsync`](#function-isiterasync).
+
+### `function isGen`
+
+Links: [source](fpx.mjs#L50); [test/example](test/test.mjs#L622).
+
+True if value is a [#sync iterator](#function-isiterator) created by calling a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
+
+### `function isCls`
+
+Links: [source](fpx.mjs#L51); [test/example](test/test.mjs#L682).
+
+True if the input is a function with a prototype, likely to be a class. False for arrow functions such as `() => {}`, which don't have a prototype.
+
+### `function isDict`
+
+Links: [source](fpx.mjs#L52); [test/example](test/test.mjs#L694).
+
+True for a "plain object" created via `{...}` or `Object.create(null)`. False for any other input, including instances of any class other than `Object`. Roughly equivalent to Lodash's `_.isPlainObject`.
+
+See [#`isStruct`](#function-isstruct) for a more general definition of a non-iterable object.
+
+### `function isList`
+
+Links: [source](fpx.mjs#L53); [test/example](test/test.mjs#L707).
+
+True for any array-like such as: `[]`, `arguments`, `TypedArray`, `NodeList`, etc. Used internally for most list checks. Note that _primitive strings are not considered lists_.
+
+### `function isSeq`
+
+Links: [source](fpx.mjs#L54); [test/example](test/test.mjs#L722).
+
+True for any of:
+
+  * [#Array](#function-isarr)
+  * [#List](#function-islist)
+  * [#Set](#function-isset)
+  * [#Iterator](#function-isiterator)
+
+Many Fpx functions support arbitrary data structures compatible with [#`values`](#function-values), but some functions such as [#`arr`](#function-arr) allow only sequences, for sanity checking.
+
+### `function isInst`
+
+Links: [source](fpx.mjs#L58); [test/example](test/test.mjs#L739).
+
+Signature: `(val, Cls) => bool`.
+
+Same as `instanceof` but _does not_ implicitly convert the operand to an object. True only if the operand is already an instance of the given class.
+
+### `function hasMeth`
+
+Links: [source](fpx.mjs#L63); [test/example](test/test.mjs#L755).
+
+True if the the given value has the given named method. Safe to call on primitives such as `null`. Always false for primitives.
+
+### `function isListOf`
+
+Links: [source](fpx.mjs#L65); [test/example](test/test.mjs#L775).
+
+Shortcut for `isList(val) && every(val, fun)`. True if the input is a list of values that satisfy the given predicate function.
+
+### `function isEmpty`
+
+Links: [source](fpx.mjs#L70); [test/example](test/test.mjs#L794).
+
+True if the input is an empty collection such as list, set, map, or a primitive such as `null`. False for any other non-primitive. Treating primitives as "empty" is consistent with other Fpx functions that operate on collections.
+
+### `function isVac`
+
+Links: [source](fpx.mjs#L77); [test/example](test/test.mjs#L811).
+
+Short for "is vacuous" or "is vacated". Could also be called "is falsy deep". True if the input is [#falsy](#function-falsy) or a [#list](#function-islist) where all values are vacuous, recursively. Does not iterate non-lists. Also see complementary function [#`vac`](#function-vac).
+
+### `function req`
+
+Links: [source](fpx.mjs#L84); [test/example](test/test.mjs#L849).
+
+Signature: `(val, test) => val` where `test: val => bool`.
+
+Short for "require". Minification-friendly assertion. If `!test(val)`, throws an informative `TypeError`. Otherwise, returns `val` as-is.
+
+```js
+f.req({one: `two`}, f.isObj)
+// {one: `two`}
+
+f.req('str', f.isFun)
+// uncaught TypeError: expected "str" to satisfy test isFun
+```
+
+### `function opt`
+
+Links: [source](fpx.mjs#L92); [test/example](test/test.mjs#L870).
+
+Short for "optional". If `val` is [#non-nil](#function-issome), uses [#`req`](#function-req) to validate it. Returns `val` as-is.
+
+### `function reqInst`
+
+Links: [source](fpx.mjs#L103); [test/example](test/test.mjs#L896).
+
+Signature: `(val, Cls) => val`.
+
+Short for "require instance". Asserts that `val` is an instance of the given class. Returns `val` as-is.
+
+### `function optInst`
+
+Links: [source](fpx.mjs#L111); [test/example](test/test.mjs#L918).
+
+Short for "optional instance". If `val` is [#non-nil](#function-issome), uses [#`reqInst`](#function-reqinst) to validate it. Returns `val` as-is.
+
+### `function only`
+
+Links: [source](fpx.mjs#L116); [test/example](test/test.mjs#L950).
+
+Signature: `(val, test) => val` where `test: val => bool`.
+
+Type filtering utility. If `val` satisfies the given test function, returns `val` as-is. Otherwise returns `undefined`.
+
+### `function arrOf`
+
+Links: [source](fpx.mjs#L118); [test/example](test/test.mjs#L977).
+
+Signature: `(seq<A>, test) => A[]` where `test: A => true`.
+
+Shortcut. Converts the input to an array via [#`arr`](#function-arr) and asserts that every element satisfies the given test function. Returns the resulting array.
+
+### `function prim`
+
+Links: [source](fpx.mjs#L125); [test/example](test/test.mjs#L989).
+
+Shortcut for asserting that the input is a primitive. Throws for non-primitive inputs. Returns the input as-is.
+
+### `function bool`
+
+Links: [source](fpx.mjs#L126); [test/example](test/test.mjs#L1006).
+
+Similar to `val ?? false` but `val` must be [#nil](#function-isnil) or a [#boolean](#function-isbool), otherwise throws.
+
+### `function num`
+
+Links: [source](fpx.mjs#L127); [test/example](test/test.mjs#L1021).
+
+Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#number](#function-isnum), otherwise throws.
+
+### `function fin`
+
+Links: [source](fpx.mjs#L128); [test/example](test/test.mjs#L1037).
+
+Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#finite number](#function-isfin), otherwise throws.
+
+### `function int`
+
+Links: [source](fpx.mjs#L129); [test/example](test/test.mjs#L1053).
+
+Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or an [#integer](#function-isint), otherwise throws.
+
+### `function nat`
+
+Links: [source](fpx.mjs#L130); [test/example](test/test.mjs#L1072).
+
+Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#natural number](#function-isnat), otherwise throws.
+
+### `function intPos`
+
+Links: [source](fpx.mjs#L131); [test/example](test/test.mjs#L1092).
+
+Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#positive integer](#function-isintpos), otherwise throws.
+
+### `function str`
+
+Links: [source](fpx.mjs#L132); [test/example](test/test.mjs#L1112).
+
+Similar to `val ?? ''` but `val` must be [#nil](#function-isnil) or a [#string](#function-isstr), otherwise throws.
+
+### `function dict`
+
+Links: [source](fpx.mjs#L133); [test/example](test/test.mjs#L1125).
+
+Similar to `val ?? Object.create(null)` but `val` must be [#nil](#function-isnil) or a [#dict](#function-isdict), otherwise throws.
+
+### `function struct`
+
+Links: [source](fpx.mjs#L134); [test/example](test/test.mjs#L1143).
+
+Similar to `val ?? Object.create(null)` but `val` must be [#nil](#function-isnil) or a [#struct](#function-isstruct), otherwise throws.
+
+Most Fpx functions that operate on data structures, such as [#`filter`](#function-filter), support structs, treating them similarly to maps. A struct is considered a collection of its [#`values`](#function-values). Iterating over [#`keys`](#function-keys) or [#`entries`](#function-entries) is opt-in.
+
+### `function inst`
+
+Links: [source](fpx.mjs#L135); [test/example](test/test.mjs#L1161).
+
+Signature: `(any, typeof A) => A`.
+
+Idempotently converts an arbitrary input to a given class:
+
+  * If `isInst(val, cls)`, returns `val` as-is.
+  * Otherwise returns `new cls(val)`.
+
+```js
+const newInst = f.inst([10, 20, 30], Set)
+// Set{10, 20, 30}
+
+const oldInst = f.inst(newInst, Set)
+// Set{10, 20, 30}
+
+newInst === oldInst
 // true
 ```
 
-#### `function keys`
+### `function add`
 
-`ƒ(struct) => Array<impl<isKey>>`
-
-Like `Object.keys`, with the following differences:
-
-  * Works on `null` and `undefined`.
-  * Rejects list inputs with an exception.
-
-```js
-f.keys()
-// []
-
-f.keys({one: 10, two: 20})
-// ['one', 'two']
-
-f.keys([10, 20])
-// TypeError: expected [10,20] to satisfy test isStruct
-```
-
-#### `function vals`
-
-`ƒ(struct) => Array`
-
-Like `Object.values`, with the following differences:
-
-  * Works on `null` and `undefined`.
-  * Rejects list inputs with an exception.
-
-```js
-f.vals()
-// []
-
-f.vals({one: 10, two: 20})
-// [10, 20]
-
-f.vals([10, 20])
-// TypeError: expected [10,20] to satisfy test isStruct
-```
-
-#### `function entries`
-
-`ƒ(struct) => Array<[impl<isKey>, any]>`
-
-Like `Object.entries`, with the following differences:
-
-  * Works on `null` and `undefined`.
-  * Rejects list inputs with an exception.
-
-```js
-f.entries()
-// []
-
-f.entries({one: 10, two: 20})
-// [['one', 10], ['two', 20]]
-
-f.entries([10, 20])
-// TypeError: expected [10,20] to satisfy test isStruct
-```
-
-#### `function eachVal`
-
-`ƒ(struct, fun, ...args) => void`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Iterates for side effects, calling `fun` with every property and key.
-
-```js
-function report(value, key, ...args) {
-  console.info(value, key, ...args)
-}
-
-f.eachVal({one: 10, two: 20}, report, 10, 20, 30)
-// 10 'one' 10 20 30
-// 20 'two' 10 20 30
-```
-
-#### `function foldVals`
-
-`ƒ(struct, acc, fun, ...args) => typeof acc`
-
-where `fun: ƒ(acc, elem, key, ...args) => typeof acc`
-
-Similar to [`fold`](#function-fold), but for dicts. Iterates over each property, updating the accumulator, which is returned in the end.
-
-```js
-f.foldVals({one: 10, two: 20}, 5, f.add)
-// 5 + 10 + 20 = 35
-```
-
-#### `function mapVals`
-
-`ƒ(struct, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`map`](#function-map), but for dicts. Creates a version of `dict` where values have been replaced by calling `fun`.
-
-```js
-function bang(value) {return value + '!'}
-
-f.mapVals({ping: 'ping', pong: 'pong'}, bang)
-// {ping: 'ping!', pong: 'pong!'}
-```
-
-#### `function mapValsMut`
-
-`ƒ(struct, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, key, ...args) => any`
-
-Similar to `mapVals`, but maps the input in-place and returns it as-is. The input must be a mutable struct.
-
-#### `function mapFlat`
-
-`ƒ(list, fun, ...args) => Array`
-
-where `fun: ƒ(elem, index, ...args)`
-
-Similar to `map`, but flattens any lists returned by `fun` into the output array. Equivalent to `f.flat(f.map(...arguments))`.
-
-```js
-f.mapFlat([10, [20], [[30]]], x => x)
-// [10, 20, [30]]
-```
-
-#### `function mapKeys`
-
-`ƒ(struct, fun, ...args) => Record<imp<isKey>, any>`
-
-where `fun: ƒ(key, elem, ...args)`
-
-Similar to [`mapVals`](#function-mapvals), but replaces keys rather than values.
-
-Major difference from Lodash's `_.mapKeys`: keys must pass the [`isKey`](#function-iskey) test or be ignored. This means they must be primitives, excluding the nonsense values `null`, `undefined`, `NaN` and `±Infinity`. This helps avoid accidental garbage in the output.
-
-Another major difference from Lodash's `_.mapKeys`: the operator receives `key, elem, ...args` rather than `elem, key, struct`.
-
-```js
-f.mapKeys({one: 10, two: 20}, f.head)
-// {o: 10, t: 20}
-```
-
-#### `function mapValsSort`
-
-`ƒ(struct, fun, ...args) => Array`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Maps `struct` to a _list_, sorted by key order.
-
-Note the difference: Lodash's `_.map` works on dicts, but since object key/iteration order is unspecified, the output is unsorted and therefore unstable. `mapValsSort` avoids this issue, always producing the same output for a given dict.
-
-```js
-f.mapValsSort({3: 'three', 22: 'two', 111: 'one'}, f.id)
-// ['one', 'two', 'three']
-```
-
-#### `function pick`
-
-`ƒ(struct, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`filter`](#function-filter), but for structs. Returns a version of `struct` with properties for which `fun` returned something truthy.
-
-```js
-function isOdd(value) {return !!(value % 2)}
-
-f.pick({one: 10, two: 13, three: 16, four: 19}, isOdd)
-// {two: 13, four: 19}
-```
-
-#### `function omit`
-
-`ƒ(struct, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`reject`](#function-reject), but for structs. Returns a version of `struct` without properties for which `fun` returned something truthy.
-
-```js
-function isOdd(value) {return !!(value % 2)}
-
-f.omit({one: 10, two: 13, three: 16, four: 19}, isOdd)
-// {one: 10, three: 16}
-```
-
-#### `function pickKeys`
-
-`ƒ(struct, keys) => Record<impl<isKey>, any>`
-
-Returns a version of `struct` with only the properties whitelisted in `keys`. The keys must satisfy [`isKey`](#function-iskey).
-
-Same as Lodash's `_.pick`.
-
-```js
-f.pickKeys({one: 10, two: 20}, ['one'])
-// {one: 10}
-```
-
-#### `function omitKeys`
-
-`ƒ(struct, keys) => Record<impl<isKey>, any>`
-
-Returns a version of `struct` without any properties blacklisted in `keys`. The keys must satisfy [`isKey`](#function-iskey).
-
-Same as Lodash's `_.omit`.
-
-```js
-f.omitKeys({one: 10, two: 20}, ['one'])
-// {two: 20}
-```
-
-#### `function findVal`
-
-`ƒ(struct, fun, ...args) => any`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`find`](#function-find), but for structs. Returns the first value for which `fun` returned something truthy.
-
-```js
-function isOdd(value) {return !!(value % 2)}
-
-f.findVal({one: 10, two: 13}, isOdd)
-// 13
-```
-
-#### `function findKey`
-
-`ƒ(struct, fun, ...args) => impl<isKey> | undefined`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`findIndex`](#function-findindex), but for structs. Returns the first key for which `fun` returned something truthy.
-
-```js
-function isOdd(value) {return !!(value % 2)}
-
-f.findKey({one: 10, two: 13}, isOdd)
-// 'two'
-```
-
-#### `function everyVal`
-
-`ƒ(struct, fun, ...args) => bool`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`every`](#function-every), but for struct values:
-
-```js
-f.everyVal({}, f.isBool)
-// true
-
-f.everyVal({one: true, two: false}, f.isBool)
-// true
-
-f.everyVal({one: true, two: false, three: 10}, f.isBool)
-// false
-```
-
-#### `function someVal`
-
-`ƒ(struct, fun, ...args) => bool`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to [`some`](#function-some), but for struct values:
-
-```js
-f.someVal({}, f.isBool)
-// false
-
-f.someVal({one: 10, two: 20}, f.isBool)
-// false
-
-f.someVal({one: true, two: false, three: 10}, f.isBool)
-// true
-```
-
-#### `function invert`
-
-`ƒ(struct) => Record<impl<isKey>, any>`
-
-Returns a version of `struct` with keys and values swapped. Values must satisfy [`isKey`](#function-iskey) to become keys; ones that don't are silently dropped from the output.
-
-```js
-f.invert({one: 10, two: 20})
-// {10: 'one', 20: 'two'}
-```
-
-#### `function invertBy`
-
-`ƒ(struct, fun, ...args) => Record<impl<isKey>, any>`
-
-where `fun: ƒ(elem, key, ...args)`
-
-Similar to `invert`, but calls `fun` on each value to produce a key. The resulting keys must satisfy [`isKey`](#function-iskey) or be silently dropped from the output.
-
-```js
-function double(value) {return value * 2}
-
-f.invertBy({one: 10, two: 20}, double)
-// {20: 'one', 40: 'two'}
-```
-
-### Operator
-
-Operator-style functions. Sometimes useful with higher-order functions. Like with regular JS operators, beware of implicit type coercions.
-
-#### `function neg`
-
-`ƒ(val) => bool`
-
-Same as `!val`.
-
-```js
-f.neg(10)
-// false
-```
-
-#### `function add`
-
-`ƒ(a, b) => typeof a`
+Links: [source](fpx.mjs#L143); [test/example](test/test.mjs#L1194).
 
 Same as `+`.
 
-```js
-f.add(10, 20)
-// 10 + 20 = 30
-```
+### `function sub`
 
-#### `function sub`
-
-`ƒ(a, b) => number`
+Links: [source](fpx.mjs#L144); [test/example](test/test.mjs#L1200).
 
 Same as `-`.
 
-```js
-f.sub(20, 10)
-// 20 - 10 = 10
-```
+### `function mul`
 
-#### `function mul`
-
-`ƒ(a, b) => number`
+Links: [source](fpx.mjs#L145); [test/example](test/test.mjs#L1206).
 
 Same as `*`.
 
-```js
-f.mul(10, 20)
-// 10 * 20 = 200
-```
+### `function div`
 
-#### `function div`
-
-`ƒ(a, b) => number`
+Links: [source](fpx.mjs#L146); [test/example](test/test.mjs#L1212).
 
 Same as `/`.
 
-```js
-f.div(10, 20)
-// 10 / 20 = 0.5
-```
+### `function rem`
 
-#### `function rem`
-
-`ƒ(a, b) => number`
+Links: [source](fpx.mjs#L147); [test/example](test/test.mjs#L1218).
 
 Same as `%`.
 
-```js
-f.rem(2.5, 1)
-// 2.5 % 1 = 0.5
-```
+### `function lt`
 
-#### `function lt`
-
-`ƒ(a, b) => bool`
+Links: [source](fpx.mjs#L148); [test/example](test/test.mjs#L1226).
 
 Same as `<`.
 
-```js
-f.lt(10, 20)
-// 10 < 20 = true
-```
+### `function gt`
 
-#### `function gt`
-
-`ƒ(a, b) => bool`
+Links: [source](fpx.mjs#L149); [test/example](test/test.mjs#L1237).
 
 Same as `>`.
 
-```js
-f.gt(10, 20)
-// 10 > 20 = false
-```
+### `function lte`
 
-#### `function lte`
-
-`ƒ(a, b) => bool`
+Links: [source](fpx.mjs#L150); [test/example](test/test.mjs#L1248).
 
 Same as `<=`.
 
-```js
-f.lte(10, 20)
-// 10 <= 20 = true
-f.lte(10, 10)
-// 10 <= 10 = true
-```
+### `function gte`
 
-#### `function gte`
-
-`ƒ(a, b) => bool`
+Links: [source](fpx.mjs#L151); [test/example](test/test.mjs#L1259).
 
 Same as `>=`.
 
-```js
-f.gte(10, 20)
-// 10 >= 20 = false
-f.gte(10, 10)
-// 10 >= 10 = true
-```
+### `function neg`
 
-#### `function inc`
+Links: [source](fpx.mjs#L152); [test/example](test/test.mjs#L1270).
 
-`ƒ(a) => typeof a`
+Arithmetic negation. Same as unary `-`.
+
+### `function inc`
+
+Links: [source](fpx.mjs#L153); [test/example](test/test.mjs#L1282).
 
 Increments by `1`.
 
-```js
-f.inc(1)
-// 1 + 1 = 2
-```
+### `function dec`
 
-#### `function dec`
-
-`ƒ(a) => number`
+Links: [source](fpx.mjs#L154); [test/example](test/test.mjs#L1290).
 
 Decrements by `1`.
 
-```js
-f.dec(2)
-// 2 - 1 = 1
-```
+### `function nop`
 
-#### `function nop`
-
-`ƒ() => void`
+Links: [source](fpx.mjs#L158); [test/example](test/test.mjs#L1298).
 
 Empty function. Functional equivalent of `;` or `undefined`. Sometimes useful with higher-order functions.
 
-```js
-f.nop()
-// undefined
-```
+### `function True`
 
-#### `function id`
+Links: [source](fpx.mjs#L159); [test/example](test/test.mjs#L1304).
 
-`ƒ(val) => typeof val`
+Always returns `true`. Sometimes useful with higher order functions.
+
+### `function False`
+
+Links: [source](fpx.mjs#L160); [test/example](test/test.mjs#L1312).
+
+Always returns `false`. Sometimes useful with higher order functions.
+
+### `function id`
+
+Links: [source](fpx.mjs#L161); [test/example](test/test.mjs#L1320).
 
 Identity function: returns its first argument unchanged. Sometimes useful with higher-order functions.
 
-```js
-f.id('first', 'second', 'third')
-// 'first'
-```
+### `function di`
 
-#### `function di`
-
-`ƒ(_, val) => typeof val`
+Links: [source](fpx.mjs#L162); [test/example](test/test.mjs#L1327).
 
 Returns its _second_ argument unchanged. Sometimes useful with higher-order functions.
 
-```js
-f.di('first', 'second', 'third')
-// 'second'
-```
+### `function val`
 
-#### `function val`
+Links: [source](fpx.mjs#L163); [test/example](test/test.mjs#L1334).
 
-`ƒ(val) => ƒ() => typeof val`
-
-"Constant" function. Returns a function that always returns the original value. Useful for dealing with functional APIs when values are known in advance.
+Takes a value and creates a function that always returns that value. Sometimes useful with higher order functions.
 
 ```js
-const one = f.val(1)
+const constant = f.val(1)
 
-one()
+constant()
 // 1
 
-one(100)
+constant(`this input is ignored`)
 // 1
 ```
 
-#### `function rethrow`
+### `function panic`
 
-`ƒ(val) => void`
+Links: [source](fpx.mjs#L164); [test/example](test/test.mjs#L1348).
 
-Same as `throw` but can be used as an expression. Also sometimes useful with higher-order functions.
-
-```js
-// Can be used where the regular `throw` can't.
-const x = someTest ? someValue : f.rethrow(Error('unreachable'))
-```
-
-#### `function get`
-
-`ƒ(val, key) => any`
-
-Same as `val?.[key]`.
+Same as `throw` but an expression rather than a statement. Also sometimes useful with higher-order functions.
 
 ```js
-f.get()
-// undefined
-
-f.get(null, 'one')
-// undefined
-
-f.get({one: 1}, 'one')
-// 1
-
-f.get('string', 'length')
-// 6
+const x = someTest ? someValue : f.panic(Error(`unreachable`))
 ```
 
-#### `function scan`
+### `function jsonDecode`
 
-`ƒ(val, ...path) => any`
+Links: [source](fpx.mjs#L165); [test/example](test/test.mjs#L1370).
 
-Like `get` but takes many keys and reads a nested property at that path. Like `get`, is safe against `null` or `undefined`.
+Similar to [`JSON.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) but sane rather than insane. If the input is [#nil](#function-isnil) or an empty string, returns `null`. Otherwise the input must be a primitive string. Throws on other inputs, without trying to stringify them.
 
-```js
-f.scan()
-// undefined
+### `function jsonEncode`
 
-f.scan(null)
-// null
+Links: [source](fpx.mjs#L166); [test/example](test/test.mjs#L1385).
 
-f.scan(null, 'one')
-// undefined
+Similar to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) but sane rather than insane. Equivalent to `JSON.stringify(val ?? null)`. If the input is `undefined`, returns `'null'` (string) rather than `undefined` (nil). Output is _always_ a valid JSON string.
 
-f.scan({one: 1}, 'one')
-// 1
+### `function show`
 
-f.scan({one: {two: 2}}, 'one', 'two')
-// 2
-```
+Links: [source](fpx.mjs#L168); [test/example](test/test.mjs#L44).
 
-#### `function getIn`
+Returns a string describing the value. When relevant, prints data as JSON to avoid the dreaded `[object Object]`. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in assertion functions such as [#`req`](#function-req).
 
-`ƒ(val, path) => any`
+### `function npo`
 
-Like `scan` but expects the entire `path` as the second argument. Like `get`, is safe against `null` or `undefined`.
+Links: [source](fpx.mjs#L177); [test/example](test/test.mjs#L1399).
 
-```js
-f.getIn(1, [])
-// 1
+Short for "null-prototype object". Syntactic shortcut for `Object.create(null)`.
 
-f.getIn({one: {two: 2}}, ['one', 'two'])
-// 2
-```
+### `function hasOwn`
 
-#### `function getter`
+Links: [source](fpx.mjs#L179); [test/example](test/test.mjs#L1405).
 
-`ƒ(key) => ƒ(any) => any`
+Same as [`Object.prototype.hasOwnProperty`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty) but shorter and safe to call on primitives. Always false for primitives.
 
-Delayed `get`. Equivalent to `x => f.get(x, key)`.
+### `function hasOwnEnum`
 
-```js
-f.map([{value: 10}, {value: 20}], f.getter('value'))
-// [10, 20]
-```
+Links: [source](fpx.mjs#L184); [test/example](test/test.mjs#L1419).
 
-Convenient, but also a performance malpractice. The "right" way, performance-wise, is to statically define a getter function with a hardcoded property:
+Same as [`Object.prototype.propertyIsEnumerable`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable) but shorter and safe to call on primitives. Always false for primitives.
 
-```js
-function getValue(val) {return val?.value}
+### `function mut`
 
-f.map([{value: 10}, {value: 20}], getValue)
-// [10, 20]
-```
+Links: [source](fpx.mjs#L189); [test/example](test/test.mjs#L1434).
 
-#### `function assign`
+Signature: `(tar, src) => tar`.
 
-`ƒ(tar, ...args) => typeof tar`
+Similar to [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign). Differences:
 
-Like [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), but stricter:
+  * Supports only one source argument.
+  * Much faster.
+  * Much safer:
+    * Target must be a [#struct](#function-isstruct). Throws if target is a function or iterable.
+    * Source must be nil or a struct. Throws if source is an iterable, non-nil primitive, etc.
+    * Does not override inherited properties.
+    * Does not override own non-enumerable properties.
 
-  * `tar` must be a mutable object.
-  * Each source must be a non-list object, `null`, or `undefined`.
+### `function mapDict`
 
-```js
-const target = {}
-f.assign(target, {one: 10}, {two: 20})
-// {one: 10, two: 20}
-```
+Links: [source](fpx.mjs#L197); [test/example](test/test.mjs#L1557).
 
-#### `function show`
+Signature: `({[Key: A]}, A => B) => {[Key: B]}`.
 
-`ƒ(val) => string`
+Similar to [#`map`](#function-map) but for dicts. Creates a version of the given dict where values have been replaced by calling the given function for each value. Returns an empty dict if the input is [#nil](#function-isnil).
 
-Returns a string describing the value. Prints plain data as JSON to avoid the dreaded `[object Object]`. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in assertion functions such as [`req`](#function-req).
+### `function pick`
 
-```js
-f.show(10)
-// '10'
+Links: [source](fpx.mjs#L204); [test/example](test/test.mjs#L1572).
 
-f.show(f.show)
-// 'show'
+Signature: `({[Key: A]}, A => bool) => {[Key: A]}`.
 
-f.show({one: 10, two: 20})
-// '{"one":10,"two":20}'
-```
+Similar to [#`filter`](#function-filter) but for dicts. Returns a version of the given dict with only the properties for which `fun` returned something truthy. Returns an empty dict if the input is [#nil](#function-isnil).
 
----
+### `function omit`
+
+Links: [source](fpx.mjs#L214); [test/example](test/test.mjs#L1582).
+
+Signature: `({[Key: A]}, A => bool) => {[Key: A]}`.
+
+Similar to [#`reject`](#function-reject) but for dicts. Returns a version of the given dict without properties for which `fun` returned something truthy. Returns an empty dict if the input is [#nil](#function-isnil).
+
+### `function pickKeys`
+
+Links: [source](fpx.mjs#L216); [test/example](test/test.mjs#L1592).
+
+Signature: `({[Key: A]}, keys) => {[Key: A]}`.
+
+Returns a version of the given dict, keeping only the given properties. Keys can be either a `Set` or an arbitrary [#sequence](#function-arr). Each key must satisfy [#`isKey`](#function-iskey). Existence is not required: missing properties are silently ignored. Returns an empty dict if the input is [#nil](#function-isnil).
+
+### `function omitKeys`
+
+Links: [source](fpx.mjs#L223); [test/example](test/test.mjs#L1610).
+
+Signature: `({[Key: A]}, keys) => {[Key: A]}`.
+
+Returns a version of the given dict without the given properties. Keys must be an arbitrary sequence convertible to a `Set`. Returns an empty dict if the input is [#nil](#function-isnil).
+
+### `function more`
+
+Links: [source](fpx.mjs#L233); [test/example](test/test.mjs#L1628).
+
+Takes an [#iterator](#function-isiterator), consumes one value, and returns true if the iterator is not yet finished. Shortcut for `val.next().done === false`.
+
+### `function alloc`
+
+Links: [source](fpx.mjs#L234); [test/example](test/test.mjs#L1638).
+
+Shortcut for allocating an array with a sanity check. Same as `Array(N)` but ensures that the input is a [#natural number](#function-nat) suitable for array length. Avoids unintentionally passing any non-natural input such as `Array(-1)`. Allows [#nil](#function-isnil), replacing it with `0`.
+
+### `function arr`
+
+Links: [source](fpx.mjs#L235); [test/example](test/test.mjs#L1647).
+
+Converts an arbitrary [#sequence](#function-isseq) to an array. Allows the following inputs:
+
+  * [#Nil](#function-isnil): return `[]`.
+  * [#Array](#function-isarr): return as-is.
+  * [#List](#function-islist): convert via `Array.prototype.slice`.
+  * [#Set](#function-isset) or arbitrary [#iterator](#function-isiterator): convert to array by iterating.
+
+Unlike [#`values`](#function-values), `arr` rejects other inputs such as non-nil primitives, dicts, maps, arbitrary iterables, ensuring that the input is always a sequence.
+
+### `function arrCopy`
+
+Links: [source](fpx.mjs#L236); [test/example](test/test.mjs#L1679).
+
+Like [#`arr`](#function-arr), converts an arbitrary sequence to an array. Unlike `arr,` always makes a copy. Mutating the output doesn't affect the original.
+
+### `function slice`
+
+Links: [source](fpx.mjs#L241); [test/example](test/test.mjs#L1693).
+
+Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) but allows arbitrary [#sequences](#function-isseq) compatible with [#`arr`](#function-arr).
+
+### `function keys`
+
+Links: [source](fpx.mjs#L250); [test/example](test/test.mjs#L1725).
+
+Takes an arbitrary input and returns an array of its keys:
+
+  * For non-objects: always `[]`.
+  * For [#iterables](#function-isiter) with `.keys()`: equivalent to converting the output of `.keys()` to an array. Implementation varies for performance.
+    * Examples: `Array`, `Set`, `Map`, and more.
+  * For [#lists](#function-islist): equivalent to above for arrays.
+  * For [#iterators](#function-iterator): exhausts the iterator, returning an array of indexes equivalent to `f.span(f.len(iterator))`. See [#`span`](#function-span) and [#`len`](#function-len).
+  * For [#structs](#function-isstruct): equivalent to [`Object.keys`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys).
+
+### `function values`
+
+Links: [source](fpx.mjs#L267); [test/example](test/test.mjs#L1748).
+
+Takes an arbitrary input and returns an array of its values:
+
+  * For non-objects: always `[]`.
+  * For [#arrays](#function-isarr): **returns as-is without copying**.
+  * For [#lists](#function-islist): slice to array.
+  * For [#iterables](#function-isiter) with `.values()`: equivalent to converting the output of `.values()` to an array. Implementation varies for performance.
+    * Examples: `Set`, `Map`, and more.
+  * For [#iterators](#function-iterator): equivalent to `[...iterator]`.
+  * For [#structs](#function-isstruct): equivalent to [`Object.values`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values).
+
+### `function valuesCopy`
+
+Links: [source](fpx.mjs#L290); [test/example](test/test.mjs#L1768).
+
+Variant of [#`values`](#function-values) that always makes a copy. Mutating the output doesn't affect the original.
+
+### `function entries`
+
+Links: [source](fpx.mjs#L292); [test/example](test/test.mjs#L1790).
+
+Takes an arbitrary input and returns an array of its entries (key-value tuples):
+
+  * For non-objects: always `[]`.
+  * For [#iterables](#function-isiter) with `.entries()`: equivalent to converting the output of `.entries()` to an array. Implementation varies for performance.
+    * Examples: `Set`, `Map`, and more.
+  * For [#lists](#function-islist): equivalent to above for arrays.
+  * For [#iterators](#function-iterator): exhausts the iterator, returning an array of entries where keys are indexes starting with 0.
+  * For [#structs](#function-isstruct): equivalent to [`Object.entries`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries).
+
+### `function reify`
+
+Links: [source](fpx.mjs#L318); [test/example](test/test.mjs#L1809).
+
+Takes an arbitrary value and attempts to deeply materialize it. Any [#iterators](#function-iterator), or [#lists](#function-islist) that contain iterators, or lists that contain lists that contain iterators, etc., are converted to arrays. Does not inspect other data structures such as [#sets](#function-isset) or [#dicts](#function-isdict).
+
+### `function vac`
+
+Links: [source](fpx.mjs#L322); [test/example](test/test.mjs#L1834).
+
+Complements [#`isVac`](#function-isvac). Returns `undefined` if the input is vacuous, otherwise returns the input as-is.
+
+### `function indexOf`
+
+Links: [source](fpx.mjs#L324); [test/example](test/test.mjs#L1841).
+
+Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf). Differences:
+
+  * Uses [#`is`](#function-is) rather than `===`, therefore able to detect `NaN`.
+  * Input may be [#nil](#function-isnil) or any [#list](#function-islist).
+
+### `function includes`
+
+Links: [source](fpx.mjs#L332); [test/example](test/test.mjs#L1862).
+
+Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes). Differences:
+
+  * Supports arbitrary iterables compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+
+### `function concat`
+
+Links: [source](fpx.mjs#L333); [test/example](test/test.mjs#L1881).
+
+Like [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat). Differences:
+
+  * Takes two arguments, without rest/spread.
+  * Supports arbitrary iterables compatible with [#`values`](#function-values).
+  * Iterables may be [#nil](#function-isnil), equivalent to `[]`.
+
+Note: for individual elements, use [#`append`](#function-append) and
+[#`prepend`](#function-prepend).
+
+### `function append`
+
+Links: [source](fpx.mjs#L334); [test/example](test/test.mjs#L1899).
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and appends an arbitrary value, returning the resulting array.
+
+### `function prepend`
+
+Links: [source](fpx.mjs#L335); [test/example](test/test.mjs#L1914).
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and prepends an arbitrary value, returning the resulting array.
+
+### `function len`
+
+Links: [source](fpx.mjs#L337); [test/example](test/test.mjs#L1949).
+
+Universal length measurement:
+
+  * For non-objects: always 0.
+  * For iterables:
+    * For [#lists](#function-islist): same as `.length`.
+    * For ES2015 collections such as `Set`: same as `.size`.
+    * For iterators: exhausts the iterator, returning element count.
+  * For [#structs](#function-isstruct): equivalent to `Object.keys(val).length`.
+
+### `function hasLen`
+
+Links: [source](fpx.mjs#L361); [test/example](test/test.mjs#L1953).
+
+Shortcut for [#`len`](#function-len) > 0.
+
+### `function each`
+
+Links: [source](fpx.mjs#L363); [test/example](test/test.mjs#L1985).
+
+Signature: `(Iter<A>, A => void) => void`.
+
+Similar to `Array.prototype.forEach`, `Set.prototype.forEach`, `Map.prototype.forEach`, and so on. Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Doesn't support `this` or additional arguments.
+
+### `function map`
+
+Links: [source](fpx.mjs#L368); [test/example](test/test.mjs#L2006).
+
+Signature: `(Iter<A>, A => B) => B[]`.
+
+Similar to [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Doesn't support `this` or additional arguments.
+
+### `function mapMut`
+
+Links: [source](fpx.mjs#L370); [test/example](test/test.mjs#L2039).
+
+Similar to [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map). Differences:
+
+  * Mutates the input (which must be an array).
+  * Doesn't support `this` or additional arguments.
+
+For a non-mutating version, see [#`map`](#function-map).
+
+### `function mapCompact`
+
+Links: [source](fpx.mjs#L378); [test/example](test/test.mjs#L2055).
+
+Equivalent to `f.compact(f.map(val, fun))`. See [#`map`](#function-map) and [#`compact`](#function-compact).
+
+### `function filter`
+
+Links: [source](fpx.mjs#L380); [test/example](test/test.mjs#L2068).
+
+Signature: `(Iter<A>, A => bool) => A[]`.
+
+Similar to [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Doesn't support `this` or additional arguments.
+
+### `function reject`
+
+Links: [source](fpx.mjs#L387); [test/example](test/test.mjs#L2084).
+
+Opposite of [#`filter`](#function-filter). Equivalent to `f.filter(val, f.not(fun))`.
+
+### `function compact`
+
+Links: [source](fpx.mjs#L389); [test/example](test/test.mjs#L2100).
+
+Equivalent to `f.filter(val, f.id)`. Takes an arbitrary iterable and returns an array of its truthy [#`values`](#function-values), discarding falsy values.
+
+### `function remove`
+
+Links: [source](fpx.mjs#L395); [test/example](test/test.mjs#L2112).
+
+Signature: `(Iter<A>, A) => A[]`.
+
+Takes an arbitrary iterable and an element to remove. Returns an array of the iterable's [#`values`](#function-values), discarding each occurrence of this element, comparing via [#`is`](#function-is).
+
+### `function fold`
+
+Links: [source](fpx.mjs#L399); [test/example](test/test.mjs#L2129).
+
+Signature: `(src: Iter<A>, acc: B, fun: (B, A) => B) => B`.
+
+Similar to [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Arguments are `(src, acc, fun)` rather than `(fun, acc)`.
+  * Accumulator argument is mandatory.
+  * Doesn't support `this`.
+  * Iterator function receives exactly two arguments: accumulator and next value.
+
+### `function find`
+
+Links: [source](fpx.mjs#L405); [test/example](test/test.mjs#L2145).
+
+Signature: `(Iter<A>, A => bool) => A`.
+
+Similar to [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Doesn't support `this` or additional arguments.
+
+### `function procure`
+
+Links: [source](fpx.mjs#L411); [test/example](test/test.mjs#L2160).
+
+Signature: `(src: Iter<A>, fun: A => B) => B`.
+
+Similar to [#`find`](#function-find), but returns the first truthy result of calling the iterator function, rather than the corresponding element. Equivalent to `f.find(f.map(src, fun), f.id)` but more efficient.
+
+### `function every`
+
+Links: [source](fpx.mjs#L417); [test/example](test/test.mjs#L2177).
+
+Signature: `(Iter<A>, A => bool) => bool`.
+
+Similar to [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Doesn't support `this` or additional arguments.
+
+### `function some`
+
+Links: [source](fpx.mjs#L423); [test/example](test/test.mjs#L2196).
+
+Signature: `(Iter<A>, A => bool) => bool`.
+
+Similar to [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Doesn't support `this` or additional arguments.
+
+### `function head`
+
+Links: [source](fpx.mjs#L429); [test/example](test/test.mjs#L2215).
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns its first element or `undefined`.
+
+### `function last`
+
+Links: [source](fpx.mjs#L430); [test/example](test/test.mjs#L2225).
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns its last element or `undefined`.
+
+### `function init`
+
+Links: [source](fpx.mjs#L431); [test/example](test/test.mjs#L2235).
+
+Short for "initial". Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an array of all its values except last.
+
+### `function tail`
+
+Links: [source](fpx.mjs#L432); [test/example](test/test.mjs#L2245).
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an array of all its values except first.
+
+### `function take`
+
+Links: [source](fpx.mjs#L433); [test/example](test/test.mjs#L2255).
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns N values from the start.
+
+### `function count`
+
+Links: [source](fpx.mjs#L435); [test/example](test/test.mjs#L2287).
+
+Signature: `(src: Iter<A>, fun: A => B) => nat`.
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values), calls the given function for each value, and returns the count of truthy results. The count is between 0 and iterable length.
+
+### `function compare`
+
+Links: [source](fpx.mjs#L443); [test/example](test/test.mjs#L2302).
+
+Signature: `(a, b) => -1 | 0 | 1`.
+
+Equivalent to the [default JS sort comparison algorithm](https://tc39.github.io/ecma262/#sec-sortcompare). Sometimes useful for sorting via [`Array.prototype.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) or [#`sort`](#function-sort), as a fallback.
+
+### `function compareFin`
+
+Links: [source](fpx.mjs#L454); [test/example](test/test.mjs#L2312).
+
+Signature: `(a, b) => -1 | 0 | 1` where arguments are [#nil](#function-isnil) or [#finite](#function-isfin).
+
+Sort comparison for finite numbers. Usable for [`Array.prototype.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) or [#`sort`](#function-sort). Throws on non-nil, non-finite arguments.
+
+### `function sort`
+
+Links: [source](fpx.mjs#L462); [test/example](test/test.mjs#L2324).
+
+Signature: `(src: Iter<A>, fun?: (prev: A, next: A) => -1 | 0 | 1) => A[]`.
+
+Similar to [`Array.prototype.sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Always creates a new array. Does not mutate the input.
+
+The comparison function is optional. If omitted, default JS sorting is used.
+
+### `function reverse`
+
+Links: [source](fpx.mjs#L463); [test/example](test/test.mjs#L2356).
+
+Similar to [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values).
+  * Iterable may be [#nil](#function-isnil), equivalent to `[]`.
+  * Always creates a new array. Does not mutate the input.
+
+### `function index`
+
+Links: [source](fpx.mjs#L465); [test/example](test/test.mjs#L2374).
+
+Signature: `(Iter<A>, A => Key | any) => {[Key: A]}`.
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an index where its values are _keyed_ by the given function, hence the name. The function is called for each value. If the function returns a [#valid key](#function-iskey), the key-value pair is added to the index. Invalid keys are ignored. If the function returns the same key for multiple values, previous values are lost.
+
+Similar to Lodash's `_.keyBy`. Compare [#`group`](#function-group) which keeps all values for each group, rather than only the last.
+
+### `function group`
+
+Links: [source](fpx.mjs#L475); [test/example](test/test.mjs#L2419).
+
+Signature: `(Iter<A>, A => Key | any) => {[Key: A[]]}`.
+
+Takes an arbitrary iterable compatible with [#`values`](#function-values) and groups its values by keys generated by the given function. The function is called for each value. If the function returns a [#valid key](#function-iskey), the value is added to the index under that key. Invalid keys are ignored.
+
+Compare [#`index`](#function-index), which keeps only the last value for each group.
+
+### `function partition`
+
+Links: [source](fpx.mjs#L485); [test/example](test/test.mjs#L2445).
+
+Signature: `(Iter<A>, A => bool) => [A[], A[]]`.
+
+Partitions the [#`values`](#function-values) of a given iterable, returning a tuple of two groups: values that satisfy the predicate and the remainder.
+
+### `function sum`
+
+Links: [source](fpx.mjs#L493); [test/example](test/test.mjs#L2462).
+
+Signature: `(Iter<A>) => fin`.
+
+Sums all finite [#`values`](#function-values) of an arbitrary iterable, ignoring all non-finite values.
+
+### `function zip`
+
+Links: [source](fpx.mjs#L498); [test/example](test/test.mjs#L2473).
+
+Signature: `(Iter<[Key, A]>) => {[Key: A]}`.
+
+Similar to [`Object.fromEntries`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries). Differences:
+
+  * Takes an arbitrary iterable compatible with [#`values`](#function-values) (more flexible).
+    * Each value of this iterable must be a key-value pair.
+  * Ignores entries where the first element is not a [#valid key](#function-iskey).
+  * Returns a [#null-prototype object](#function-npo).
+  * Slightly slower.
+
+### `function mapFrom`
+
+Links: [source](fpx.mjs#L504); [test/example](test/test.mjs#L2490).
+
+Syntactic shortcut for creating a `Map` with inline keys and values. Shorter and less noisy than either `new Map` with an array of entries or chained `.set` calls.
+
+### `function range`
+
+Links: [source](fpx.mjs#L511); [test/example](test/test.mjs#L2497).
+
+Signature: `(min: int, max: int) => int[]`.
+
+Returns an array of contiguous integers in the range of `[min, max)`. The first value is `min`, the last value is `max - 1`.
+
+### `function span`
+
+Links: [source](fpx.mjs#L522); [test/example](test/test.mjs#L2512).
+
+Signature: `nat => nat[]`.
+
+Returns an array of the given length, where values are integers from 0. Shortcut for `f.range(0, length)`. Nil length is equivalent to 0.
+
+### `function times`
+
+Links: [source](fpx.mjs#L523); [test/example](test/test.mjs#L2523).
+
+Signature: `(len: nat, fun: nat => A) => A[]`.
+
+Takes an array length and a mapping function. Returns an array of the given length, where each element is the result of calling the given function, passing the element's index, starting with 0. Equivalent to `f.mapMut(f.span(len), fun)`.
+
+### `function repeat`
+
+Links: [source](fpx.mjs#L524); [test/example](test/test.mjs#L2544).
+
+Signature: `(len: nat, val: A) => A[]`.
+
+Returns an array of the given length where each element is the given value. Equivalent to `f.alloc(len).fill(val)`.
+
+### `function set`
+
+Links: [source](fpx.mjs#L525); [test/example](test/test.mjs#L2556).
+
+Converts an arbitrary input to a native [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set). Similar to `new Set`. Differences:
+
+  * If input is already a set: **return as-is without copying**.
+  * Otherwise, create a set of the input's [#`values`](#function-values).
+    * [#Maps](#function-ismap) and [#structs](#function-isstruct) are treated as collections of their values rather than key-value entries.
+
+### `function setCopy`
+
+Links: [source](fpx.mjs#L526); [test/example](test/test.mjs#L2580).
+
+Similar to [#`set`](#function-set): converts an arbitrary input to a set. Difference: always makes a copy. If the original was a set, it's unaffected by mutations of the output.
+
 
 ## License
 
 https://unlicense.org
 
-## Miscellaneous
+## Misc
 
 I'm receptive to suggestions. If this library _almost_ satisfies you but needs changes, open an issue or chat me up. Contacts: https://mitranim.com/#contacts

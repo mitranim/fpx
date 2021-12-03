@@ -1,5 +1,8 @@
 {
-  "parserOptions": {"sourceType": "module"},
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+  },
   "env": {
     "es2020": true,
     "browser": true,
@@ -19,6 +22,7 @@
     ],
 
     // Copy of "eslint:recommended" to avoid installation.
+    "consistent-return": "error",
     "constructor-super": "error",
     "for-direction": "error",
     "getter-return": "error",
@@ -37,7 +41,7 @@
     "no-dupe-else-if": "error",
     "no-dupe-keys": "error",
     "no-duplicate-case": "error",
-    "no-empty": "error",
+    // "no-empty": "error",
     "no-empty-character-class": "error",
     "no-empty-pattern": "error",
     "no-ex-assign": "error",
@@ -73,7 +77,7 @@
     "no-useless-catch": "error",
     "no-useless-escape": "error",
     "no-with": "error",
-    "require-yield": "error",
+    // "require-yield": "error",
     "use-isnan": "error",
     "valid-typeof": "error",
   },

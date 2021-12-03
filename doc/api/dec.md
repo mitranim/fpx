@@ -1,0 +1,1 @@
+Decrements by `1`.

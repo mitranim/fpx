@@ -1,0 +1,1 @@
+True if value is a non-iterable object. Excludes both [#sync iterables](#function-isiter) and [#async iterables](#function-isiterasync). Note that [#dicts](#function-isdict) are automatically structs, but not all structs are dicts.

@@ -1,893 +1,526 @@
-// See implementation notes in `impl.md`.
+/** Fun **/
 
-/** Var **/
+export function bind(fun, ...args) {return fun.bind(this, ...args)}
 
-// The "pure" annotation allows minifiers to drop this if the var is unused.
-// eslint-disable-next-line no-new-func
-export const global = /* @__PURE__ */Function('return this')()
+export function not(fun) {
+  req(fun, isFun)
+  return function not() {return !fun.apply(this, arguments)}
+}
 
 /** Bool **/
 
-export function truthy(val)        {return Boolean(val)}
-export function falsy(val)         {return !val}
-export function is(a, b)           {return a === b || (isNaN(a) && isNaN(b))}
-export function isNil(val)         {return val == null}
-export function isSome(val)        {return !isNil(val)}
-export function isBool(val)        {return typeof val === 'boolean'}
-export function isNum(val)         {return typeof val === 'number'}
-export function isFin(val)         {return isNum(val) && !isNaN(val) && !isInf(val)}
-export function isInt(val)         {return isNum(val) && ((val % 1) === 0)}
-export function isNat(val)         {return isInt(val) && val >= 0}
-export function isNatPos(val)      {return isInt(val) && val > 0}
-export function isNaN(val)         {return val !== val} // eslint-disable-line no-self-compare
-export function isInf(val)         {return val === Infinity || val === -Infinity}
-export function isStr(val)         {return typeof val === 'string'}
-export function isKey(val)         {return isStr(val) || isSym(val) || isBool(val) || isFin(val)}
-export function isPrim(val)        {return !isComp(val)}
-export function isComp(val)        {return isObj(val) || isFun(val)}
-export function isFun(val)         {return typeof val === 'function'}
-export function isObj(val)         {return val !== null && typeof val === 'object'}
-export function isStruct(val)      {return isObj(val) && !isList(val) && !isInst(val, String)}
-export function isArr(val)         {return isInst(val, Array)}
-export function isReg(val)         {return isInst(val, RegExp)}
-export function isSym(val)         {return typeof val === 'symbol'}
-export function isDate(val)        {return isInst(val, Date)}
-export function isValidDate(val)   {return isDate(val) && isFin(val.valueOf())}
+export function is(a, b) {return a === b || (isNaN(a) && isNaN(b))}
+export function truthy(val) {return !!val}
+export function falsy(val) {return !val}
+export function isNil(val) {return val == null}
+export function isSome(val) {return !isNil(val)}
+export function isBool(val) {return typeof val === `boolean`}
+export function isNum(val) {return typeof val === `number`}
+export function isFin(val) {return isNum(val) && !isNaN(val) && !isInf(val)}
+export function isFinNeg(val) {return isNum(val) && val < 0 && val > -Infinity}
+export function isFinPos(val) {return isNum(val) && val > 0 && val < Infinity}
+export function isInt(val) {return isNum(val) && ((val % 1) === 0)}
+export function isNat(val) {return isInt(val) && val >= 0}
+export function isIntNeg(val) {return isInt(val) && val < 0}
+export function isIntPos(val) {return isInt(val) && val > 0}
+export function isNaN(val) {return val !== val}
+export function isInf(val) {return val === Infinity || val === -Infinity}
+export function isBigInt(val) {return typeof val === `bigint`}
+export function isStr(val) {return typeof val === `string`}
+export function isSym(val) {return typeof val === `symbol`}
+export function isKey(val) {return isPrim(val) && !isJunk(val)}
+export function isJunk(val) {return isNil(val) || isNaN(val) || isInf(val)}
+export function isComp(val) {return isObj(val) || isFun(val)}
+export function isPrim(val) {return !isComp(val)}
+export function isFun(val) {return typeof val === `function`}
+export function isObj(val) {return val !== null && typeof val === `object`}
+export function isStruct(val) {return isObj(val) && !isIter(val) && !isIterAsync(val)}
+export function isArr(val) {return Array.isArray(val)}
+export function isReg(val) {return isInst(val, RegExp)}
+export function isDate(val) {return isInst(val, Date)}
+export function isValidDate(val) {return isDate(val) && isFin(val.valueOf())}
 export function isInvalidDate(val) {return isDate(val) && !isValidDate(val)}
-export function isPromise(val)     {return isComp(val) && isFun(val.then) && isFun(val.catch)}
-export function isCls(val)         {return isFun(val) && typeof val.prototype === 'object'}
+export function isSet(val) {return isInst(val, Set)}
+export function isMap(val) {return isInst(val, Map)}
+export function isPromise(val) {return hasMeth(val, `then`)}
+export function isIter(val) {return hasMeth(val, Symbol.iterator)}
+export function isIterAsync(val) {return hasMeth(val, Symbol.asyncIterator)}
+export function isIterator(val) {return isIter(val) && hasMeth(val, `next`)}
+export function isIteratorAsync(val) {return isIterAsync(val) && hasMeth(val, `next`)}
+export function isGen(val) {return isIterator(val) && hasMeth(val, `return`) && hasMeth(val, `throw`)}
+export function isCls(val) {return isFun(val) && isObj(val.prototype)}
+export function isDict(val) {return isObj(val) && isDictProto(Object.getPrototypeOf(val))}
+export function isList(val) {return isArr(val) || (isIter(val) && isNat(getLength(val)))}
+export function isSeq(val) {return isList(val) || isSet(val) || isIterator(val)}
 
-export function isInst(val, Cls) {
-  req(Cls, isCls)
-  return isComp(val) && val instanceof Cls
+function isDictProto(val) {return val === null || val === Object.prototype}
+
+export function isInst(val, cls) {
+  req(cls, isCls)
+  return isObj(val) && val instanceof cls
 }
 
-export function isDict(val) {
-  if (!isObj(val)) return false
-  const proto = Object.getPrototypeOf(val)
-  return proto === null || proto === Object.prototype
+export function hasMeth(val, key) {return isComp(val) && key in val && isFun(val[key])}
+
+export function isListOf(val, fun) {
+  req(fun, isFun)
+  return isList(val) && every(val, fun)
 }
 
-export function isList(val) {
-  if (!isObj(val))                 return false
-  if (isArr(val))                  return true
-  if (!isNat(val.length))          return false
-  if (isDict(val))                 return hasOwn(val, 'callee')
-  if (isInst(val, String))         return false
-  if (isFun(val.forEach))          return true
-  if (isFun(val[Symbol.iterator])) return true
+export function isEmpty(val) {
+  if (!isObj(val)) return true
+  if (isList(val)) return val.length === 0
+  if (isIter(val)) return getSize(val) === 0
   return false
 }
 
-export function isIter(val) {
-  return isObj(val) && isFun(val.next) && isFun(val.return) && isFun(val.throw)
+export function isVac(val) {return !val || (isList(val) && every(val, isVac))}
+
+function getLength(val) {return `length` in val ? val.length : undefined}
+function getSize(val) {return `size` in val ? val.size : undefined}
+
+/** Assert/Cast **/
+
+export function req(val, fun) {
+  reqValidator(fun)
+  if (!fun(val)) {
+    throw TypeError(`expected ${show(val)} to satisfy test ${show(fun)}`)
+  }
+  return val
 }
 
-export function isOpt(val, fun, ...args) {
-  req(fun, isFun)
-  return isNil(val) || truthy(fun(val, ...args))
+export function opt(val, fun) {
+  reqValidator(fun)
+  return isNil(val) ? val : req(val, fun)
 }
 
-export function isListOf(val, fun, ...args) {
-  req(fun, isFun)
-  return isList(val) && every(val, cwk, fun, ...args)
+function reqValidator(fun) {
+  if (!isFun(fun)) {
+    throw TypeError(`expected validator function, got ${show(fun)}`)
+  }
 }
 
-export function isDictOf(val, fun, ...args) {
-  req(fun, isFun)
-  return isDict(val) && everyVal(val, cwk, fun, ...args)
+export function reqInst(val, cls) {
+  if (!isInst(val, cls)) {
+    const cons = isComp(val) ? val.constructor : undefined
+    throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(cls)}`)
+  }
+  return val
 }
+
+export function optInst(val, cls) {
+  req(cls, isCls)
+  return isNil(val) ? val : reqInst(val, cls)
+}
+
+export function only(val, fun) {return req(fun, isFun)(val) ? val : undefined}
+
+export function arrOf(seq, fun) {
+  req(fun, isFun)
+  seq = arr(seq)
+  for (const elem of seq) req(elem, fun)
+  return seq
+}
+
+export function prim(val) {return isNil(val) ? val : req(val, isPrim)}
+export function bool(val) {return isNil(val) ? false : req(val, isBool)}
+export function num(val) {return isNil(val) ? 0 : req(val, isNum)}
+export function fin(val) {return isNil(val) ? 0 : req(val, isFin)}
+export function int(val) {return isNil(val) ? 0 : req(val, isInt)}
+export function nat(val) {return isNil(val) ? 0 : req(val, isNat)}
+export function intPos(val) {return isNil(val) ? 0 : req(val, isIntPos)}
+export function str(val) {return isNil(val) ? `` : req(val, isStr)}
+export function dict(val) {return isNil(val) ? npo() : req(val, isDict)}
+export function struct(val) {return isNil(val) ? npo() : req(val, isStruct)}
+export function inst(val, cls) {return isInst(val, cls) ? val : new cls(val)}
+
+function errConvert(val, msg) {
+  return TypeError(`can't convert ${show(val)} to ${msg}`)
+}
+
+/** Ops **/
+
+export function add(a, b) {return a + b}
+export function sub(a, b) {return a - b}
+export function mul(a, b) {return a * b}
+export function div(a, b) {return a / b}
+export function rem(a, b) {return a % b}
+export function lt(a, b) {return a < b}
+export function gt(a, b) {return a > b}
+export function lte(a, b) {return a <= b}
+export function gte(a, b) {return a >= b}
+export function neg(val) {return -val}
+export function inc(val) {return val + 1}
+export function dec(val) {return val - 1}
+
+/** Misc **/
+
+export function nop() {}
+export function True() {return true}
+export function False() {return false}
+export function id(val) {return val}
+export function di(_, val) {return val}
+export function val(value) {return function val() {return value}}
+export function panic(val) {throw val}
+export function jsonDecode(val) {return str(val) ? JSON.parse(val) : null}
+export function jsonEncode(val) {return JSON.stringify(isNil(val) ? null : val)}
+
+export function show(val) {
+  if (isStr(val) || isArr(val) || isDict(val) || (isComp(val) && !hasMeth(val, `toString`))) {
+    try {return JSON.stringify(val)} catch {}
+  }
+  return (isFun(val) && val.name) || String(val)
+}
+
+/** Struct **/
+
+export function npo() {return Object.create(null)}
 
 export function hasOwn(val, key) {
   req(key, isKey)
   return isComp(val) && Object.prototype.hasOwnProperty.call(val, key)
 }
 
-export function testBy(val, pattern) {
-  return (
-    isFun(pattern)    ? truthy(pattern(val)) :
-    isPrim(pattern)   ? is(val, pattern) :
-    isReg(pattern)    ? isStr(val) && pattern.test(val) :
-    isDate(pattern)   ? isDate(val) && is(pattern.valueOf(), val.valueOf()) :
-    isList(pattern)   ? isList(val) && every(pattern, testAt, val) :
-    isStruct(pattern) ? isStruct(val) && everyVal(pattern, testAt, val) :
-    false
-  )
+export function hasOwnEnum(val, key) {
+  req(key, isKey)
+  return isComp(val) && Object.prototype.propertyIsEnumerable.call(val, key)
 }
 
-function testAt(pattern, key, val) {return testBy(val[key], pattern)}
-
-export function test(pattern) {
-  return function test_(val) {return testBy(val, pattern)}
-}
-
-// Internal for now.
-function isNatOrInf(val) {return isNat(val) || isInf(val)}
-
-/** Casts **/
-
-export function prim(val)   {return isNil(val) ? undefined : req(val, isPrim)}
-export function bool(val)   {return isNil(val) ? false     : req(val, isBool)}
-export function num(val)    {return isNil(val) ? 0         : req(val, isNum)}
-export function fin(val)    {return isNil(val) ? 0         : req(val, isFin)}
-export function int(val)    {return isNil(val) ? 0         : req(val, isInt)}
-export function nat(val)    {return isNil(val) ? 0         : req(val, isNat)}
-export function natPos(val) {return isNil(val) ? 0         : req(val, isNatPos)}
-export function str(val)    {return isNil(val) ? ''        : req(val, isStr)}
-export function list(val)   {return isNil(val) ? []        : req(val, isList)}
-export function arr(val)    {return isNil(val) ? []        : req(val, isArr)}
-export function dict(val)   {return isNil(val) ? npo()     : req(val, isDict)}
-export function struct(val) {return isNil(val) ? npo()     : req(val, isStruct)}
-export function comp(val)   {return isNil(val) ? npo()     : req(val, isComp)}
-
-export function toStr(val) {return isNil(val) ? '' : String(prim(val))}
-export function toArr(val) {return isArr(val) ? val : slice(val)}
-
-/** Assertions **/
-
-export function req(val, test, ...args) {
-  if (!isFun(test, ...args)) {
-    throw TypeError(`expected validator function, got ${show(test)}`)
+export function mut(tar, src) {
+  req(tar, isStruct)
+  for (const key of structKeys(src)) {
+    if (!(key in tar) || hasOwnEnum(tar, key)) tar[key] = src[key]
   }
-  if (!test(val)) {
-    throw TypeError(`expected ${show(val)} to satisfy test ${show(test)}`)
-  }
-  return val
+  return tar
 }
 
-export function opt(val, test, ...args) {
-  req(test, isFun)
-  return isNil(val) ? val : req(val, test, ...args)
-}
-
-export function reqInst(val, Cls) {
-  if (!isInst(val, Cls)) {
-    const cons = isComp(val) ? val.constructor : undefined
-    throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(Cls)}`)
-  }
-  return val
-}
-
-export function optInst(val, Cls) {
-  req(Cls, isFun)
-  return isNil(val) ? val : reqInst(val, Cls)
-}
-
-export function reqEach(val, test, ...args) {
-  req(test, isFun)
-  each(val, reqAt, test, ...args)
-  return val
-}
-
-export function reqEachVal(val, test, ...args) {
-  req(test, isFun)
-  eachVal(val, reqAt, test, ...args)
-  return val
-}
-
-/** Fun **/
-
-export function call(fun, ...args) {return fun.apply(this, args)}
-export function apply(fun, args)   {return fun.apply(this, args)}
-export function bind(fun, ...args) {return fun.bind(this, ...args)}
-
-export function not(fun) {
-  req(fun, isFun)
-  return function not_() {return !fun.apply(this, arguments)}
-}
-
-// Short for "call without key".
-export function cwk(val, _key, fun, ...args) {return fun(val, ...args)}
-
-/** List **/
-
-export function len(val)    {return isNil(val) ? 0 : list(val).length}
-export function hasLen(val) {return isList(val) && truthy(val.length)}
-export function vacate(val) {return hasLen(val) ? val : undefined}
-
-export function each(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) fun(val[i], i, ...args)
-}
-
-export function map(val, fun, ...args) {
-  return mapMut(slice(val), fun, ...args)
-}
-
-export function mapMut(val, fun, ...args) {
-  req(val, isList)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) val[i] = fun(val[i], i, ...args)
-  return val
-}
-
-export function mapFlat(val, fun, ...args) {
-  return flat(map(val, fun, ...args))
-}
-
-export function mapFlatDeep(val, fun, ...args) {
-  return flatDeep(map(val, fun, ...args))
-}
-
-export function mapFilter(val, fun, ...args) {
-  return compact(map(val, fun, ...args))
-}
-
-export function filter(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  const out = []
-  for (let i = 0; i < val.length; i++) {
-    const elem = val[i]
-    if (fun(elem, i, ...args)) out.push(elem)
-  }
-  return out
-}
-
-export function reject(val, fun, ...args) {
-  req(fun, isFun)
-  return filter(val, notBy, fun, ...args)
-}
-
-function notBy(val, key, fun, ...args) {
-  return !fun(val, key, ...args)
-}
-
-export function fold(val, acc, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) acc = fun(acc, val[i], i, ...args)
-  return acc
-}
-
-export function foldRight(val, acc, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = val.length - 1; i >= 0; i--) acc = fun(acc, val[i], i, ...args)
-  return acc
-}
-
-export function fold1(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  let acc = val[0]
-  for (let i = 1; i < val.length; i++) acc = fun(acc, val[i], i, ...args)
-  return acc
-}
-
-export function compact(val) {return filter(val, id)}
-
-export function find(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  return val[findIndex(val, fun, ...args)]
-}
-
-export function findRight(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  return val[findIndexRight(val, fun, ...args)]
-}
-
-export function findIndex(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) {
-    if (fun(val[i], i, ...args)) return i
-  }
-  return -1
-}
-
-export function findIndexRight(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = val.length; --i >= 0;) {
-    if (fun(val[i], i, ...args)) return i
-  }
-  return -1
-}
-
-export function indexOf(val, elem) {
-  return findIndex(val, isAt, elem)
-}
-
-export function lastIndexOf(val, elem) {
-  return findIndexRight(val, isAt, elem)
-}
-
-function isAt(candidate, _i, val) {
-  return is(candidate, val)
-}
-
-export function includes(val, elem) {
-  return indexOf(val, elem) !== -1
-}
-
-export function procure(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) {
-    const res = fun(val[i], i, ...args)
-    if (res) return res
-  }
-  return undefined
-}
-
-export function every(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) {
-    if (!fun(val[i], i, ...args)) return false
-  }
-  return true
-}
-
-export function some(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  for (let i = 0; i < val.length; i++) {
-    if (fun(val[i], i, ...args)) return true
-  }
-  return false
-}
-
-export function slice(val, start, next) {
-  return Array.prototype.slice.call(list(val), start, next)
-}
-
-export function append(val, elem) {
-  return toArr(val).concat([elem])
-}
-
-export function prepend(val, elem) {
-  return [elem].concat(toArr(val))
-}
-
-export function remove(val, elem) {
-  return removeAt(val, indexOf(val, elem))
-}
-
-export function adjoin(val, elem) {
-  return includes(val, elem) ? toArr(val) : append(val, elem)
-}
-
-export function toggle(val, elem) {
-  return includes(val, elem) ? remove(val, elem) : append(val, elem)
-}
-
-export function insertAt(val, ind, elem) {
-  val = slice(val)
-  reqBounded(val.length, ind)
-  val.splice(ind, 0, elem)
-  return val
-}
-
-export function replaceAt(val, ind, elem) {
-  val = slice(val)
-  req(ind, isNat)
-  val[ind] = elem
-  return val
-}
-
-function reqBounded(len, ind) {
-  req(ind, isNat)
-  if (!(ind <= len)) {
-    throw Error(`index ${ind} out of bounds for length ${len}`)
-  }
-}
-
-export function removeAt(val, ind) {
-  val = list(val)
-  req(ind, isInt)
-  if (isNat(ind) && ind < val.length) {
-    val = slice(val)
-    val.splice(ind, 1)
-  }
-  return val
-}
-
-// Uses native concat because it seems to perform very well in many JS engines.
-export function concat(...args) {
-  return [].concat(...mapMut(args, toArr))
-}
-
-export function flat(val) {
-  const out = []
-  each(val, pushFlat, out)
-  return out
-}
-
-function pushFlat(val, _i, out) {
-  if (isList(val)) for (let i = 0; i < val.length; i++) out.push(val[i])
-  else out.push(val)
-}
-
-export function flatDeep(val) {
-  const out = []
-  each(val, pushFlatDeep, out)
-  return out
-}
-
-function pushFlatDeep(val, _key, out) {
-  if (isList(val)) each(val, pushFlatDeep, out)
-  else out.push(val)
-}
-
-export function head(val) {
-  return list(val)[0]
-}
-
-export function tail(val) {
-  return slice(val, 1)
-}
-
-export function init(val) {
-  val = list(val)
-  return slice(val, 0, val.length - 1)
-}
-
-export function last(val) {
-  val = list(val)
-  return val[val.length - 1]
-}
-
-export function take(val, count) {
-  req(count, isNatOrInf)
-  return slice(val, 0, count)
-}
-
-export function takeWhile(val, fun, ...args) {
-  req(fun, isFun)
-  const ind = findIndex(val, notBy, fun, ...args)
-  return isNat(ind) ? slice(val, 0, ind) : list(val)
-}
-
-export function drop(val, count) {
-  req(count, isNatOrInf)
-  return slice(val, count)
-}
-
-export function dropWhile(val, fun, ...args) {
-  req(fun, isFun)
-  const ind = findIndex(val, notBy, fun, ...args)
-  return isNat(ind) ? slice(val, ind) : []
-}
-
-export function count(val, fun, ...args) {
-  req(fun, isFun)
-  return fold(val, 0, incIf, fun, ...args)
-}
-
-function incIf(acc, val, i, fun, ...args) {
-  return fun(val, i, ...args) ? acc + 1 : acc
-}
-
-export function countWhile(val, fun, ...args) {
-  req(fun, isFun)
-  const ind = findIndex(val, notBy, fun, ...args)
-  return isNat(ind) ? ind : len(val)
-}
-
-export function times(count, fun, ...args) {
-  req(fun, isFun)
-  req(count, isNat)
-  const out = Array(count)
-  for (let i = 0; i < count; i++) out[i] = fun(i, ...args)
-  return out
-}
-
-export function reverse(val) {
-  val = list(val)
-  const len = val.length
-  const out = Array(len)
-  for (let i = len; --i >= 0;) out[len - i - 1] = val[i]
-  return out
-}
-
-export function sort(val, comparator) {
-  return slice(val).sort(comparator)
-}
-
-export function sortBy(val, fun, ...args) {
-  req(fun, isFun)
-  return sort(val, function compareBy(left, right) {
-    return sortCompare(fun(left, ...args), fun(right, ...args))
-  })
-}
-
-// https://tc39.github.io/ecma262/#sec-sortcompare
-export function sortCompare(left, right) {
-  if (left === undefined && right === undefined) return 0
-  if (left === undefined) return 1
-  if (right === undefined) return -1
-  left = String(left)
-  right = String(right)
-  if (left < right) return -1
-  if (right < left) return 1
-  return 0
-}
-
-export function intersect(left, right) {
-  left = list(left)
-  right = list(right)
-  const lr = left.length <= right.length
-  const lesser = lr ? left : right
-  const greater = lr ? right : left
-  const out = []
-  each(greater, intersectAdd, out, lesser)
-  return out
-}
-
-function intersectAdd(val, _key, out, control) {
-  if (includes(control, val) && !includes(out, val)) out.push(val)
-}
-
-export function keyBy(val, fun, ...args) {
-  val = list(val)
+export function mapDict(val, fun) {
   req(fun, isFun)
   const out = npo()
-  for (let i = 0; i < val.length; i++) {
-    const elem = val[i]
-    const key = fun(elem, i, ...args)
-    if (isKey(key)) out[key] = elem
-  }
+  for (const key of structKeys(val)) out[key] = fun(val[key])
   return out
 }
 
-export function groupBy(val, fun, ...args) {
-  val = list(val)
+export function pick(val, fun) {
   req(fun, isFun)
   const out = npo()
-  for (let i = 0; i < val.length; i++) {
-    const elem = val[i]
-    const groupKey = fun(elem, i, ...args)
-    if (isKey(groupKey)) {
-      if (!hasOwn(out, groupKey)) out[groupKey] = []
-      out[groupKey].push(elem)
-    }
-  }
-  return out
-}
-
-export function uniq(val) {
-  return uniqBy(val, id)
-}
-
-export function uniqBy(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  const out = []
-  const attrs = []
-  for (let i = 0; i < val.length; i++) {
-    const elem = val[i]
-    const attr = fun(elem, i, ...args)
-    if (!includes(attrs, attr)) {
-      attrs.push(attr)
-      out.push(elem)
-    }
-  }
-  return out
-}
-
-export function partition(val, fun, ...args) {
-  val = list(val)
-  req(fun, isFun)
-  const accepted = []
-  const rejected = []
-  for (let i = 0; i < val.length; i++) {
-    const elem = val[i]
-    if (fun(elem, i, ...args)) accepted.push(elem)
-    else rejected.push(elem)
-  }
-  return [accepted, rejected]
-}
-
-export function sum(val) {
-  return sumBy(val, id)
-}
-
-export function sumBy(val, fun, ...args) {
-  req(fun, isFun)
-  return fold(val, 0, maybeAddBy, fun, ...args)
-}
-
-function maybeAddBy(acc, val, i, fun, ...args) {
-  val = fun(val, i, ...args)
-  return isFin(val) ? acc + val : acc
-}
-
-export function min(val) {
-  return minBy(val, id)
-}
-
-export function max(val) {
-  return maxBy(val, id)
-}
-
-export function minBy(val, fun, ...args) {
-  req(fun, isFun)
-  return fold(val, undefined, compareNumsBy, lt, fun, ...args)
-}
-
-export function maxBy(val, fun, ...args) {
-  req(fun, isFun)
-  return fold(val, undefined, compareNumsBy, gt, fun, ...args)
-}
-
-function compareNumsBy(acc, val, key, compare, fun, ...args) {
-  val = fun(val, key, ...args)
-  return !isFin(val)
-    ? acc
-    : !isFin(acc) || compare(val, acc)
-    ? val
-    : acc
-}
-
-export function findMinBy(val, fun, ...args) {
-  req(fun, isFun)
-  return findNumBy(val, lt, fun, ...args)
-}
-
-export function findMaxBy(val, fun, ...args) {
-  req(fun, isFun)
-  return findNumBy(val, gt, fun, ...args)
-}
-
-// WTF too large!
-function findNumBy(val, compare, fun, ...args) {
-  val = list(val)
-  req(compare, isFun)
-  req(fun, isFun)
-  let winningValue = undefined
-  let winningAttr = undefined
-  for (let i = 0; i < val.length; i++) {
-    const elem = val[i]
-    const attr = fun(elem, i, ...args)
-    if (isFin(attr) && (isNil(winningAttr) || compare(attr, winningAttr))) {
-      winningValue = elem
-      winningAttr = attr
-    }
-  }
-  return winningValue
-}
-
-export function range(start, next) {
-  req(start, isInt)
-  req(next, isInt)
-  let remaining = next - start
-  // Note: this rejects negatives, producing a decent error message.
-  const out = Array(remaining)
-  while (--remaining >= 0) out[remaining] = start + remaining
-  return out
-}
-
-export function zip(entries) {
-  return fold(entries, npo(), zipAdd)
-}
-
-function zipAdd(acc, pair) {
-  req(pair, isList)
-  const key = pair[0]
-  if (!isNil(key)) acc[req(key, isKey)] = pair[1]
-  return acc
-}
-
-/** Struct **/
-
-// TODO good short name.
-function npo() {return Object.create(null)}
-
-export function size(val)    {return keys(val).length}
-export function keys(val)    {return Object.keys(struct(val))}
-export function vals(val)    {return Object.values(struct(val))}
-export function entries(val) {return Object.entries(struct(val))}
-export function hasSize(val) {return isStruct(val) && truthy(size(val))}
-
-export function eachVal(val, fun, ...args) {
-  val = struct(val)
-  req(fun, isFun)
-  for (const key in val) fun(val[key], key, ...args)
-}
-
-export function foldVals(val, acc, fun, ...args) {
-  val = struct(val)
-  req(fun, isFun)
-  for (const key in val) acc = fun(acc, val[key], key, ...args)
-  return acc
-}
-
-export function mapVals(val, fun, ...args) {
-  return mapValsMut(assign(npo(), val), fun, ...args)
-}
-
-export function mapValsMut(val, fun, ...args) {
-  req(val, isStruct)
-  req(fun, isFun)
-  for (const key in val) val[key] = fun(val[key], key, ...args)
-  return val
-}
-
-export function mapKeys(val, fun, ...args) {
-  val = struct(val)
-  req(fun, isFun)
-
-  const out = npo()
-  for (let key in val) {
+  for (const key of structKeys(val)) {
     const elem = val[key]
-    key = fun(key, elem, ...args)
-    if (isKey(key)) out[key] = elem
+    if (fun(elem)) out[key] = elem
   }
   return out
 }
 
-export function mapValsSort(val, fun, ...args) {
-  val = struct(val)
-  req(fun, isFun)
-
-  const out = keys(val).sort()
-  for (let i = 0; i < out.length; i++) {
-    const key = out[i]
-    out[i] = fun(val[key], key, ...args)
-  }
-  return out
-}
-
-export function pick(val, fun, ...args) {
-  val = struct(val)
-  req(fun, isFun)
-
-  const out = npo()
-  for (const key in val) {
-    const elem = val[key]
-    if (fun(elem, key, ...args)) out[key] = elem
-  }
-  return out
-}
-
-export function omit(val, fun, ...args) {
-  req(fun, isFun)
-  return pick(val, notBy, fun, ...args)
-}
+export function omit(val, fun) {return pick(val, not(fun))}
 
 export function pickKeys(val, keys) {
-  return fold(keys, npo(), pickKnown, struct(val))
-}
-
-function pickKnown(tar, key, _i, src) {
-  if (hasOwn(src, key)) tar[key] = src[key]
-  return tar
+  val = struct(val)
+  const out = npo()
+  for (const key of values(keys)) if (hasOwnEnum(val, key)) out[key] = val[key]
+  return out
 }
 
 export function omitKeys(val, keys) {
-  return fold(keys, mut(npo(), val), deleteKnown)
-}
-
-function deleteKnown(tar, key) {
-  delete tar[key]
-  return tar
-}
-
-export function findVal(val, fun, ...args) {
   val = struct(val)
-  req(fun, isFun)
+  keys = set(keys)
+  const out = npo()
+  for (const key of structKeys(val)) if (!keys.has(key)) out[key] = val[key]
+  return out
+}
 
-  for (const key in val) {
-    const elem = val[key]
-    if (fun(elem, key, ...args)) return elem
+/** Iter **/
+
+export function more(val) {return val.next().done === false}
+export function alloc(len) {return Array(nat(len))}
+export function arr(val) {return isArr(val) ? val : slice(val)}
+export function arrCopy(val) {return maybeCopy(val, arr(val))}
+
+function maybeCopy(src, out) {return is(src, out) ? reslice(out) : out}
+function reslice(val) {return Array.prototype.slice.call(val)}
+
+export function slice(val, start, next) {
+  opt(start, isInt)
+  opt(next, isInt)
+  if (isNil(val)) return []
+  if (isList(val)) return Array.prototype.slice.call(val, start, next)
+  if (isSet(val) || isIterator(val)) return values(val).slice(start, next)
+  throw errConvert(val, `array`)
+}
+
+export function keys(val) {
+  if (!isObj(val)) return []
+  if (isList(val)) return span(val.length)
+  if (isSet(val)) return copy(val, setValues)
+  if (isMap(val)) return copy(val, mapKeys)
+  if (isIterator(val)) return span(iterLen(val))
+  if (isIter(val) && hasMeth(val, `keys`)) return arr(val.keys())
+  if (isStruct(val)) return structKeys(val)
+  throw errConvert(val, `keys`)
+}
+
+// Doesn't prealloc because performance improvement would be minimal.
+function copy(src, fun) {const out = []; fun(src, out); return out}
+function setValues(src, out) {for (const elem of src) out.push(elem)}
+function mapKeys(src, out) {for (const elem of src.keys()) out.push(elem)}
+function structKeys(val) {return Object.keys(struct(val))}
+
+export function values(val) {
+  if (!isObj(val)) return []
+  if (isArr(val)) return val
+  if (isList(val)) return Array.prototype.slice.call(val)
+  if (isSet(val)) return copy(val, setValues)
+  if (isMap(val)) return copy(val, mapValues)
+  if (isIterator(val)) return copy(val, iterValues)
+  if (isIter(val) && hasMeth(val, `values`)) return arr(val.values())
+  if (isStruct(val)) return structValues(val)
+  throw errConvert(val, `values`)
+}
+
+function mapValues(src, out) {for (const elem of src.values()) out.push(elem)}
+function iterValues(src, out) {for (const elem of src) out.push(elem)}
+
+// Like `Object.values` but much faster.
+function structValues(src) {
+  const out = Object.keys(src)
+  let ind = -1
+  while (++ind < out.length) out[ind] = src[out[ind]]
+  return out
+}
+
+export function valuesCopy(val) {return maybeCopy(val, values(val))}
+
+export function entries(val) {
+  if (!isObj(val)) return []
+  if (isArr(val)) return copy(val, arrEntries)
+  if (isList(val)) return copy(val, listEntries)
+  if (isSet(val)) return copy(val, setEntries)
+  if (isMap(val)) return copy(val, mapEntries)
+  if (isIterator(val)) return copy(val, iterEntries)
+  if (isIter(val) && hasMeth(val, `entries`)) return arr(val.entries())
+  if (isStruct(val)) return structEntries(val)
+  throw errConvert(val, `entries`)
+}
+
+function arrEntries(src, out, ind = -1) {for (const elem of src) out.push([++ind, elem])}
+function listEntries(src, out, ind = -1) {for (const elem of src) out.push([++ind, elem])}
+function setEntries(src, out) {for (const elem of src.entries()) out.push(elem)}
+function mapEntries(src, out) {for (const elem of src.entries()) out.push(elem)}
+function iterEntries(src, out, ind = -1) {for (const elem of src) out.push([++ind, elem])}
+
+// Like `Object.entries` but much faster.
+function structEntries(src) {
+  const out = Object.keys(src)
+  let ind = -1
+  while (++ind < out.length) out[ind] = [out[ind], src[out[ind]]]
+  return out
+}
+
+export function reify(val) {return hasIter(val) ? map(val, reify) : val}
+
+function hasIter(val) {return isList(val) ? some(val, hasIter) : isIterator(val)}
+
+export function vac(val) {return isVac(val) ? undefined : val}
+
+export function indexOf(val, elem) {
+  if (opt(val, isList)) {
+    let ind = -1
+    while (++ind < val.length) if (is(val[ind], elem)) return ind
   }
+  return -1
+}
+
+export function includes(val, elem) {return values(val).includes(elem)}
+export function concat(one, two) {return values(one).concat(values(two))}
+export function append(val, elem) {return values(val).concat([elem])}
+export function prepend(val, elem) {return [elem].concat(values(val))}
+
+export function len(val) {
+  if (!isObj(val)) return 0
+
+  if (isIter(val)) {
+    const len = getLength(val)
+    if (isNat(len)) return len
+
+    const size = getSize(val)
+    if (isNat(size)) return size
+
+    if (isIterator(val)) return iterLen(val)
+    return 0
+  }
+
+  if (isStruct(val)) return Object.keys(val).length
+  throw TypeError(`can't measure length of ${show(val)}`)
+}
+
+function iterLen(val) {
+  let out = 0
+  while (more(val)) out++
+  return out
+}
+
+export function hasLen(val) {return len(val) > 0}
+
+export function each(val, fun) {
+  req(fun, isFun)
+  for (const elem of values(val)) fun(elem)
+}
+
+export function map(val, fun) {return mapMut(valuesCopy(val), fun)}
+
+export function mapMut(val, fun) {
+  req(val, isArr)
+  req(fun, isFun)
+  let ind = -1
+  while (++ind < val.length) val[ind] = fun(val[ind])
+  return val
+}
+
+export function mapCompact(val, fun) {return compact(map(val, fun))}
+
+export function filter(val, fun) {
+  req(fun, isFun)
+  const out = []
+  for (const elem of values(val)) if (fun(elem)) out.push(elem)
+  return out
+}
+
+export function reject(val, fun) {return filter(val, not(fun))}
+
+export function compact(val) {
+  const out = []
+  for (const elem of values(val)) if (elem) out.push(elem)
+  return out
+}
+
+export function remove(src, val) {
+  return filter(src, function remove(elem) {return !is(val, elem)})
+}
+
+export function fold(val, acc, fun) {
+  req(fun, isFun)
+  for (const elem of values(val)) acc = fun(acc, elem)
+  return acc
+}
+
+export function find(val, fun) {
+  req(fun, isFun)
+  for (const elem of values(val)) if (fun(elem)) return elem
   return undefined
 }
 
-export function findKey(val, fun, ...args) {
-  val = struct(val)
+export function procure(val, fun) {
   req(fun, isFun)
-  const inputKeys = keys(val)
-  for (let i = 0; i < inputKeys.length; i++) {
-    const key = inputKeys[i]
-    if (fun(val[key], key, ...args)) return key
-  }
+  for (let elem of values(val)) if ((elem = fun(elem))) return elem
   return undefined
 }
 
-export function everyVal(val, fun, ...args) {
-  val = struct(val)
+export function every(val, fun) {
   req(fun, isFun)
-  for (const key in val) if (!fun(val[key], key, ...args)) return false
+  for (const elem of values(val)) if (!fun(elem)) return false
   return true
 }
 
-export function someVal(val, fun, ...args) {
-  val = struct(val)
+export function some(val, fun) {
   req(fun, isFun)
-  const inputKeys = keys(val)
-  for (let i = 0; i < inputKeys.length; i++) {
-    const key = inputKeys[i]
-    if (fun(val[key], key, ...args)) return true
-  }
+  for (const elem of values(val)) if (fun(elem)) return true
   return false
 }
 
-export function invert(val) {
-  return invertBy(val, id)
+export function head(val) {return values(val)[0]}
+export function last(val) {return val = values(val), val[val.length - 1]}
+export function init(val) {return values(val).slice(0, -1)}
+export function tail(val) {return values(val).slice(1)}
+export function take(val, len) {return values(val).slice(0, nat(len))}
+
+export function count(val, fun) {
+  req(fun, isFun)
+  let out = 0
+  for (const elem of values(val)) if (fun(elem)) out++
+  return out
 }
 
-export function invertBy(val, fun, ...args) {
-  val = struct(val)
+// https://tc39.github.io/ecma262/#sec-sortcompare
+export function compare(one, two) {
+  if (one === undefined && two === undefined) return 0
+  if (one === undefined) return 1
+  if (two === undefined) return -1
+  one = String(one)
+  two = String(two)
+  if (one < two) return -1
+  if (two < one) return 1
+  return 0
+}
+
+export function compareFin(one, two) {
+  one = fin(one)
+  two = fin(two)
+  if (one < two) return -1
+  if (one > two) return 1
+  return 0
+}
+
+export function sort(val, fun) {return valuesCopy(val).sort(fun)}
+export function reverse(val) {return valuesCopy(val).reverse()}
+
+export function index(val, fun) {
   req(fun, isFun)
   const out = npo()
-  const inputKeys = keys(val)
-  for (let i = 0; i < inputKeys.length; i++) {
-    const key = inputKeys[i]
-    const newKey = fun(val[key], key, ...args)
-    if (isKey(newKey)) out[newKey] = key
+  for (const elem of values(val)) {
+    const key = fun(elem)
+    if (isKey(key)) out[key] = elem
   }
   return out
 }
 
-/** Ops **/
-
-export function neg(a)    {return -a}
-export function add(a, b) {return a + b}
-export function sub(a, b) {return a - b}
-export function mul(a, b) {return a * b}
-export function div(a, b) {return a / b}
-export function rem(a, b) {return a % b}
-export function lt(a, b)  {return a < b}
-export function gt(a, b)  {return a > b}
-export function lte(a, b) {return a <= b}
-export function gte(a, b) {return a >= b}
-export function inc(a)    {return a + 1}
-export function dec(a)    {return a - 1}
-
-/** Misc **/
-
-export function nop()        {}
-export function True()       {return true}
-export function False()      {return false}
-export function vac(val)     {return val || undefined} // TODO consider replacing "||" with "??".
-export function id(val)      {return val}
-export function di(_, val)   {return val}
-export function val(val)     {return bind(id, val)}
-export function rethrow(val) {throw val}
-
-export function get(val, key) {
-  req(key, isKey)
-  return isComp(val) ? val[key] : undefined
-}
-
-export function scan(val, ...path) {return fold(path, val, get)}
-export function getIn(val, path) {return fold(path, val, get)}
-
-export function getter(key) {
-  req(key, isKey)
-  return function get_(val) {return get(val, key)}
-}
-
-export function assign(tar, ...args) {
-  return fold(args, req(tar, isComp), mut)
-}
-
-function mut(tar, src) {
-  src = struct(src)
-  for (const key in src) tar[key] = src[key]
-  return tar
-}
-
-function reqAt(val, key, test, ...args) {
-  if (!test(val, ...args)) {
-    throw TypeError(`expected ${show(val)} at key ${key} to satisfy test ${show(test)}`)
+export function group(src, fun) {
+  req(fun, isFun)
+  const out = npo()
+  for (const elem of values(src)) {
+    const key = fun(elem)
+    if (isKey(key)) (out[key] || (out[key] = [])).push(elem)
   }
+  return out
 }
 
-export function show(val) {
-  if (isFun(val) && val.name) return val.name
-
-  // Plain data becomes JSON, if possible.
-  if (isArr(val) || isDict(val) || isStr(val)) {
-    try {return JSON.stringify(val)}
-    catch (_) {return String(val)}
-  }
-
-  return String(val)
+export function partition(val, fun) {
+  req(fun, isFun)
+  const one = []
+  const two = []
+  for (const elem of values(val)) (fun(elem) ? one : two).push(elem)
+  return [one, two]
 }
+
+export function sum(val) {return fold(val, 0, addFin)}
+
+function addFin(acc, val) {return onlyFin(acc) + onlyFin(val)}
+function onlyFin(val) {return isFin(val) ? val : 0}
+
+export function zip(src) {
+  const out = npo()
+  for (const [key, val] of values(src)) if (isKey(key)) out[key] = val
+  return out
+}
+
+export function mapFrom(...args) {
+  const out = new Map()
+  let ind = 0
+  while (ind < args.length) out.set(args[ind++], args[ind++])
+  return out
+}
+
+export function range(min, max) {
+  min = int(min)
+  max = int(max)
+  if (!(max >= min)) throw Error(`invalid range [${min},${max})`)
+
+  const out = alloc(max - min)
+  let ind = -1
+  while (++ind < out.length) out[ind] = min + ind
+  return out
+}
+
+export function span(len) {return range(0, nat(len))}
+export function times(len, fun) {return mapMut(span(len), fun)}
+export function repeat(len, val) {return alloc(len).fill(val)}
+export function set(val) {return isSet(val) ? val : new Set(values(val))}
+export function setCopy(val) {return new Set(values(val))}

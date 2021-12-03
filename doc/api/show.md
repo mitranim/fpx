@@ -1,0 +1,1 @@
+Returns a string describing the value. When relevant, prints data as JSON to avoid the dreaded `[object Object]`. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in assertion functions such as [#`req`](#function-req).

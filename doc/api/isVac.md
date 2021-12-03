@@ -1,0 +1,1 @@
+Short for "is vacuous" or "is vacated". Could also be called "is falsy deep". True if the input is [#falsy](#function-falsy) or a [#list](#function-islist) where all values are vacuous, recursively. Does not iterate non-lists. Also see complementary function [#`vac`](#function-vac).

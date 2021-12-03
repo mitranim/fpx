@@ -1,0 +1,1 @@
+True if the input is an empty collection such as list, set, map, or a primitive such as `null`. False for any other non-primitive. Treating primitives as "empty" is consistent with other Fpx functions that operate on collections.
