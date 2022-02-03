@@ -33,6 +33,10 @@ export function isJunk(val) {return isNil(val) || isNaN(val) || isInf(val)}
 export function isComp(val) {return isObj(val) || isFun(val)}
 export function isPrim(val) {return !isComp(val)}
 export function isFun(val) {return typeof val === `function`}
+export function isFunSync(val) {return isFunType(val, `Function`)}
+export function isFunGen(val) {return isFunType(val, `GeneratorFunction`)}
+export function isFunAsync(val) {return isFunType(val, `AsyncFunction`)}
+export function isFunAsyncGen(val) {return isFunType(val, `AsyncGeneratorFunction`)}
 export function isObj(val) {return val !== null && typeof val === `object`}
 export function isStruct(val) {return isObj(val) && !isIter(val) && !isIterAsync(val)}
 export function isArr(val) {return Array.isArray(val)}
@@ -54,6 +58,7 @@ export function isList(val) {return isArr(val) || (isIter(val) && isNat(getLengt
 export function isSeq(val) {return isList(val) || isSet(val) || isIterator(val)}
 
 function isDictProto(val) {return val === null || val === Object.prototype}
+function isFunType(val, name) {return isFun(val) && val.constructor.name === name}
 
 export function isInst(val, cls) {
   req(cls, isCls)

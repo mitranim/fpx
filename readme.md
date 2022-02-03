@@ -51,6 +51,10 @@ Differences from Lodash:
    * [#`function isComp`](#function-iscomp)
    * [#`function isPrim`](#function-isprim)
    * [#`function isFun`](#function-isfun)
+   * [#`function isFunSync`](#function-isfunsync)
+   * [#`function isFunGen`](#function-isfungen)
+   * [#`function isFunAsync`](#function-isfunasync)
+   * [#`function isFunAsyncGen`](#function-isfunasyncgen)
    * [#`function isObj`](#function-isobj)
    * [#`function isStruct`](#function-isstruct)
    * [#`function isArr`](#function-isarr)
@@ -184,7 +188,7 @@ Differences from Lodash:
 In browsers and Deno, import by URL:
 
 ```js
-import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.12.0/fpx.mjs'
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.12.1/fpx.mjs'
 ```
 
 When using Node or NPM-oriented bundlers like Esbuild:
@@ -326,7 +330,7 @@ Same as `!`. Sometimes useful with higher-order functions.
 
 ### `function isNil`
 
-Links: [source](fpx.mjs#L15); [test/example](test/test.mjs#L128).
+Links: [source](fpx.mjs#L15); [test/example](test/test.mjs#L116).
 
 True for `null` and `undefined`. Same as `value == null`. Incidentally, these are the only values that produce an exception when attempting to read a property: `null.someProperty`.
 
@@ -346,19 +350,19 @@ f.isNil(false)
 
 ### `function isSome`
 
-Links: [source](fpx.mjs#L16); [test/example](test/test.mjs#L136).
+Links: [source](fpx.mjs#L16); [test/example](test/test.mjs#L124).
 
 Inverse of [#`isNil`](#function-isnil). False for `null` and `undefined`, true for other values.
 
 ### `function isBool`
 
-Links: [source](fpx.mjs#L17); [test/example](test/test.mjs#L144).
+Links: [source](fpx.mjs#L17); [test/example](test/test.mjs#L132).
 
 Same as `typeof val === 'boolean'`.
 
 ### `function isNum`
 
-Links: [source](fpx.mjs#L18); [test/example](test/test.mjs#L153).
+Links: [source](fpx.mjs#L18); [test/example](test/test.mjs#L141).
 
 Same as `typeof val === 'number'`. True if the value is a primitive number, _including_ `NaN` and `±Infinity`. In most cases you should use `isFin` instead.
 
@@ -373,7 +377,7 @@ f.isNum(NaN)
 
 ### `function isFin`
 
-Links: [source](fpx.mjs#L19); [test/example](test/test.mjs#L164).
+Links: [source](fpx.mjs#L19); [test/example](test/test.mjs#L152).
 
 Same as ES2015's [`Number.isFinite`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite). True if `val` is a primitive number and is _not_ `NaN` or `±Infinity`. In most cases you should prefer `isFin` over `isNum`.
 
@@ -388,85 +392,85 @@ f.isFin(NaN)
 
 ### `function isFinNeg`
 
-Links: [source](fpx.mjs#L20); [test/example](test/test.mjs#L178).
+Links: [source](fpx.mjs#L20); [test/example](test/test.mjs#L166).
 
 True if value is finite (via [#`isFin`](#function-isfin)) and < 0.
 
 ### `function isFinPos`
 
-Links: [source](fpx.mjs#L21); [test/example](test/test.mjs#L197).
+Links: [source](fpx.mjs#L21); [test/example](test/test.mjs#L185).
 
 True if value is finite (via [#`isFin`](#function-isfin)) and > 0.
 
 ### `function isInt`
 
-Links: [source](fpx.mjs#L22); [test/example](test/test.mjs#L216).
+Links: [source](fpx.mjs#L22); [test/example](test/test.mjs#L204).
 
 True if value is an integer: finite via [#`isFin`](#function-isfin), without a fractional part.
 
 ### `function isNat`
 
-Links: [source](fpx.mjs#L23); [test/example](test/test.mjs#L234).
+Links: [source](fpx.mjs#L23); [test/example](test/test.mjs#L222).
 
 True if value is a natural number: integer >= 0. Also see [#`isIntPos`](#function-isintpos).
 
 ### `function isIntNeg`
 
-Links: [source](fpx.mjs#L24); [test/example](test/test.mjs#L252).
+Links: [source](fpx.mjs#L24); [test/example](test/test.mjs#L240).
 
 True if value is integer < 0. Also see [#`isFinNeg`](#function-isfinneg).
 
 ### `function isIntPos`
 
-Links: [source](fpx.mjs#L25); [test/example](test/test.mjs#L271).
+Links: [source](fpx.mjs#L25); [test/example](test/test.mjs#L259).
 
 True if value is integer > 0. Also see [#`isNat`](#function-isnat), [#`isFinPos`](#function-isfinpos).
 
 ### `function isNaN`
 
-Links: [source](fpx.mjs#L26); [test/example](test/test.mjs#L290).
+Links: [source](fpx.mjs#L26); [test/example](test/test.mjs#L278).
 
 Same as ES2015's [`Number.isNaN`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN). True if value is _actually_ `NaN`. Doesn't coerce non-numbers to numbers, unlike global `isNaN`.
 
 ### `function isInf`
 
-Links: [source](fpx.mjs#L27); [test/example](test/test.mjs#L305).
+Links: [source](fpx.mjs#L27); [test/example](test/test.mjs#L293).
 
 True if value is `-Infinity` or `Infinity`.
 
 ### `function isBigInt`
 
-Links: [source](fpx.mjs#L28); [test/example](test/test.mjs#L320).
+Links: [source](fpx.mjs#L28); [test/example](test/test.mjs#L308).
 
 True if value is a primitive [`BigInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt). False for all other inputs, including `BigInt` object wrappers.
 
 ### `function isStr`
 
-Links: [source](fpx.mjs#L29); [test/example](test/test.mjs#L339).
+Links: [source](fpx.mjs#L29); [test/example](test/test.mjs#L327).
 
 Same as `typeof val === 'string'`. True if value is a primitive string.
 
 ### `function isSym`
 
-Links: [source](fpx.mjs#L30); [test/example](test/test.mjs#L346).
+Links: [source](fpx.mjs#L30); [test/example](test/test.mjs#L334).
 
 Same as `typeof val === 'symbol'`. True if value is a primitive symbol.
 
 ### `function isKey`
 
-Links: [source](fpx.mjs#L31); [test/example](test/test.mjs#L353).
+Links: [source](fpx.mjs#L31); [test/example](test/test.mjs#L341).
 
 True if value qualifies as a dictionary key. True for all primitives excluding garbage values via [#`isJunk`](#function-isjunk).
 
 ### `function isJunk`
 
-Links: [source](fpx.mjs#L32); [test/example](test/test.mjs#L373).
+Links: [source](fpx.mjs#L32); [test/example](test/test.mjs#L361).
 
 True for garbage values: [#nil](#function-isnil), [#`NaN`](#function-isnan), [#`±Infinity`](#function-isinf).
 
 ### `function isComp`
 
-Links: [source](fpx.mjs#L33); [test/example](test/test.mjs#L388).
+Links: [source](fpx.mjs#L33); [test/example](test/test.mjs#L376).
 
 True if value is "composite" / "compound" / "complex". Opposite of [#`isPrim`](#function-isprim). Definition:
 
@@ -476,19 +480,43 @@ function isComp(val) {return isObj(val) || isFun(val)}
 
 ### `function isPrim`
 
-Links: [source](fpx.mjs#L34); [test/example](test/test.mjs#L402).
+Links: [source](fpx.mjs#L34); [test/example](test/test.mjs#L390).
 
 True if value is a JS primitive: not an object, not a function. Opposite of [#`isComp`](#function-iscomp).
 
 ### `function isFun`
 
-Links: [source](fpx.mjs#L35); [test/example](test/test.mjs#L416).
+Links: [source](fpx.mjs#L35); [test/example](test/test.mjs#L404).
 
-Same as `typeof val === 'function'`. True if value is a function.
+Same as `typeof val === 'function'`. True if value is any function, regardless of its type (arrow, async, generator, etc.).
+
+### `function isFunSync`
+
+Links: [source](fpx.mjs#L36); [test/example](test/test.mjs#L428).
+
+True if the input is a normal sync function. False for generator functions or async functions.
+
+### `function isFunGen`
+
+Links: [source](fpx.mjs#L37); [test/example](test/test.mjs#L438).
+
+True if the input is a sync generator function. False for normal sync functions and async functions.
+
+### `function isFunAsync`
+
+Links: [source](fpx.mjs#L38); [test/example](test/test.mjs#L448).
+
+True if the input is an async non-generator function. False for sync functions, generator functions, or async generator functions.
+
+### `function isFunAsyncGen`
+
+Links: [source](fpx.mjs#L39); [test/example](test/test.mjs#L458).
+
+True if the input is an async generator function. False for sync functions and async non-generator functions.
 
 ### `function isObj`
 
-Links: [source](fpx.mjs#L36); [test/example](test/test.mjs#L423).
+Links: [source](fpx.mjs#L40); [test/example](test/test.mjs#L468).
 
 Same as `typeof val === 'object' && val !== null`. True for any JS object: plain dict, array, various other classes. Doesn't include functions, even though JS functions are extensible objects.
 
@@ -498,13 +526,13 @@ For plain objects used as dictionaries, see [#`isDict`](#function-isdict). For f
 
 ### `function isStruct`
 
-Links: [source](fpx.mjs#L37); [test/example](test/test.mjs#L439).
+Links: [source](fpx.mjs#L41); [test/example](test/test.mjs#L484).
 
 True if value is a non-iterable object. Excludes both [#sync iterables](#function-isiter) and [#async iterables](#function-isiterasync). Note that [#dicts](#function-isdict) are automatically structs, but not all structs are dicts.
 
 ### `function isArr`
 
-Links: [source](fpx.mjs#L38); [test/example](test/test.mjs#L456).
+Links: [source](fpx.mjs#L42); [test/example](test/test.mjs#L501).
 
 Alias for [`Array.isArray`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray). Used internally for all array checks.
 
@@ -512,85 +540,85 @@ True if value is an instance of [`Array`](https://developer.mozilla.org/en-US/do
 
 ### `function isReg`
 
-Links: [source](fpx.mjs#L39); [test/example](test/test.mjs#L468).
+Links: [source](fpx.mjs#L43); [test/example](test/test.mjs#L513).
 
 True if value is an instance of [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) or its subclass.
 
 ### `function isDate`
 
-Links: [source](fpx.mjs#L40); [test/example](test/test.mjs#L476).
+Links: [source](fpx.mjs#L44); [test/example](test/test.mjs#L521).
 
 True of value is an instance of [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date). Most of the time you should prefer [#`isValidDate`](#function-isvaliddate).
 
 ### `function isValidDate`
 
-Links: [source](fpx.mjs#L41); [test/example](test/test.mjs#L484).
+Links: [source](fpx.mjs#L45); [test/example](test/test.mjs#L529).
 
 True of value is an instance of [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) and its timestamp is [#finite](#function-isfin) rather than `NaN`.
 
 ### `function isInvalidDate`
 
-Links: [source](fpx.mjs#L42); [test/example](test/test.mjs#L491).
+Links: [source](fpx.mjs#L46); [test/example](test/test.mjs#L536).
 
 True of value is an instance of [`Date`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) representing an invalid date whose timestamp is `NaN`.
 
 ### `function isSet`
 
-Links: [source](fpx.mjs#L43); [test/example](test/test.mjs#L498).
+Links: [source](fpx.mjs#L47); [test/example](test/test.mjs#L543).
 
 True if value is an instance of [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) or its subclass.
 
 ### `function isMap`
 
-Links: [source](fpx.mjs#L44); [test/example](test/test.mjs#L508).
+Links: [source](fpx.mjs#L48); [test/example](test/test.mjs#L553).
 
 True if value is an instance of [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) or its subclass.
 
 ### `function isPromise`
 
-Links: [source](fpx.mjs#L45); [test/example](test/test.mjs#L518).
+Links: [source](fpx.mjs#L49); [test/example](test/test.mjs#L563).
 
 True if the value satisfies the ES2015 [promise interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 ### `function isIter`
 
-Links: [source](fpx.mjs#L46); [test/example](test/test.mjs#L527).
+Links: [source](fpx.mjs#L50); [test/example](test/test.mjs#L572).
 
 True if the value satisfies the ES2015 [sync iterable interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols). For _iterator_ rather than _iterable_, use [#`isIterator`](#function-isiterator).
 
 ### `function isIterAsync`
 
-Links: [source](fpx.mjs#L47); [test/example](test/test.mjs#L553).
+Links: [source](fpx.mjs#L51); [test/example](test/test.mjs#L598).
 
 True if the value satisfies the ES2015 [async iterable interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of). For _iterator_ rather than _iterable_, use [#`isIteratorAsync`](#function-isiteratorasync).
 
 ### `function isIterator`
 
-Links: [source](fpx.mjs#L48); [test/example](test/test.mjs#L570).
+Links: [source](fpx.mjs#L52); [test/example](test/test.mjs#L615).
 
 True if the value satisfies the ES2015 [sync iterator interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols). For _iterable_ rather than _iterator_, use [#`isIter`](#function-isiter).
 
 ### `function isIteratorAsync`
 
-Links: [source](fpx.mjs#L49); [test/example](test/test.mjs#L596).
+Links: [source](fpx.mjs#L53); [test/example](test/test.mjs#L641).
 
 True if the value satisfies the ES2015 [async iterator interface](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of). For _iterable_ rather than _iterator_, use [#`isIterAsync`](#function-isiterasync).
 
 ### `function isGen`
 
-Links: [source](fpx.mjs#L50); [test/example](test/test.mjs#L622).
+Links: [source](fpx.mjs#L54); [test/example](test/test.mjs#L667).
 
 True if value is a [#sync iterator](#function-isiterator) created by calling a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
 
 ### `function isCls`
 
-Links: [source](fpx.mjs#L51); [test/example](test/test.mjs#L682).
+Links: [source](fpx.mjs#L55); [test/example](test/test.mjs#L727).
 
 True if the input is a function with a prototype, likely to be a class. False for arrow functions such as `() => {}`, which don't have a prototype.
 
 ### `function isDict`
 
-Links: [source](fpx.mjs#L52); [test/example](test/test.mjs#L694).
+Links: [source](fpx.mjs#L56); [test/example](test/test.mjs#L739).
 
 True for a "plain object" created via `{...}` or `Object.create(null)`. False for any other input, including instances of any class other than `Object`. Roughly equivalent to Lodash's `_.isPlainObject`.
 
@@ -598,13 +626,13 @@ See [#`isStruct`](#function-isstruct) for a more general definition of a non-ite
 
 ### `function isList`
 
-Links: [source](fpx.mjs#L53); [test/example](test/test.mjs#L707).
+Links: [source](fpx.mjs#L57); [test/example](test/test.mjs#L752).
 
 True for any array-like such as: `[]`, `arguments`, `TypedArray`, `NodeList`, etc. Used internally for most list checks. Note that _primitive strings are not considered lists_.
 
 ### `function isSeq`
 
-Links: [source](fpx.mjs#L54); [test/example](test/test.mjs#L722).
+Links: [source](fpx.mjs#L58); [test/example](test/test.mjs#L767).
 
 True for any of:
 
@@ -617,7 +645,7 @@ Many Fpx functions support arbitrary data structures compatible with [#`values`]
 
 ### `function isInst`
 
-Links: [source](fpx.mjs#L58); [test/example](test/test.mjs#L739).
+Links: [source](fpx.mjs#L63); [test/example](test/test.mjs#L784).
 
 Signature: `(val, Cls) => bool`.
 
@@ -625,31 +653,31 @@ Same as `instanceof` but _does not_ implicitly convert the operand to an object.
 
 ### `function hasMeth`
 
-Links: [source](fpx.mjs#L63); [test/example](test/test.mjs#L755).
+Links: [source](fpx.mjs#L68); [test/example](test/test.mjs#L800).
 
 True if the the given value has the given named method. Safe to call on primitives such as `null`. Always false for primitives.
 
 ### `function isListOf`
 
-Links: [source](fpx.mjs#L65); [test/example](test/test.mjs#L775).
+Links: [source](fpx.mjs#L70); [test/example](test/test.mjs#L820).
 
 Shortcut for `isList(val) && every(val, fun)`. True if the input is a list of values that satisfy the given predicate function.
 
 ### `function isEmpty`
 
-Links: [source](fpx.mjs#L70); [test/example](test/test.mjs#L794).
+Links: [source](fpx.mjs#L75); [test/example](test/test.mjs#L839).
 
 True if the input is an empty collection such as list, set, map, or a primitive such as `null`. False for any other non-primitive. Treating primitives as "empty" is consistent with other Fpx functions that operate on collections.
 
 ### `function isVac`
 
-Links: [source](fpx.mjs#L77); [test/example](test/test.mjs#L811).
+Links: [source](fpx.mjs#L82); [test/example](test/test.mjs#L856).
 
 Short for "is vacuous" or "is vacated". Could also be called "is falsy deep". True if the input is [#falsy](#function-falsy) or a [#list](#function-islist) where all values are vacuous, recursively. Does not iterate non-lists. Also see complementary function [#`vac`](#function-vac).
 
 ### `function req`
 
-Links: [source](fpx.mjs#L84); [test/example](test/test.mjs#L849).
+Links: [source](fpx.mjs#L89); [test/example](test/test.mjs#L894).
 
 Signature: `(val, test) => val` where `test: val => bool`.
 
@@ -665,13 +693,13 @@ f.req('str', f.isFun)
 
 ### `function opt`
 
-Links: [source](fpx.mjs#L92); [test/example](test/test.mjs#L870).
+Links: [source](fpx.mjs#L97); [test/example](test/test.mjs#L915).
 
 Short for "optional". If `val` is [#non-nil](#function-issome), uses [#`req`](#function-req) to validate it. Returns `val` as-is.
 
 ### `function reqInst`
 
-Links: [source](fpx.mjs#L103); [test/example](test/test.mjs#L896).
+Links: [source](fpx.mjs#L108); [test/example](test/test.mjs#L941).
 
 Signature: `(val, Cls) => val`.
 
@@ -679,13 +707,13 @@ Short for "require instance". Asserts that `val` is an instance of the given cla
 
 ### `function optInst`
 
-Links: [source](fpx.mjs#L111); [test/example](test/test.mjs#L918).
+Links: [source](fpx.mjs#L116); [test/example](test/test.mjs#L963).
 
 Short for "optional instance". If `val` is [#non-nil](#function-issome), uses [#`reqInst`](#function-reqinst) to validate it. Returns `val` as-is.
 
 ### `function only`
 
-Links: [source](fpx.mjs#L116); [test/example](test/test.mjs#L950).
+Links: [source](fpx.mjs#L121); [test/example](test/test.mjs#L995).
 
 Signature: `(val, test) => val` where `test: val => bool`.
 
@@ -693,7 +721,7 @@ Type filtering utility. If `val` satisfies the given test function, returns `val
 
 ### `function arrOf`
 
-Links: [source](fpx.mjs#L118); [test/example](test/test.mjs#L977).
+Links: [source](fpx.mjs#L123); [test/example](test/test.mjs#L1022).
 
 Signature: `(seq<A>, test) => A[]` where `test: A => true`.
 
@@ -701,61 +729,61 @@ Shortcut. Converts the input to an array via [#`arr`](#function-arr) and asserts
 
 ### `function prim`
 
-Links: [source](fpx.mjs#L125); [test/example](test/test.mjs#L989).
+Links: [source](fpx.mjs#L130); [test/example](test/test.mjs#L1034).
 
 Shortcut for asserting that the input is a primitive. Throws for non-primitive inputs. Returns the input as-is.
 
 ### `function bool`
 
-Links: [source](fpx.mjs#L126); [test/example](test/test.mjs#L1006).
+Links: [source](fpx.mjs#L131); [test/example](test/test.mjs#L1051).
 
 Similar to `val ?? false` but `val` must be [#nil](#function-isnil) or a [#boolean](#function-isbool), otherwise throws.
 
 ### `function num`
 
-Links: [source](fpx.mjs#L127); [test/example](test/test.mjs#L1021).
+Links: [source](fpx.mjs#L132); [test/example](test/test.mjs#L1066).
 
 Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#number](#function-isnum), otherwise throws.
 
 ### `function fin`
 
-Links: [source](fpx.mjs#L128); [test/example](test/test.mjs#L1037).
+Links: [source](fpx.mjs#L133); [test/example](test/test.mjs#L1082).
 
 Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#finite number](#function-isfin), otherwise throws.
 
 ### `function int`
 
-Links: [source](fpx.mjs#L129); [test/example](test/test.mjs#L1053).
+Links: [source](fpx.mjs#L134); [test/example](test/test.mjs#L1098).
 
 Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or an [#integer](#function-isint), otherwise throws.
 
 ### `function nat`
 
-Links: [source](fpx.mjs#L130); [test/example](test/test.mjs#L1072).
+Links: [source](fpx.mjs#L135); [test/example](test/test.mjs#L1117).
 
 Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#natural number](#function-isnat), otherwise throws.
 
 ### `function intPos`
 
-Links: [source](fpx.mjs#L131); [test/example](test/test.mjs#L1092).
+Links: [source](fpx.mjs#L136); [test/example](test/test.mjs#L1137).
 
 Similar to `val ?? 0` but `val` must be [#nil](#function-isnil) or a [#positive integer](#function-isintpos), otherwise throws.
 
 ### `function str`
 
-Links: [source](fpx.mjs#L132); [test/example](test/test.mjs#L1112).
+Links: [source](fpx.mjs#L137); [test/example](test/test.mjs#L1157).
 
 Similar to `val ?? ''` but `val` must be [#nil](#function-isnil) or a [#string](#function-isstr), otherwise throws.
 
 ### `function dict`
 
-Links: [source](fpx.mjs#L133); [test/example](test/test.mjs#L1125).
+Links: [source](fpx.mjs#L138); [test/example](test/test.mjs#L1170).
 
 Similar to `val ?? Object.create(null)` but `val` must be [#nil](#function-isnil) or a [#dict](#function-isdict), otherwise throws.
 
 ### `function struct`
 
-Links: [source](fpx.mjs#L134); [test/example](test/test.mjs#L1143).
+Links: [source](fpx.mjs#L139); [test/example](test/test.mjs#L1188).
 
 Similar to `val ?? Object.create(null)` but `val` must be [#nil](#function-isnil) or a [#struct](#function-isstruct), otherwise throws.
 
@@ -763,7 +791,7 @@ Most Fpx functions that operate on data structures, such as [#`filter`](#functio
 
 ### `function inst`
 
-Links: [source](fpx.mjs#L135); [test/example](test/test.mjs#L1161).
+Links: [source](fpx.mjs#L140); [test/example](test/test.mjs#L1206).
 
 Signature: `(any, typeof A) => A`.
 
@@ -785,109 +813,109 @@ newInst === oldInst
 
 ### `function add`
 
-Links: [source](fpx.mjs#L143); [test/example](test/test.mjs#L1194).
+Links: [source](fpx.mjs#L148); [test/example](test/test.mjs#L1239).
 
 Same as `+`.
 
 ### `function sub`
 
-Links: [source](fpx.mjs#L144); [test/example](test/test.mjs#L1200).
+Links: [source](fpx.mjs#L149); [test/example](test/test.mjs#L1245).
 
 Same as `-`.
 
 ### `function mul`
 
-Links: [source](fpx.mjs#L145); [test/example](test/test.mjs#L1206).
+Links: [source](fpx.mjs#L150); [test/example](test/test.mjs#L1251).
 
 Same as `*`.
 
 ### `function div`
 
-Links: [source](fpx.mjs#L146); [test/example](test/test.mjs#L1212).
+Links: [source](fpx.mjs#L151); [test/example](test/test.mjs#L1257).
 
 Same as `/`.
 
 ### `function rem`
 
-Links: [source](fpx.mjs#L147); [test/example](test/test.mjs#L1218).
+Links: [source](fpx.mjs#L152); [test/example](test/test.mjs#L1263).
 
 Same as `%`.
 
 ### `function lt`
 
-Links: [source](fpx.mjs#L148); [test/example](test/test.mjs#L1226).
+Links: [source](fpx.mjs#L153); [test/example](test/test.mjs#L1271).
 
 Same as `<`.
 
 ### `function gt`
 
-Links: [source](fpx.mjs#L149); [test/example](test/test.mjs#L1237).
+Links: [source](fpx.mjs#L154); [test/example](test/test.mjs#L1282).
 
 Same as `>`.
 
 ### `function lte`
 
-Links: [source](fpx.mjs#L150); [test/example](test/test.mjs#L1248).
+Links: [source](fpx.mjs#L155); [test/example](test/test.mjs#L1293).
 
 Same as `<=`.
 
 ### `function gte`
 
-Links: [source](fpx.mjs#L151); [test/example](test/test.mjs#L1259).
+Links: [source](fpx.mjs#L156); [test/example](test/test.mjs#L1304).
 
 Same as `>=`.
 
 ### `function neg`
 
-Links: [source](fpx.mjs#L152); [test/example](test/test.mjs#L1270).
+Links: [source](fpx.mjs#L157); [test/example](test/test.mjs#L1315).
 
 Arithmetic negation. Same as unary `-`.
 
 ### `function inc`
 
-Links: [source](fpx.mjs#L153); [test/example](test/test.mjs#L1282).
+Links: [source](fpx.mjs#L158); [test/example](test/test.mjs#L1327).
 
 Increments by `1`.
 
 ### `function dec`
 
-Links: [source](fpx.mjs#L154); [test/example](test/test.mjs#L1290).
+Links: [source](fpx.mjs#L159); [test/example](test/test.mjs#L1335).
 
 Decrements by `1`.
 
 ### `function nop`
 
-Links: [source](fpx.mjs#L158); [test/example](test/test.mjs#L1298).
+Links: [source](fpx.mjs#L163); [test/example](test/test.mjs#L1343).
 
 Empty function. Functional equivalent of `;` or `undefined`. Sometimes useful with higher-order functions.
 
 ### `function True`
 
-Links: [source](fpx.mjs#L159); [test/example](test/test.mjs#L1304).
+Links: [source](fpx.mjs#L164); [test/example](test/test.mjs#L1349).
 
 Always returns `true`. Sometimes useful with higher order functions.
 
 ### `function False`
 
-Links: [source](fpx.mjs#L160); [test/example](test/test.mjs#L1312).
+Links: [source](fpx.mjs#L165); [test/example](test/test.mjs#L1357).
 
 Always returns `false`. Sometimes useful with higher order functions.
 
 ### `function id`
 
-Links: [source](fpx.mjs#L161); [test/example](test/test.mjs#L1320).
+Links: [source](fpx.mjs#L166); [test/example](test/test.mjs#L1365).
 
 Identity function: returns its first argument unchanged. Sometimes useful with higher-order functions.
 
 ### `function di`
 
-Links: [source](fpx.mjs#L162); [test/example](test/test.mjs#L1327).
+Links: [source](fpx.mjs#L167); [test/example](test/test.mjs#L1372).
 
 Returns its _second_ argument unchanged. Sometimes useful with higher-order functions.
 
 ### `function val`
 
-Links: [source](fpx.mjs#L163); [test/example](test/test.mjs#L1334).
+Links: [source](fpx.mjs#L168); [test/example](test/test.mjs#L1379).
 
 Takes a value and creates a function that always returns that value. Sometimes useful with higher order functions.
 
@@ -903,7 +931,7 @@ constant(`this input is ignored`)
 
 ### `function panic`
 
-Links: [source](fpx.mjs#L164); [test/example](test/test.mjs#L1348).
+Links: [source](fpx.mjs#L169); [test/example](test/test.mjs#L1393).
 
 Same as `throw` but an expression rather than a statement. Also sometimes useful with higher-order functions.
 
@@ -913,43 +941,43 @@ const x = someTest ? someValue : f.panic(Error(`unreachable`))
 
 ### `function jsonDecode`
 
-Links: [source](fpx.mjs#L165); [test/example](test/test.mjs#L1370).
+Links: [source](fpx.mjs#L170); [test/example](test/test.mjs#L1415).
 
 Similar to [`JSON.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) but sane rather than insane. If the input is [#nil](#function-isnil) or an empty string, returns `null`. Otherwise the input must be a primitive string. Throws on other inputs, without trying to stringify them.
 
 ### `function jsonEncode`
 
-Links: [source](fpx.mjs#L166); [test/example](test/test.mjs#L1385).
+Links: [source](fpx.mjs#L171); [test/example](test/test.mjs#L1430).
 
 Similar to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) but sane rather than insane. Equivalent to `JSON.stringify(val ?? null)`. If the input is `undefined`, returns `'null'` (string) rather than `undefined` (nil). Output is _always_ a valid JSON string.
 
 ### `function show`
 
-Links: [source](fpx.mjs#L168); [test/example](test/test.mjs#L44).
+Links: [source](fpx.mjs#L173); [test/example](test/test.mjs#L44).
 
 Returns a string describing the value. When relevant, prints data as JSON to avoid the dreaded `[object Object]`. Prints functions as their names or source code. Convenient for interpolating things into error messages. Used internally in assertion functions such as [#`req`](#function-req).
 
 ### `function npo`
 
-Links: [source](fpx.mjs#L177); [test/example](test/test.mjs#L1399).
+Links: [source](fpx.mjs#L182); [test/example](test/test.mjs#L1444).
 
 Short for "null-prototype object". Syntactic shortcut for `Object.create(null)`.
 
 ### `function hasOwn`
 
-Links: [source](fpx.mjs#L179); [test/example](test/test.mjs#L1405).
+Links: [source](fpx.mjs#L184); [test/example](test/test.mjs#L1450).
 
 Same as [`Object.prototype.hasOwnProperty`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty) but shorter and safe to call on primitives. Always false for primitives.
 
 ### `function hasOwnEnum`
 
-Links: [source](fpx.mjs#L184); [test/example](test/test.mjs#L1419).
+Links: [source](fpx.mjs#L189); [test/example](test/test.mjs#L1464).
 
 Same as [`Object.prototype.propertyIsEnumerable`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable) but shorter and safe to call on primitives. Always false for primitives.
 
 ### `function mut`
 
-Links: [source](fpx.mjs#L189); [test/example](test/test.mjs#L1434).
+Links: [source](fpx.mjs#L194); [test/example](test/test.mjs#L1479).
 
 Signature: `(tar, src) => tar`.
 
@@ -965,7 +993,7 @@ Similar to [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 
 ### `function mapDict`
 
-Links: [source](fpx.mjs#L197); [test/example](test/test.mjs#L1557).
+Links: [source](fpx.mjs#L202); [test/example](test/test.mjs#L1602).
 
 Signature: `({[Key: A]}, A => B) => {[Key: B]}`.
 
@@ -973,7 +1001,7 @@ Similar to [#`map`](#function-map) but for dicts. Creates a version of the given
 
 ### `function pick`
 
-Links: [source](fpx.mjs#L204); [test/example](test/test.mjs#L1572).
+Links: [source](fpx.mjs#L209); [test/example](test/test.mjs#L1617).
 
 Signature: `({[Key: A]}, A => bool) => {[Key: A]}`.
 
@@ -981,7 +1009,7 @@ Similar to [#`filter`](#function-filter) but for dicts. Returns a version of the
 
 ### `function omit`
 
-Links: [source](fpx.mjs#L214); [test/example](test/test.mjs#L1582).
+Links: [source](fpx.mjs#L219); [test/example](test/test.mjs#L1627).
 
 Signature: `({[Key: A]}, A => bool) => {[Key: A]}`.
 
@@ -989,7 +1017,7 @@ Similar to [#`reject`](#function-reject) but for dicts. Returns a version of the
 
 ### `function pickKeys`
 
-Links: [source](fpx.mjs#L216); [test/example](test/test.mjs#L1592).
+Links: [source](fpx.mjs#L221); [test/example](test/test.mjs#L1637).
 
 Signature: `({[Key: A]}, keys) => {[Key: A]}`.
 
@@ -997,7 +1025,7 @@ Returns a version of the given dict, keeping only the given properties. Keys can
 
 ### `function omitKeys`
 
-Links: [source](fpx.mjs#L223); [test/example](test/test.mjs#L1610).
+Links: [source](fpx.mjs#L228); [test/example](test/test.mjs#L1655).
 
 Signature: `({[Key: A]}, keys) => {[Key: A]}`.
 
@@ -1005,19 +1033,19 @@ Returns a version of the given dict without the given properties. Keys must be a
 
 ### `function more`
 
-Links: [source](fpx.mjs#L233); [test/example](test/test.mjs#L1628).
+Links: [source](fpx.mjs#L238); [test/example](test/test.mjs#L1673).
 
 Takes an [#iterator](#function-isiterator), consumes one value, and returns true if the iterator is not yet finished. Shortcut for `val.next().done === false`.
 
 ### `function alloc`
 
-Links: [source](fpx.mjs#L234); [test/example](test/test.mjs#L1638).
+Links: [source](fpx.mjs#L239); [test/example](test/test.mjs#L1683).
 
 Shortcut for allocating an array with a sanity check. Same as `Array(N)` but ensures that the input is a [#natural number](#function-nat) suitable for array length. Avoids unintentionally passing any non-natural input such as `Array(-1)`. Allows [#nil](#function-isnil), replacing it with `0`.
 
 ### `function arr`
 
-Links: [source](fpx.mjs#L235); [test/example](test/test.mjs#L1647).
+Links: [source](fpx.mjs#L240); [test/example](test/test.mjs#L1692).
 
 Converts an arbitrary [#sequence](#function-isseq) to an array. Allows the following inputs:
 
@@ -1030,19 +1058,19 @@ Unlike [#`values`](#function-values), `arr` rejects other inputs such as non-nil
 
 ### `function arrCopy`
 
-Links: [source](fpx.mjs#L236); [test/example](test/test.mjs#L1679).
+Links: [source](fpx.mjs#L241); [test/example](test/test.mjs#L1724).
 
 Like [#`arr`](#function-arr), converts an arbitrary sequence to an array. Unlike `arr,` always makes a copy. Mutating the output doesn't affect the original.
 
 ### `function slice`
 
-Links: [source](fpx.mjs#L241); [test/example](test/test.mjs#L1693).
+Links: [source](fpx.mjs#L246); [test/example](test/test.mjs#L1738).
 
 Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) but allows arbitrary [#sequences](#function-isseq) compatible with [#`arr`](#function-arr).
 
 ### `function keys`
 
-Links: [source](fpx.mjs#L250); [test/example](test/test.mjs#L1725).
+Links: [source](fpx.mjs#L255); [test/example](test/test.mjs#L1770).
 
 Takes an arbitrary input and returns an array of its keys:
 
@@ -1055,7 +1083,7 @@ Takes an arbitrary input and returns an array of its keys:
 
 ### `function values`
 
-Links: [source](fpx.mjs#L267); [test/example](test/test.mjs#L1748).
+Links: [source](fpx.mjs#L272); [test/example](test/test.mjs#L1793).
 
 Takes an arbitrary input and returns an array of its values:
 
@@ -1069,13 +1097,13 @@ Takes an arbitrary input and returns an array of its values:
 
 ### `function valuesCopy`
 
-Links: [source](fpx.mjs#L290); [test/example](test/test.mjs#L1768).
+Links: [source](fpx.mjs#L295); [test/example](test/test.mjs#L1813).
 
 Variant of [#`values`](#function-values) that always makes a copy. Mutating the output doesn't affect the original.
 
 ### `function entries`
 
-Links: [source](fpx.mjs#L292); [test/example](test/test.mjs#L1790).
+Links: [source](fpx.mjs#L297); [test/example](test/test.mjs#L1835).
 
 Takes an arbitrary input and returns an array of its entries (key-value tuples):
 
@@ -1088,19 +1116,19 @@ Takes an arbitrary input and returns an array of its entries (key-value tuples):
 
 ### `function reify`
 
-Links: [source](fpx.mjs#L318); [test/example](test/test.mjs#L1809).
+Links: [source](fpx.mjs#L323); [test/example](test/test.mjs#L1854).
 
 Takes an arbitrary value and attempts to deeply materialize it. Any [#iterators](#function-iterator), or [#lists](#function-islist) that contain iterators, or lists that contain lists that contain iterators, etc., are converted to arrays. Does not inspect other data structures such as [#sets](#function-isset) or [#dicts](#function-isdict).
 
 ### `function vac`
 
-Links: [source](fpx.mjs#L322); [test/example](test/test.mjs#L1834).
+Links: [source](fpx.mjs#L327); [test/example](test/test.mjs#L1879).
 
 Complements [#`isVac`](#function-isvac). Returns `undefined` if the input is vacuous, otherwise returns the input as-is.
 
 ### `function indexOf`
 
-Links: [source](fpx.mjs#L324); [test/example](test/test.mjs#L1841).
+Links: [source](fpx.mjs#L329); [test/example](test/test.mjs#L1886).
 
 Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf). Differences:
 
@@ -1109,7 +1137,7 @@ Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 ### `function includes`
 
-Links: [source](fpx.mjs#L332); [test/example](test/test.mjs#L1862).
+Links: [source](fpx.mjs#L337); [test/example](test/test.mjs#L1907).
 
 Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes). Differences:
 
@@ -1118,7 +1146,7 @@ Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/J
 
 ### `function concat`
 
-Links: [source](fpx.mjs#L333); [test/example](test/test.mjs#L1881).
+Links: [source](fpx.mjs#L338); [test/example](test/test.mjs#L1926).
 
 Like [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat). Differences:
 
@@ -1131,19 +1159,19 @@ Note: for individual elements, use [#`append`](#function-append) and
 
 ### `function append`
 
-Links: [source](fpx.mjs#L334); [test/example](test/test.mjs#L1899).
+Links: [source](fpx.mjs#L339); [test/example](test/test.mjs#L1944).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and appends an arbitrary value, returning the resulting array.
 
 ### `function prepend`
 
-Links: [source](fpx.mjs#L335); [test/example](test/test.mjs#L1914).
+Links: [source](fpx.mjs#L340); [test/example](test/test.mjs#L1959).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and prepends an arbitrary value, returning the resulting array.
 
 ### `function len`
 
-Links: [source](fpx.mjs#L337); [test/example](test/test.mjs#L1949).
+Links: [source](fpx.mjs#L342); [test/example](test/test.mjs#L1994).
 
 Universal length measurement:
 
@@ -1156,13 +1184,13 @@ Universal length measurement:
 
 ### `function hasLen`
 
-Links: [source](fpx.mjs#L361); [test/example](test/test.mjs#L1953).
+Links: [source](fpx.mjs#L366); [test/example](test/test.mjs#L1998).
 
 Shortcut for [#`len`](#function-len) > 0.
 
 ### `function each`
 
-Links: [source](fpx.mjs#L363); [test/example](test/test.mjs#L1985).
+Links: [source](fpx.mjs#L368); [test/example](test/test.mjs#L2030).
 
 Signature: `(Iter<A>, A => void) => void`.
 
@@ -1174,7 +1202,7 @@ Similar to `Array.prototype.forEach`, `Set.prototype.forEach`, `Map.prototype.fo
 
 ### `function map`
 
-Links: [source](fpx.mjs#L368); [test/example](test/test.mjs#L2006).
+Links: [source](fpx.mjs#L373); [test/example](test/test.mjs#L2051).
 
 Signature: `(Iter<A>, A => B) => B[]`.
 
@@ -1186,7 +1214,7 @@ Similar to [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/
 
 ### `function mapMut`
 
-Links: [source](fpx.mjs#L370); [test/example](test/test.mjs#L2039).
+Links: [source](fpx.mjs#L375); [test/example](test/test.mjs#L2084).
 
 Similar to [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map). Differences:
 
@@ -1197,13 +1225,13 @@ For a non-mutating version, see [#`map`](#function-map).
 
 ### `function mapCompact`
 
-Links: [source](fpx.mjs#L378); [test/example](test/test.mjs#L2055).
+Links: [source](fpx.mjs#L383); [test/example](test/test.mjs#L2100).
 
 Equivalent to `f.compact(f.map(val, fun))`. See [#`map`](#function-map) and [#`compact`](#function-compact).
 
 ### `function filter`
 
-Links: [source](fpx.mjs#L380); [test/example](test/test.mjs#L2068).
+Links: [source](fpx.mjs#L385); [test/example](test/test.mjs#L2113).
 
 Signature: `(Iter<A>, A => bool) => A[]`.
 
@@ -1215,19 +1243,19 @@ Similar to [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/W
 
 ### `function reject`
 
-Links: [source](fpx.mjs#L387); [test/example](test/test.mjs#L2084).
+Links: [source](fpx.mjs#L392); [test/example](test/test.mjs#L2129).
 
 Opposite of [#`filter`](#function-filter). Equivalent to `f.filter(val, f.not(fun))`.
 
 ### `function compact`
 
-Links: [source](fpx.mjs#L389); [test/example](test/test.mjs#L2100).
+Links: [source](fpx.mjs#L394); [test/example](test/test.mjs#L2145).
 
 Equivalent to `f.filter(val, f.id)`. Takes an arbitrary iterable and returns an array of its truthy [#`values`](#function-values), discarding falsy values.
 
 ### `function remove`
 
-Links: [source](fpx.mjs#L395); [test/example](test/test.mjs#L2112).
+Links: [source](fpx.mjs#L400); [test/example](test/test.mjs#L2157).
 
 Signature: `(Iter<A>, A) => A[]`.
 
@@ -1235,7 +1263,7 @@ Takes an arbitrary iterable and an element to remove. Returns an array of the it
 
 ### `function fold`
 
-Links: [source](fpx.mjs#L399); [test/example](test/test.mjs#L2129).
+Links: [source](fpx.mjs#L404); [test/example](test/test.mjs#L2174).
 
 Signature: `(src: Iter<A>, acc: B, fun: (B, A) => B) => B`.
 
@@ -1250,7 +1278,7 @@ Similar to [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/W
 
 ### `function find`
 
-Links: [source](fpx.mjs#L405); [test/example](test/test.mjs#L2145).
+Links: [source](fpx.mjs#L410); [test/example](test/test.mjs#L2190).
 
 Signature: `(Iter<A>, A => bool) => A`.
 
@@ -1262,7 +1290,7 @@ Similar to [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web
 
 ### `function procure`
 
-Links: [source](fpx.mjs#L411); [test/example](test/test.mjs#L2160).
+Links: [source](fpx.mjs#L416); [test/example](test/test.mjs#L2205).
 
 Signature: `(src: Iter<A>, fun: A => B) => B`.
 
@@ -1270,7 +1298,7 @@ Similar to [#`find`](#function-find), but returns the first truthy result of cal
 
 ### `function every`
 
-Links: [source](fpx.mjs#L417); [test/example](test/test.mjs#L2177).
+Links: [source](fpx.mjs#L422); [test/example](test/test.mjs#L2222).
 
 Signature: `(Iter<A>, A => bool) => bool`.
 
@@ -1282,7 +1310,7 @@ Similar to [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/We
 
 ### `function some`
 
-Links: [source](fpx.mjs#L423); [test/example](test/test.mjs#L2196).
+Links: [source](fpx.mjs#L428); [test/example](test/test.mjs#L2241).
 
 Signature: `(Iter<A>, A => bool) => bool`.
 
@@ -1294,37 +1322,37 @@ Similar to [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web
 
 ### `function head`
 
-Links: [source](fpx.mjs#L429); [test/example](test/test.mjs#L2215).
+Links: [source](fpx.mjs#L434); [test/example](test/test.mjs#L2260).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns its first element or `undefined`.
 
 ### `function last`
 
-Links: [source](fpx.mjs#L430); [test/example](test/test.mjs#L2225).
+Links: [source](fpx.mjs#L435); [test/example](test/test.mjs#L2270).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns its last element or `undefined`.
 
 ### `function init`
 
-Links: [source](fpx.mjs#L431); [test/example](test/test.mjs#L2235).
+Links: [source](fpx.mjs#L436); [test/example](test/test.mjs#L2280).
 
 Short for "initial". Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an array of all its values except last.
 
 ### `function tail`
 
-Links: [source](fpx.mjs#L432); [test/example](test/test.mjs#L2245).
+Links: [source](fpx.mjs#L437); [test/example](test/test.mjs#L2290).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an array of all its values except first.
 
 ### `function take`
 
-Links: [source](fpx.mjs#L433); [test/example](test/test.mjs#L2255).
+Links: [source](fpx.mjs#L438); [test/example](test/test.mjs#L2300).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns N values from the start.
 
 ### `function count`
 
-Links: [source](fpx.mjs#L435); [test/example](test/test.mjs#L2287).
+Links: [source](fpx.mjs#L440); [test/example](test/test.mjs#L2332).
 
 Signature: `(src: Iter<A>, fun: A => B) => nat`.
 
@@ -1332,7 +1360,7 @@ Takes an arbitrary iterable compatible with [#`values`](#function-values), calls
 
 ### `function compare`
 
-Links: [source](fpx.mjs#L443); [test/example](test/test.mjs#L2302).
+Links: [source](fpx.mjs#L448); [test/example](test/test.mjs#L2347).
 
 Signature: `(a, b) => -1 | 0 | 1`.
 
@@ -1340,7 +1368,7 @@ Equivalent to the [default JS sort comparison algorithm](https://tc39.github.io/
 
 ### `function compareFin`
 
-Links: [source](fpx.mjs#L454); [test/example](test/test.mjs#L2312).
+Links: [source](fpx.mjs#L459); [test/example](test/test.mjs#L2357).
 
 Signature: `(a, b) => -1 | 0 | 1` where arguments are [#nil](#function-isnil) or [#finite](#function-isfin).
 
@@ -1348,7 +1376,7 @@ Sort comparison for finite numbers. Usable for [`Array.prototype.sort`](https://
 
 ### `function sort`
 
-Links: [source](fpx.mjs#L462); [test/example](test/test.mjs#L2324).
+Links: [source](fpx.mjs#L467); [test/example](test/test.mjs#L2369).
 
 Signature: `(src: Iter<A>, fun?: (prev: A, next: A) => -1 | 0 | 1) => A[]`.
 
@@ -1362,7 +1390,7 @@ The comparison function is optional. If omitted, default JS sorting is used.
 
 ### `function reverse`
 
-Links: [source](fpx.mjs#L463); [test/example](test/test.mjs#L2356).
+Links: [source](fpx.mjs#L468); [test/example](test/test.mjs#L2401).
 
 Similar to [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse). Differences:
 
@@ -1372,7 +1400,7 @@ Similar to [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/
 
 ### `function index`
 
-Links: [source](fpx.mjs#L465); [test/example](test/test.mjs#L2374).
+Links: [source](fpx.mjs#L470); [test/example](test/test.mjs#L2419).
 
 Signature: `(Iter<A>, A => Key | any) => {[Key: A]}`.
 
@@ -1382,7 +1410,7 @@ Similar to Lodash's `_.keyBy`. Compare [#`group`](#function-group) which keeps a
 
 ### `function group`
 
-Links: [source](fpx.mjs#L475); [test/example](test/test.mjs#L2419).
+Links: [source](fpx.mjs#L480); [test/example](test/test.mjs#L2464).
 
 Signature: `(Iter<A>, A => Key | any) => {[Key: A[]]}`.
 
@@ -1392,7 +1420,7 @@ Compare [#`index`](#function-index), which keeps only the last value for each gr
 
 ### `function partition`
 
-Links: [source](fpx.mjs#L485); [test/example](test/test.mjs#L2445).
+Links: [source](fpx.mjs#L490); [test/example](test/test.mjs#L2490).
 
 Signature: `(Iter<A>, A => bool) => [A[], A[]]`.
 
@@ -1400,7 +1428,7 @@ Partitions the [#`values`](#function-values) of a given iterable, returning a tu
 
 ### `function sum`
 
-Links: [source](fpx.mjs#L493); [test/example](test/test.mjs#L2462).
+Links: [source](fpx.mjs#L498); [test/example](test/test.mjs#L2507).
 
 Signature: `(Iter<A>) => fin`.
 
@@ -1408,7 +1436,7 @@ Sums all finite [#`values`](#function-values) of an arbitrary iterable, ignoring
 
 ### `function zip`
 
-Links: [source](fpx.mjs#L498); [test/example](test/test.mjs#L2473).
+Links: [source](fpx.mjs#L503); [test/example](test/test.mjs#L2518).
 
 Signature: `(Iter<[Key, A]>) => {[Key: A]}`.
 
@@ -1422,13 +1450,13 @@ Similar to [`Object.fromEntries`](https://developer.mozilla.org/en-US/docs/Web/J
 
 ### `function mapFrom`
 
-Links: [source](fpx.mjs#L504); [test/example](test/test.mjs#L2490).
+Links: [source](fpx.mjs#L509); [test/example](test/test.mjs#L2535).
 
 Syntactic shortcut for creating a `Map` with inline keys and values. Shorter and less noisy than either `new Map` with an array of entries or chained `.set` calls.
 
 ### `function range`
 
-Links: [source](fpx.mjs#L511); [test/example](test/test.mjs#L2497).
+Links: [source](fpx.mjs#L516); [test/example](test/test.mjs#L2542).
 
 Signature: `(min: int, max: int) => int[]`.
 
@@ -1436,7 +1464,7 @@ Returns an array of contiguous integers in the range of `[min, max)`. The first 
 
 ### `function span`
 
-Links: [source](fpx.mjs#L522); [test/example](test/test.mjs#L2512).
+Links: [source](fpx.mjs#L527); [test/example](test/test.mjs#L2557).
 
 Signature: `nat => nat[]`.
 
@@ -1444,7 +1472,7 @@ Returns an array of the given length, where values are integers from 0. Shortcut
 
 ### `function times`
 
-Links: [source](fpx.mjs#L523); [test/example](test/test.mjs#L2523).
+Links: [source](fpx.mjs#L528); [test/example](test/test.mjs#L2568).
 
 Signature: `(len: nat, fun: nat => A) => A[]`.
 
@@ -1452,7 +1480,7 @@ Takes an array length and a mapping function. Returns an array of the given leng
 
 ### `function repeat`
 
-Links: [source](fpx.mjs#L524); [test/example](test/test.mjs#L2544).
+Links: [source](fpx.mjs#L529); [test/example](test/test.mjs#L2589).
 
 Signature: `(len: nat, val: A) => A[]`.
 
@@ -1460,7 +1488,7 @@ Returns an array of the given length where each element is the given value. Equi
 
 ### `function set`
 
-Links: [source](fpx.mjs#L525); [test/example](test/test.mjs#L2556).
+Links: [source](fpx.mjs#L530); [test/example](test/test.mjs#L2601).
 
 Converts an arbitrary input to a native [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set). Similar to `new Set`. Differences:
 
@@ -1470,7 +1498,7 @@ Converts an arbitrary input to a native [`Set`](https://developer.mozilla.org/en
 
 ### `function setCopy`
 
-Links: [source](fpx.mjs#L526); [test/example](test/test.mjs#L2580).
+Links: [source](fpx.mjs#L531); [test/example](test/test.mjs#L2625).
 
 Similar to [#`set`](#function-set): converts an arbitrary input to a set. Difference: always makes a copy. If the original was a set, it's unaffected by mutations of the output.
 

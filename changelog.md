@@ -1,3 +1,7 @@
+## `0.12.1`
+
+Add `isFunSync`, `isFunGen`, `isFunAsync`, `isFunAsyncGen`.
+
 ## `0.12.0`
 
 Massive revision:

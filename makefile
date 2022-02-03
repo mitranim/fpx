@@ -24,7 +24,7 @@ lint_w:
 	watchexec -r -c -d=0 -e=mjs -n -- $(MAKE) lint
 
 lint:
-	deno lint --rules-exclude=no-empty,require-yield
+	deno lint --rules-exclude=no-empty,require-yield,require-await
 
 # TODO consider watching all related files.
 doc_w:

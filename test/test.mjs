@@ -11,7 +11,7 @@ if (cli.bool(`v`)) t.conf.testRep = t.conf.benchRep
 function args() {return arguments}
 function arrgs(...args) {return args}
 function toArgs(val) {return args(...(val ?? []))}
-function* gen() {}
+function* gen() {throw Error(`unreachable`)}
 async function* agen() {throw Error(`unreachable`)}
 function* copygen(iter) {for (const val of iter) yield val}
 const inherit = Object.create
@@ -112,18 +112,6 @@ t.test(function test_is() {
   t.ok(f.is(-0, +0))
   t.ok(f.is(`one`, `one`))
 })
-
-/*
-t.example(function example_is() {
-  console.log(f.is(10, 20))
-  console.log(f.is(10, 10))
-  console.log(f.is(NaN, NaN))
-}, `
-false
-true
-true
-`)
-*/
 
 t.test(function test_isNil() {
   t.no(f.isNil(false))
@@ -415,9 +403,66 @@ t.test(function test_isPrim() {
 
 t.test(function test_isFun() {
   t.no(f.isFun())
-  t.no(f.isFun(inherit(f.id)))
+  t.no(f.isFun(true))
+  t.no(f.isFun(10))
+  t.no(f.isFun(`str`))
+  t.no(f.isFun([]))
+  t.no(f.isFun({}))
 
-  t.ok(f.isFun(f.id))
+  // `val instanceof Function` would have returned `true` here.
+  t.no(f.isFun(inherit(() => {})))
+  t.no(f.isFun(inherit(function() {})))
+  t.no(f.isFun(inherit(function*() {})))
+  t.no(f.isFun(inherit(async () => {})))
+  t.no(f.isFun(inherit(async function() {})))
+  t.no(f.isFun(inherit(async function*() {})))
+
+  t.ok(f.isFun(() => {}))
+  t.ok(f.isFun(function() {}))
+  t.ok(f.isFun(function*() {}))
+  t.ok(f.isFun(async () => {}))
+  t.ok(f.isFun(async function() {}))
+  t.ok(f.isFun(async function*() {}))
+})
+
+t.test(function test_isFunSync() {
+  t.no(f.isFunSync(function*() {}))
+  t.no(f.isFunSync(async () => {}))
+  t.no(f.isFunSync(async function() {}))
+  t.no(f.isFunSync(async function*() {}))
+
+  t.ok(f.isFunSync(() => {}))
+  t.ok(f.isFunSync(function() {}))
+})
+
+t.test(function test_isFunGen() {
+  t.no(f.isFunGen(() => {}))
+  t.no(f.isFunGen(function() {}))
+  t.no(f.isFunGen(async () => {}))
+  t.no(f.isFunGen(async function() {}))
+  t.no(f.isFunGen(async function*() {}))
+
+  t.ok(f.isFunGen(function*() {}))
+})
+
+t.test(function test_isFunAsync() {
+  t.no(f.isFunAsync(() => {}))
+  t.no(f.isFunAsync(function() {}))
+  t.no(f.isFunAsync(function*() {}))
+  t.no(f.isFunAsync(async function*() {}))
+
+  t.ok(f.isFunAsync(async () => {}))
+  t.ok(f.isFunAsync(async function() {}))
+})
+
+t.test(function test_isFunAsyncGen() {
+  t.no(f.isFunAsyncGen(() => {}))
+  t.no(f.isFunAsyncGen(function() {}))
+  t.no(f.isFunAsyncGen(function*() {}))
+  t.no(f.isFunAsyncGen(async () => {}))
+  t.no(f.isFunAsyncGen(async function() {}))
+
+  t.ok(f.isFunAsyncGen(async function*() {}))
 })
 
 t.test(function test_isObj() {

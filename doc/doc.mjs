@@ -19,8 +19,6 @@ const [
 function main() {
   dat.reqTests()
   dat.reqDocs()
-
-  const readme = new Templ(srcReadme, dat)
   Deno.writeTextFileSync(`readme.md`, readme.toString())
 }
 
