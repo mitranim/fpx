@@ -10,7 +10,7 @@
   "rules": {
     "no-restricted-globals": ["error",
       // window (browser)
-      "alert", "blur", "confirm", "event", "fetch", "find", "focus", "history",
+      "alert", "blur", "confirm", "event", "find", "focus", "history",
       "length", "location", "name", "navigator", "open", "parent", "print",
       "prompt", "scroll", "self", "status", "stop", "top",
       // global (node)
@@ -20,6 +20,7 @@
       // These global functions are broken
       "isNaN", "isFinite",
     ],
+    "eqeqeq": ["error", "always", {"null": "never"}],
 
     // Copy of "eslint:recommended" to avoid installation.
     "consistent-return": "error",

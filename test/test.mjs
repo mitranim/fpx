@@ -1,5 +1,5 @@
-import 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.1/emptty.mjs'
-import * as t from 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.1/test.mjs'
+import 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.2/emptty.mjs'
+import * as t from 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.2/test.mjs'
 import * as f from '../fpx.mjs'
 
 const cli = t.Args.os()
@@ -11,11 +11,12 @@ if (cli.bool(`v`)) t.conf.testRep = t.conf.benchRep
 function args() {return arguments}
 function arrgs(...args) {return args}
 function toArgs(val) {return args(...(val ?? []))}
-function* gen() {throw Error(`unreachable`)}
-async function* agen() {throw Error(`unreachable`)}
-function* copygen(iter) {for (const val of iter) yield val}
+function unreachable() {throw Error(`unreachable`)}
+function* gen() {unreachable()}
+async function* agen() {unreachable()}
+function* copygen(val) {for (val of val) yield val}
 const inherit = Object.create
-function fail() {throw Error(`unreachable`)}
+function fail() {unreachable()}
 
 function testSeqs(src, fun) {
   t.ok(Array.isArray(src))
@@ -37,27 +38,85 @@ function testColls(list, dict, fun) {
 
 /* Tests */
 
-/*
-Tested first because used in most Fpx assertions.
-Needs a more comprehensive test.
-*/
+// Tested first because used in most Fpx assertions.
 t.test(function test_show() {
-  t.is(f.show(), `undefined`)
-  t.is(f.show(null), `null`)
-  t.is(f.show(0), `0`)
-  t.is(f.show(NaN), `NaN`)
-  t.is(f.show(Infinity), `Infinity`)
-  t.is(f.show(-10), `-10`)
-  t.is(f.show(10), `10`)
-  t.is(f.show(``), `""`)
-  t.is(f.show(`str`), `"str"`)
-  t.is(f.show({}), `{}`)
-  t.is(f.show(inherit(null)), `{}`)
-  t.is(f.show(inherit(inherit(null))), `{}`)
-  t.is(f.show({one: `two`, three: `four`}), `{"one":"two","three":"four"}`)
-  t.is(f.show([]), `[]`)
-  t.is(f.show([10, `str`]), `[10,"str"]`)
-  t.is(f.show(args), `args`)
+  function test(src, exp) {t.is(f.show(src), exp)}
+
+  test(undefined,                   `undefined`)
+  test(null,                        `null`)
+  test(0,                           `0`)
+  test(NaN,                         `NaN`)
+  test(Infinity,                    `Infinity`)
+  test(-10,                         `-10`)
+  test(10,                          `10`)
+  test(``,                          `""`)
+  test(`str`,                       `"str"`)
+  test({},                          `{}`)
+  test(inherit(null),               `{}`)
+  test(inherit(inherit(null)),      `{}`)
+  test({one: `two`, three: `four`}, `{"one":"two","three":"four"}`)
+  test([],                          `[]`)
+  test([10, `str`],                 `[10,"str"]`)
+  test(args,                        `[function args]`)
+  test(gen(),                       `[object Generator]`)
+  test(agen(),                      `[object AsyncGenerator]`)
+  test(class Cls {},                `[function Cls]`)
+  test(new class {}(),              `[object Object]`)
+
+  function testCls(cls) {test(new cls(), `[object Cls]`)}
+
+  testCls(class Cls {})
+  testCls(class Cls extends Array {})
+  testCls(class Cls extends Set {})
+  testCls(class Cls extends Map {})
+
+  testCls(class Cls               {get [Symbol.toStringTag]() {return this.constructor.name}})
+  testCls(class Cls extends Array {get [Symbol.toStringTag]() {return this.constructor.name}})
+  testCls(class Cls extends Set   {get [Symbol.toStringTag]() {return this.constructor.name}})
+  testCls(class Cls extends Map   {get [Symbol.toStringTag]() {return this.constructor.name}})
+
+  testCls(class Cls               {toString() {unreachable()}})
+  testCls(class Cls extends Array {toString() {unreachable()}})
+  testCls(class Cls extends Set   {toString() {unreachable()}})
+  testCls(class Cls extends Map   {toString() {unreachable()}})
+
+  testCls(class Cls               {toString() {unreachable()} get [Symbol.toStringTag]() {return this.constructor.name}})
+  testCls(class Cls extends Array {toString() {unreachable()} get [Symbol.toStringTag]() {return this.constructor.name}})
+  testCls(class Cls extends Set   {toString() {unreachable()} get [Symbol.toStringTag]() {return this.constructor.name}})
+  testCls(class Cls extends Map   {toString() {unreachable()} get [Symbol.toStringTag]() {return this.constructor.name}})
+
+  // For comparison, inane behavior we dislike:
+  t.is(`` + {}, `[object Object]`)
+  t.is(`` + [], ``)
+  t.is(`` + new class Cls extends Set {}(), `[object Set]`)
+  t.is(`` + new class Cls extends Map {}(), `[object Map]`)
+})
+
+t.test(function test_render() {
+  t.throws(() => f.render({}), TypeError, `unable to convert {} to string`)
+  t.throws(() => f.render(inherit(null)), TypeError, `unable to convert {} to string`)
+  t.throws(() => f.render(inherit(inherit(null))), TypeError, `unable to convert {} to string`)
+  t.throws(() => f.render({one: `two`, three: `four`}), TypeError, `unable to convert {"one":"two","three":"four"} to string`)
+  t.throws(() => f.render([]), TypeError, `unable to convert [] to string`)
+  t.throws(() => f.render([10, `str`]), TypeError, `unable to convert [10,"str"] to string`)
+  t.throws(() => f.render(args), TypeError, `unable to convert [function args] to string`)
+  t.throws(() => f.render(gen()), TypeError, `unable to convert [object Generator] to string`)
+  t.throws(() => f.render(agen()), TypeError, `unable to convert [object AsyncGenerator] to string`)
+  t.throws(() => f.render(class Cls {}), TypeError, `unable to convert [function Cls] to string`)
+  t.throws(() => f.render(new class {}), TypeError, `unable to convert [object Object] to string`)
+  t.throws(() => f.render(new class Cls {}), TypeError, `unable to convert [object Cls] to string`)
+  t.throws(() => f.render(new class Cls extends Array {}), TypeError, `unable to convert [object Cls] to string`)
+
+  t.is(f.render(), ``)
+  t.is(f.render(null), ``)
+  t.is(f.render(0), `0`)
+  t.is(f.render(NaN), `NaN`)
+  t.is(f.render(Infinity), `Infinity`)
+  t.is(f.render(-10), `-10`)
+  t.is(f.render(10), `10`)
+  t.is(f.render(``), ``)
+  t.is(f.render(`str`), `str`)
+  t.is(f.render({toString() {return `blah`}}), `blah`)
 })
 
 t.test(function test_bind() {
@@ -781,12 +840,87 @@ t.test(function test_isSeq() {
   t.ok(f.isSeq(new String(``)))
 })
 
+t.test(function test_isVac() {
+  function test(val, exp) {t.is(f.isVac(val), exp)}
+  function empty(val) {test(val, true)}
+  function full(val) {test(val, false)}
+  testVac(empty, full)
+})
+
+function testVac(empty, full) {
+  empty()
+  empty(null)
+  empty(false)
+  empty(0)
+  empty(NaN)
+  empty(``)
+  empty([])
+  empty([``])
+  empty([0])
+  empty([NaN])
+  empty([false])
+  empty([[]])
+  empty([[[]]])
+  empty([[[], NaN]])
+  empty([[[]], false])
+  empty([[[0]], false])
+  empty([[[0], NaN], false])
+
+  full(true)
+  full(10)
+  full(`str`)
+  full({})
+  full([10])
+  full([true])
+  full([{}])
+  full([[], {}])
+  full([[[true]]])
+  full([[], [[true]]])
+}
+
+t.test(function test_isScalar() {
+  t.no(f.isScalar(inherit(null)))
+  t.no(f.isScalar({}))
+  t.no(f.isScalar([]))
+  t.no(f.isScalar(gen()))
+  t.no(f.isScalar(agen()))
+  t.no(f.isScalar(new class Cls {}()))
+  t.no(f.isScalar(new Map()))
+  t.no(f.isScalar(new Set()))
+  t.no(f.isScalar(Promise.resolve()))
+  t.no(f.isScalar(f.id))
+  t.no(f.isScalar(class Cls {}))
+
+  t.ok(f.isScalar())
+  t.ok(f.isScalar(null))
+  t.ok(f.isScalar(false))
+  t.ok(f.isScalar(true))
+  t.ok(f.isScalar(0))
+  t.ok(f.isScalar(NaN))
+  t.ok(f.isScalar(Infinity))
+  t.ok(f.isScalar(10))
+  t.ok(f.isScalar(10n))
+  t.ok(f.isScalar(``))
+  t.ok(f.isScalar(`str`))
+  t.ok(f.isScalar(Symbol()))
+  t.ok(f.isScalar(new Boolean()))
+  t.ok(f.isScalar(new Number()))
+  t.ok(f.isScalar(new String()))
+  t.ok(f.isScalar(new URL(`https://example.com`)))
+  t.ok(f.isScalar({toString: unreachable}))
+  t.ok(f.isScalar(new class Cls {toString() {unreachable()}} ()))
+  t.ok(f.isScalar(new class Cls extends Array {toString() {unreachable()}} ()))
+  t.ok(f.isScalar(new class Cls extends Map {toString() {unreachable()}} ()))
+  t.ok(f.isScalar(new class Cls extends Set {toString() {unreachable()}} ()))
+  t.ok(f.isScalar(new class Cls extends URL {} (`https://example.com`)))
+})
+
 t.test(function test_isInst() {
-  t.throws(f.isInst,                        TypeError, `expected undefined to satisfy test isCls`)
-  t.throws(() => f.isInst({}),              TypeError, `expected undefined to satisfy test isCls`)
-  t.throws(() => f.isInst({}, `str`),       TypeError, `expected "str" to satisfy test isCls`)
-  t.throws(() => f.isInst({}, () => {}),    TypeError, `expected () => {} to satisfy test isCls`)
-  t.throws(() => f.isInst(f.nop, Function), TypeError, `expected Function to satisfy test isCls`)
+  t.throws(f.isInst, TypeError, `expected undefined to satisfy test isCls`)
+  t.throws(() => f.isInst({}), TypeError, `expected undefined to satisfy test isCls`)
+  t.throws(() => f.isInst({}, `str`), TypeError, `expected "str" to satisfy test isCls`)
+  t.throws(() => f.isInst({}, () => {}), TypeError, `expected [function () => {}] to satisfy test isCls`)
+  t.throws(() => f.isInst(f.nop, Function), TypeError, `expected [function Function] to satisfy test isCls`)
 
   t.no(f.isInst(null,   Object))
   t.no(f.isInst(Object, Object))
@@ -795,26 +929,6 @@ t.test(function test_isInst() {
   t.ok(f.isInst([], Object))
   t.ok(f.isInst([], Array))
   t.ok(f.isInst({}, Object))
-})
-
-t.test(function test_hasMeth() {
-  t.no(f.hasMeth())
-  t.no(f.hasMeth(undefined, `toString`))
-  t.no(f.hasMeth(inherit(null), `toString`))
-  t.no(f.hasMeth(10, `toString`))
-  t.no(f.hasMeth(`str`, `toString`))
-  t.no(f.hasMeth({}, `call`))
-  t.no(f.hasMeth({}, `bind`))
-  t.no(f.hasMeth({key: `val`}, `key`))
-
-  t.ok(f.hasMeth({}, `toString`))
-  t.ok(f.hasMeth([], `toString`))
-  t.ok(f.hasMeth(new Number(10), `toString`))
-  t.ok(f.hasMeth(new String(`str`), `toString`))
-  t.ok(f.hasMeth(f.nop, `toString`))
-  t.ok(f.hasMeth(f.nop, `call`))
-  t.ok(f.hasMeth(f.nop, `bind`))
-  t.ok(f.hasMeth({key() {}}, `key`))
 })
 
 t.test(function test_isListOf() {
@@ -853,43 +967,25 @@ t.test(function test_isEmpty() {
   t.ok(f.isEmpty(args()))
 })
 
-t.test(function test_isVac() {
-  function test(val, exp) {t.is(f.isVac(val), exp)}
-  function empty(val) {test(val, true)}
-  function full(val) {test(val, false)}
-  testVac(empty, full)
+t.test(function test_hasMeth() {
+  t.no(f.hasMeth())
+  t.no(f.hasMeth(undefined, `toString`))
+  t.no(f.hasMeth(inherit(null), `toString`))
+  t.no(f.hasMeth(10, `toString`))
+  t.no(f.hasMeth(`str`, `toString`))
+  t.no(f.hasMeth({}, `call`))
+  t.no(f.hasMeth({}, `bind`))
+  t.no(f.hasMeth({key: `val`}, `key`))
+
+  t.ok(f.hasMeth({}, `toString`))
+  t.ok(f.hasMeth([], `toString`))
+  t.ok(f.hasMeth(new Number(10), `toString`))
+  t.ok(f.hasMeth(new String(`str`), `toString`))
+  t.ok(f.hasMeth(f.nop, `toString`))
+  t.ok(f.hasMeth(f.nop, `call`))
+  t.ok(f.hasMeth(f.nop, `bind`))
+  t.ok(f.hasMeth({key() {}}, `key`))
 })
-
-function testVac(empty, full) {
-  empty()
-  empty(null)
-  empty(false)
-  empty(0)
-  empty(NaN)
-  empty(``)
-  empty([])
-  empty([``])
-  empty([0])
-  empty([NaN])
-  empty([false])
-  empty([[]])
-  empty([[[]]])
-  empty([[[], NaN]])
-  empty([[[]], false])
-  empty([[[0]], false])
-  empty([[[0], NaN], false])
-
-  full(true)
-  full(10)
-  full(`str`)
-  full({})
-  full([10])
-  full([true])
-  full([{}])
-  full([[], {}])
-  full([[[true]]])
-  full([[], [[true]]])
-}
 
 t.test(function test_req() {
   t.test(function test_invalid() {
@@ -1023,7 +1119,7 @@ t.test(function test_arrOf() {
   t.throws(f.arrOf,                      TypeError, `expected undefined to satisfy test isFun`)
   t.throws(() => f.arrOf(null, 10),      TypeError, `expected 10 to satisfy test isFun`)
   t.throws(() => f.arrOf([], 10),        TypeError, `expected 10 to satisfy test isFun`)
-  t.throws(() => f.arrOf({}, f.True),    TypeError, `can't convert {} to array`)
+  t.throws(() => f.arrOf({}, f.True),    TypeError, `unable to convert {} to array`)
   t.throws(() => f.arrOf([10], f.False), TypeError, `expected 10 to satisfy test False`)
 
   t.eq(f.arrOf(undefined, f.True), [])
@@ -1202,6 +1298,18 @@ t.test(function test_struct() {
   t.is(f.struct(ref), ref)
 })
 
+t.test(function test_scalar() {
+  t.throws(() => f.scalar({}), TypeError, `expected {} to satisfy test isScalar`)
+  t.throws(() => f.scalar([]), TypeError, `expected [] to satisfy test isScalar`)
+
+  function test(val) {t.is(f.scalar(val), val)}
+
+  test(10)
+  test(true)
+  test(`str`)
+  test({toString: unreachable})
+})
+
 // Adapted from `github.com/mitranim/jol`.
 t.test(function test_inst() {
   // These rejections originate in `f.mut`.
@@ -1212,7 +1320,7 @@ t.test(function test_inst() {
     t.throws(() => f.inst(),                TypeError, `expected undefined to satisfy test isCls`)
     t.throws(() => f.inst(`str`,     Mock), TypeError, `expected "str" to satisfy test isStruct`)
     t.throws(() => f.inst(10,        Mock), TypeError, `expected 10 to satisfy test isStruct`)
-    t.throws(() => f.inst(f.nop,     Mock), TypeError, `expected nop to satisfy test isStruct`)
+    t.throws(() => f.inst(f.nop,     Mock), TypeError, `expected [function nop] to satisfy test isStruct`)
     t.throws(() => f.inst([],        Mock), TypeError, `expected [] to satisfy test isStruct`)
     t.throws(() => f.inst(new Set(), Mock), TypeError, `expected [object Set] to satisfy test isStruct`)
   })
@@ -1567,7 +1675,7 @@ t.test(function test_mut() {
         method() {return 40}
         get getter() {return 50}
         get getterSetter() {return 60}
-        set getterSetter(_) {throw Error(`unreachable`)}
+        set getterSetter(_) {unreachable()}
       }
 
       const ref = new Mock()
@@ -1692,11 +1800,11 @@ t.test(function test_alloc() {
 t.test(function test_arr() {
   t.test(function test_invalid() {
     testNoAsyncIter(f.arr)
-    t.throws(() => f.arr(10),        TypeError, `can't convert 10 to array`)
-    t.throws(() => f.arr(`str`),     TypeError, `can't convert "str" to array`)
-    t.throws(() => f.arr(f.nop),     TypeError, `can't convert nop to array`)
-    t.throws(() => f.arr({}),        TypeError, `can't convert {} to array`)
-    t.throws(() => f.arr(new Map()), TypeError, `can't convert [object Map] to array`)
+    t.throws(() => f.arr(10),        TypeError, `unable to convert 10 to array`)
+    t.throws(() => f.arr(`str`),     TypeError, `unable to convert "str" to array`)
+    t.throws(() => f.arr(f.nop),     TypeError, `unable to convert [function nop] to array`)
+    t.throws(() => f.arr({}),        TypeError, `unable to convert {} to array`)
+    t.throws(() => f.arr(new Map()), TypeError, `unable to convert [object Map] to array`)
   })
 
   t.test(function test_nil() {
@@ -1738,10 +1846,10 @@ t.test(function test_arrCopy() {
 t.test(function test_slice() {
   t.throws(() => f.slice([], `str`), TypeError, `expected "str" to satisfy test isInt`)
   t.throws(() => f.slice([], 0, `str`), TypeError, `expected "str" to satisfy test isInt`)
-  t.throws(() => f.slice({}), TypeError, `can't convert {} to array`)
-  t.throws(() => f.slice(10), TypeError, `can't convert 10 to array`)
-  t.throws(() => f.slice(`str`), TypeError, `can't convert "str" to array`)
-  t.throws(() => f.slice(new Map()), TypeError, `can't convert [object Map] to array`)
+  t.throws(() => f.slice({}), TypeError, `unable to convert {} to array`)
+  t.throws(() => f.slice(10), TypeError, `unable to convert 10 to array`)
+  t.throws(() => f.slice(`str`), TypeError, `unable to convert "str" to array`)
+  t.throws(() => f.slice(new Map()), TypeError, `unable to convert [object Map] to array`)
 
   t.eq(f.slice(undefined), [])
   t.eq(f.slice(null), [])
@@ -1988,7 +2096,7 @@ function testFunEmpty(fun, zero) {
 }
 
 function testNoAsyncIter(fun) {
-  t.throws(() => fun(agen()), TypeError, `can't convert [object AsyncGenerator]`)
+  t.throws(() => fun(agen()), TypeError, `unable to convert [object AsyncGenerator]`)
 }
 
 t.test(function test_len() {

@@ -37,7 +37,7 @@ export function isFunSync(val) {return isFunType(val, `Function`)}
 export function isFunGen(val) {return isFunType(val, `GeneratorFunction`)}
 export function isFunAsync(val) {return isFunType(val, `AsyncFunction`)}
 export function isFunAsyncGen(val) {return isFunType(val, `AsyncGeneratorFunction`)}
-export function isObj(val) {return val !== null && typeof val === `object`}
+export function isObj(val) {return !isNull(val) && typeof val === `object`}
 export function isStruct(val) {return isObj(val) && !isIter(val) && !isIterAsync(val)}
 export function isArr(val) {return Array.isArray(val)}
 export function isReg(val) {return isInst(val, RegExp)}
@@ -56,16 +56,20 @@ export function isCls(val) {return isFun(val) && isObj(val.prototype)}
 export function isDict(val) {return isObj(val) && isDictProto(Object.getPrototypeOf(val))}
 export function isList(val) {return isArr(val) || (isIter(val) && isNat(getLength(val)))}
 export function isSeq(val) {return isList(val) || isSet(val) || isIterator(val)}
+export function isVac(val) {return !val || (isList(val) && every(val, isVac))}
 
-function isDictProto(val) {return val === null || val === Object.prototype}
-function isFunType(val, name) {return isFun(val) && val.constructor.name === name}
+export function isScalar(val) {
+  if (isObj(val)) {
+    const fun = get(val, `toString`)
+    return isFun(fun) && fun !== Object.prototype.toString && fun !== Array.prototype.toString
+  }
+  return !isFun(val)
+}
 
 export function isInst(val, cls) {
   req(cls, isCls)
   return isObj(val) && val instanceof cls
 }
-
-export function hasMeth(val, key) {return isComp(val) && key in val && isFun(val[key])}
 
 export function isListOf(val, fun) {
   req(fun, isFun)
@@ -79,24 +83,20 @@ export function isEmpty(val) {
   return false
 }
 
-export function isVac(val) {return !val || (isList(val) && every(val, isVac))}
+export function hasMeth(val, key) {return isFun(get(val, key))}
 
-function getLength(val) {return `length` in val ? val.length : undefined}
-function getSize(val) {return `size` in val ? val.size : undefined}
+function isNull(val) {return val === null} // eslint-disable-line eqeqeq
+function isDictProto(val) {return isNull(val) || val === Object.prototype}
+function isFunType(val, name) {return isFun(val) && val.constructor.name === name}
 
 /** Assert/Cast **/
 
 export function req(val, fun) {
   reqValidator(fun)
   if (!fun(val)) {
-    throw TypeError(`expected ${show(val)} to satisfy test ${show(fun)}`)
+    throw TypeError(`expected ${show(val)} to satisfy test ${showFunName(fun)}`)
   }
   return val
-}
-
-export function opt(val, fun) {
-  reqValidator(fun)
-  return isNil(val) ? val : req(val, fun)
 }
 
 function reqValidator(fun) {
@@ -105,13 +105,19 @@ function reqValidator(fun) {
   }
 }
 
+export function opt(val, fun) {
+  reqValidator(fun)
+  return isNil(val) ? val : req(val, fun)
+}
+
 export function reqInst(val, cls) {
   if (!isInst(val, cls)) {
-    const cons = isComp(val) ? val.constructor : undefined
-    throw TypeError(`expected ${show(val)}${cons ? ` (instance of ${show(cons)})` : ``} to be an instance of ${show(cls)}`)
+    throw TypeError(`expected ${show(val)}${instDesc(getCon(val))} to be an instance of ${showFunName(cls)}`)
   }
   return val
 }
+
+function instDesc(val) {return isFun(val) ? ` (instance of ${showFunName(val)})` : ``}
 
 export function optInst(val, cls) {
   req(cls, isCls)
@@ -123,7 +129,7 @@ export function only(val, fun) {return req(fun, isFun)(val) ? val : undefined}
 export function arrOf(seq, fun) {
   req(fun, isFun)
   seq = arr(seq)
-  for (const elem of seq) req(elem, fun)
+  for (const val of seq) req(val, fun)
   return seq
 }
 
@@ -137,10 +143,11 @@ export function intPos(val) {return isNil(val) ? 0 : req(val, isIntPos)}
 export function str(val) {return isNil(val) ? `` : req(val, isStr)}
 export function dict(val) {return isNil(val) ? npo() : req(val, isDict)}
 export function struct(val) {return isNil(val) ? npo() : req(val, isStruct)}
+export function scalar(val) {return req(val, isScalar)}
 export function inst(val, cls) {return isInst(val, cls) ? val : new cls(val)}
 
 function errConvert(val, msg) {
-  return TypeError(`can't convert ${show(val)} to ${msg}`)
+  return TypeError(`unable to convert ${show(val)} to ${msg}`)
 }
 
 /** Ops **/
@@ -170,12 +177,34 @@ export function panic(val) {throw val}
 export function jsonDecode(val) {return str(val) ? JSON.parse(val) : null}
 export function jsonEncode(val) {return JSON.stringify(isNil(val) ? null : val)}
 
-export function show(val) {
-  if (isStr(val) || isArr(val) || isDict(val) || (isComp(val) && !hasMeth(val, `toString`))) {
-    try {return JSON.stringify(val)} catch {}
-  }
-  return (isFun(val) && val.name) || String(val)
+export function render(val) {
+  if (isNil(val)) return ``
+  if (isScalar(val)) return val + ``
+  throw errConvert(val, `string`)
 }
+
+export function show(val) {
+  if (isStr(val)) return jsonEncode(val)
+  if (isFun(val)) return showFun(val)
+  if (isObj(val)) return showObj(val)
+  return val + ``
+}
+
+function showFun(val) {return `[function ${val.name || val}]`}
+function showFunName(fun) {return fun.name || showFun(fun)}
+
+function showObj(val) {
+  const con = getCon(val)
+  if (!con || con === Object || con === Array) return jsonEncode(val)
+  const name = getName(con)
+  return name ? `[object ${name}]` : val + ``
+}
+
+function get(val, key) {return isComp(val) && key in val ? val[key] : undefined}
+function getCon(val) {return get(val, `constructor`)}
+function getName(val) {return get(val, `name`)}
+function getLength(val) {return get(val, `length`)}
+function getSize(val) {return get(val, `size`)}
 
 /** Struct **/
 
@@ -265,8 +294,8 @@ export function keys(val) {
 
 // Doesn't prealloc because performance improvement would be minimal.
 function copy(src, fun) {const out = []; fun(src, out); return out}
-function setValues(src, out) {for (const elem of src) out.push(elem)}
-function mapKeys(src, out) {for (const elem of src.keys()) out.push(elem)}
+function setValues(val, out) {for (val of val) out.push(val)}
+function mapKeys(val, out) {for (val of val.keys()) out.push(val)}
 function structKeys(val) {return Object.keys(struct(val))}
 
 export function values(val) {
@@ -281,8 +310,8 @@ export function values(val) {
   throw errConvert(val, `values`)
 }
 
-function mapValues(src, out) {for (const elem of src.values()) out.push(elem)}
-function iterValues(src, out) {for (const elem of src) out.push(elem)}
+function mapValues(val, out) {for (val of val.values()) out.push(val)}
+function iterValues(val, out) {for (val of val) out.push(val)}
 
 // Like `Object.values` but much faster.
 function structValues(src) {
@@ -306,11 +335,11 @@ export function entries(val) {
   throw errConvert(val, `entries`)
 }
 
-function arrEntries(src, out, ind = -1) {for (const elem of src) out.push([++ind, elem])}
-function listEntries(src, out, ind = -1) {for (const elem of src) out.push([++ind, elem])}
-function setEntries(src, out) {for (const elem of src.entries()) out.push(elem)}
-function mapEntries(src, out) {for (const elem of src.entries()) out.push(elem)}
-function iterEntries(src, out, ind = -1) {for (const elem of src) out.push([++ind, elem])}
+function arrEntries(val, out, ind = -1) {for (val of val) out.push([++ind, val])}
+function listEntries(val, out, ind = -1) {for (val of val) out.push([++ind, val])}
+function setEntries(val, out) {for (val of val.entries()) out.push(val)}
+function mapEntries(val, out) {for (val of val.entries()) out.push(val)}
+function iterEntries(val, out, ind = -1) {for (val of val) out.push([++ind, val])}
 
 // Like `Object.entries` but much faster.
 function structEntries(src) {
@@ -354,7 +383,7 @@ export function len(val) {
   }
 
   if (isStruct(val)) return Object.keys(val).length
-  throw TypeError(`can't measure length of ${show(val)}`)
+  throw TypeError(`unable to measure length of ${show(val)}`)
 }
 
 function iterLen(val) {
@@ -367,7 +396,7 @@ export function hasLen(val) {return len(val) > 0}
 
 export function each(val, fun) {
   req(fun, isFun)
-  for (const elem of values(val)) fun(elem)
+  for (val of values(val)) fun(val)
 }
 
 export function map(val, fun) {return mapMut(valuesCopy(val), fun)}
@@ -385,7 +414,7 @@ export function mapCompact(val, fun) {return compact(map(val, fun))}
 export function filter(val, fun) {
   req(fun, isFun)
   const out = []
-  for (const elem of values(val)) if (fun(elem)) out.push(elem)
+  for (val of values(val)) if (fun(val)) out.push(val)
   return out
 }
 
@@ -393,7 +422,7 @@ export function reject(val, fun) {return filter(val, not(fun))}
 
 export function compact(val) {
   const out = []
-  for (const elem of values(val)) if (elem) out.push(elem)
+  for (val of values(val)) if (val) out.push(val)
   return out
 }
 
@@ -403,31 +432,31 @@ export function remove(src, val) {
 
 export function fold(val, acc, fun) {
   req(fun, isFun)
-  for (const elem of values(val)) acc = fun(acc, elem)
+  for (val of values(val)) acc = fun(acc, val)
   return acc
 }
 
 export function find(val, fun) {
   req(fun, isFun)
-  for (const elem of values(val)) if (fun(elem)) return elem
+  for (val of values(val)) if (fun(val)) return val
   return undefined
 }
 
 export function procure(val, fun) {
   req(fun, isFun)
-  for (let elem of values(val)) if ((elem = fun(elem))) return elem
+  for (val of values(val)) if ((val = fun(val))) return val
   return undefined
 }
 
 export function every(val, fun) {
   req(fun, isFun)
-  for (const elem of values(val)) if (!fun(elem)) return false
+  for (val of values(val)) if (!fun(val)) return false
   return true
 }
 
 export function some(val, fun) {
   req(fun, isFun)
-  for (const elem of values(val)) if (fun(elem)) return true
+  for (val of values(val)) if (fun(val)) return true
   return false
 }
 
@@ -440,7 +469,7 @@ export function take(val, len) {return values(val).slice(0, nat(len))}
 export function count(val, fun) {
   req(fun, isFun)
   let out = 0
-  for (const elem of values(val)) if (fun(elem)) out++
+  for (val of values(val)) if (fun(val)) out++
   return out
 }
 
@@ -449,8 +478,8 @@ export function compare(one, two) {
   if (one === undefined && two === undefined) return 0
   if (one === undefined) return 1
   if (two === undefined) return -1
-  one = String(one)
-  two = String(two)
+  one += ``
+  two += ``
   if (one < two) return -1
   if (two < one) return 1
   return 0
@@ -470,19 +499,19 @@ export function reverse(val) {return valuesCopy(val).reverse()}
 export function index(val, fun) {
   req(fun, isFun)
   const out = npo()
-  for (const elem of values(val)) {
-    const key = fun(elem)
-    if (isKey(key)) out[key] = elem
+  for (val of values(val)) {
+    const key = fun(val)
+    if (isKey(key)) out[key] = val
   }
   return out
 }
 
-export function group(src, fun) {
+export function group(val, fun) {
   req(fun, isFun)
   const out = npo()
-  for (const elem of values(src)) {
-    const key = fun(elem)
-    if (isKey(key)) (out[key] || (out[key] = [])).push(elem)
+  for (val of values(val)) {
+    const key = fun(val)
+    if (isKey(key)) (out[key] || (out[key] = [])).push(val)
   }
   return out
 }
@@ -491,7 +520,7 @@ export function partition(val, fun) {
   req(fun, isFun)
   const one = []
   const two = []
-  for (const elem of values(val)) (fun(elem) ? one : two).push(elem)
+  for (val of values(val)) (fun(val) ? one : two).push(val)
   return [one, two]
 }
 

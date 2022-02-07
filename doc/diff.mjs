@@ -1,4 +1,4 @@
-import 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.1/emptty.mjs'
+import 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.2/emptty.mjs'
 import * as f from '../fpx.mjs'
 import * as d from './doc.mjs'
 

@@ -2,8 +2,8 @@
 TODO: programmatically analyze results, auto-detect regressions.
 */
 
-import 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.1/emptty.mjs'
-import * as t from 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.1/test.mjs'
+import 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.2/emptty.mjs'
+import * as t from 'https://cdn.jsdelivr.net/npm/@mitranim/test@0.1.2/test.mjs'
 import * as l from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.js'
 import * as f from '../fpx.mjs'
 
@@ -409,6 +409,16 @@ t.bench(function bench_count_loop_span_f_span() {for (const val of f.span(size))
 t.bench(function bench_zip_with_f() {reqDict(f.zip(numEntries))})
 t.bench(function bench_zip_with_native() {reqDict(Object.fromEntries(numEntries))})
 
+const emptyDict = {}
+const emptyArr = []
+const emptyGen = gen()
+t.bench(function bench_show_dict() {reqStr(f.show(emptyDict))})
+t.bench(function bench_show_arr() {reqStr(f.show(emptyArr))})
+t.bench(function bench_show_gen() {reqStr(f.show(emptyGen))})
+t.bench(function bench_show_prom() {reqStr(f.show(prom))})
+t.bench(function bench_show_prim() {reqStr(f.show(10))})
+t.bench(function bench_show_fun() {reqStr(f.show(nop))})
+
 t.deopt()
 t.benches()
 
@@ -609,6 +619,7 @@ function isInstChecked(val, cls) {return val != null && typeof val === `object` 
 function isInstUnchecked(val, cls) {return val instanceof cls}
 function nop() {}
 function reqArr(val) {return f.req(val, f.isArr)}
+function reqStr(val) {return f.req(val, f.isStr)}
 function reqDict(val) {return f.req(val, f.isDict)}
 function reqNat(val) {return f.req(val, f.isNat)}
 function reqInt(val) {return f.req(val, f.isInt)}

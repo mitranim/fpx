@@ -1,3 +1,9 @@
+## `0.12.2`
+
+Add `isScalar`, `scalar`, `render`.
+
+Better debug printing in `show`.
+
 ## `0.12.1`
 
 Add `isFunSync`, `isFunGen`, `isFunAsync`, `isFunAsyncGen`.
