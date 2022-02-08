@@ -1,1 +1,0 @@
-Similar to [`JSON.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) but sane rather than insane. If the input is [#nil](#function-isnil) or an empty string, returns `null`. Otherwise the input must be a primitive string. Throws on other inputs, without trying to stringify them.

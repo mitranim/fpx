@@ -1520,35 +1520,6 @@ t.test(function test_panic() {
   test(Error(`err`))
 })
 
-t.test(function test_jsonDecode() {
-  t.throws(() => f.jsonDecode(10), TypeError, `expected 10 to satisfy test isStr`)
-  t.throws(() => f.jsonDecode(`blah`), SyntaxError, `Unexpected token`)
-
-  t.is(f.jsonDecode(), null)
-  t.is(f.jsonDecode(undefined), null)
-  t.is(f.jsonDecode(null), null)
-  t.is(f.jsonDecode(``), null)
-  t.is(f.jsonDecode(`null`), null)
-  t.is(f.jsonDecode(`10`), 10)
-  t.is(f.jsonDecode(`true`), true)
-  t.is(f.jsonDecode(`"str"`), `str`)
-  t.eq(f.jsonDecode(`[10, 20]`), [10, 20])
-})
-
-t.test(function test_jsonEncode() {
-  // Insanity.
-  t.is(JSON.stringify(), undefined)
-  t.is(JSON.stringify(null), `null`)
-  t.is(JSON.stringify({}), `{}`)
-  t.is(JSON.stringify(``), `""`)
-
-  // Sanity.
-  t.is(f.jsonEncode(), `null`)
-  t.is(f.jsonEncode(null), `null`)
-  t.is(f.jsonEncode({}), `{}`)
-  t.is(f.jsonEncode(``), `""`)
-})
-
 t.test(function test_npo() {
   t.eq(f.npo(), Object.create(null))
   t.is(Object.getPrototypeOf(f.npo()), null)

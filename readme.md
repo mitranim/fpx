@@ -117,8 +117,6 @@ Differences from Lodash:
    * [#`function di`](#function-di)
    * [#`function val`](#function-val)
    * [#`function panic`](#function-panic)
-   * [#`function jsonDecode`](#function-jsondecode)
-   * [#`function jsonEncode`](#function-jsonencode)
    * [#`function render`](#function-render)
    * [#`function show`](#function-show)
    * [#`function npo`](#function-npo)
@@ -191,7 +189,7 @@ Differences from Lodash:
 In browsers and Deno, import by URL:
 
 ```js
-import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.12.2/fpx.mjs'
+import * as f from 'https://cdn.jsdelivr.net/npm/fpx@0.12.3/fpx.mjs'
 ```
 
 When using Node or NPM-oriented bundlers like Esbuild:
@@ -957,21 +955,9 @@ Same as `throw` but an expression rather than a statement. Also sometimes useful
 const x = someTest ? someValue : f.panic(Error(`unreachable`))
 ```
 
-### `function jsonDecode`
-
-Links: [source](fpx.mjs#L177); [test/example](test/test.mjs#L1523).
-
-Similar to [`JSON.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) but sane rather than insane. If the input is [#nil](#function-isnil) or an empty string, returns `null`. Otherwise the input must be a primitive string. Throws on other inputs, without trying to stringify them.
-
-### `function jsonEncode`
-
-Links: [source](fpx.mjs#L178); [test/example](test/test.mjs#L1538).
-
-Similar to [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) but sane rather than insane. Equivalent to `JSON.stringify(val ?? null)`. If the input is `undefined`, returns `'null'` (string) rather than `undefined` (nil). Output is _always_ a valid JSON string.
-
 ### `function render`
 
-Links: [source](fpx.mjs#L180); [test/example](test/test.mjs#L95).
+Links: [source](fpx.mjs#L178); [test/example](test/test.mjs#L95).
 
 Renders a value for user display. Counterpart to [#`show`](#function-show), which renders a value for debug purposes. Intended only for [#scalar](#function-isscalar) values. Rules:
 
@@ -981,7 +967,7 @@ Renders a value for user display. Counterpart to [#`show`](#function-show), whic
 
 ### `function show`
 
-Links: [source](fpx.mjs#L186); [test/example](test/test.mjs#L42).
+Links: [source](fpx.mjs#L184); [test/example](test/test.mjs#L42).
 
 Renders a value for debug purposes. Counterpart to [#`render`](#function-render), which renders a value for user display. Convenient for interpolating things into error messages. Used internally in assertion functions such as [#`req`](#function-req). Approximate rules:
 
@@ -996,25 +982,25 @@ Renders a value for debug purposes. Counterpart to [#`render`](#function-render)
 
 ### `function npo`
 
-Links: [source](fpx.mjs#L211); [test/example](test/test.mjs#L1552).
+Links: [source](fpx.mjs#L209); [test/example](test/test.mjs#L1523).
 
 Short for "null-prototype object". Syntactic shortcut for `Object.create(null)`.
 
 ### `function hasOwn`
 
-Links: [source](fpx.mjs#L213); [test/example](test/test.mjs#L1558).
+Links: [source](fpx.mjs#L211); [test/example](test/test.mjs#L1529).
 
 Same as [`Object.prototype.hasOwnProperty`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty) but shorter and safe to call on primitives. Always false for primitives.
 
 ### `function hasOwnEnum`
 
-Links: [source](fpx.mjs#L218); [test/example](test/test.mjs#L1572).
+Links: [source](fpx.mjs#L216); [test/example](test/test.mjs#L1543).
 
 Same as [`Object.prototype.propertyIsEnumerable`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable) but shorter and safe to call on primitives. Always false for primitives.
 
 ### `function mut`
 
-Links: [source](fpx.mjs#L223); [test/example](test/test.mjs#L1587).
+Links: [source](fpx.mjs#L221); [test/example](test/test.mjs#L1558).
 
 Signature: `(tar, src) => tar`.
 
@@ -1030,7 +1016,7 @@ Similar to [`Object.assign`](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 
 ### `function mapDict`
 
-Links: [source](fpx.mjs#L231); [test/example](test/test.mjs#L1710).
+Links: [source](fpx.mjs#L229); [test/example](test/test.mjs#L1681).
 
 Signature: `({[Key: A]}, A => B) => {[Key: B]}`.
 
@@ -1038,7 +1024,7 @@ Similar to [#`map`](#function-map) but for dicts. Creates a version of the given
 
 ### `function pick`
 
-Links: [source](fpx.mjs#L238); [test/example](test/test.mjs#L1725).
+Links: [source](fpx.mjs#L236); [test/example](test/test.mjs#L1696).
 
 Signature: `({[Key: A]}, A => bool) => {[Key: A]}`.
 
@@ -1046,7 +1032,7 @@ Similar to [#`filter`](#function-filter) but for dicts. Returns a version of the
 
 ### `function omit`
 
-Links: [source](fpx.mjs#L248); [test/example](test/test.mjs#L1735).
+Links: [source](fpx.mjs#L246); [test/example](test/test.mjs#L1706).
 
 Signature: `({[Key: A]}, A => bool) => {[Key: A]}`.
 
@@ -1054,7 +1040,7 @@ Similar to [#`reject`](#function-reject) but for dicts. Returns a version of the
 
 ### `function pickKeys`
 
-Links: [source](fpx.mjs#L250); [test/example](test/test.mjs#L1745).
+Links: [source](fpx.mjs#L248); [test/example](test/test.mjs#L1716).
 
 Signature: `({[Key: A]}, keys) => {[Key: A]}`.
 
@@ -1062,7 +1048,7 @@ Returns a version of the given dict, keeping only the given properties. Keys can
 
 ### `function omitKeys`
 
-Links: [source](fpx.mjs#L257); [test/example](test/test.mjs#L1763).
+Links: [source](fpx.mjs#L255); [test/example](test/test.mjs#L1734).
 
 Signature: `({[Key: A]}, keys) => {[Key: A]}`.
 
@@ -1070,19 +1056,19 @@ Returns a version of the given dict without the given properties. Keys must be a
 
 ### `function more`
 
-Links: [source](fpx.mjs#L267); [test/example](test/test.mjs#L1781).
+Links: [source](fpx.mjs#L265); [test/example](test/test.mjs#L1752).
 
 Takes an [#iterator](#function-isiterator), consumes one value, and returns true if the iterator is not yet finished. Shortcut for `val.next().done === false`.
 
 ### `function alloc`
 
-Links: [source](fpx.mjs#L268); [test/example](test/test.mjs#L1791).
+Links: [source](fpx.mjs#L266); [test/example](test/test.mjs#L1762).
 
 Shortcut for allocating an array with a sanity check. Same as `Array(N)` but ensures that the input is a [#natural number](#function-nat) suitable for array length. Avoids unintentionally passing any non-natural input such as `Array(-1)`. Allows [#nil](#function-isnil), replacing it with `0`.
 
 ### `function arr`
 
-Links: [source](fpx.mjs#L269); [test/example](test/test.mjs#L1800).
+Links: [source](fpx.mjs#L267); [test/example](test/test.mjs#L1771).
 
 Converts an arbitrary [#sequence](#function-isseq) to an array. Allows the following inputs:
 
@@ -1095,19 +1081,19 @@ Unlike [#`values`](#function-values), `arr` rejects other inputs such as non-nil
 
 ### `function arrCopy`
 
-Links: [source](fpx.mjs#L270); [test/example](test/test.mjs#L1832).
+Links: [source](fpx.mjs#L268); [test/example](test/test.mjs#L1803).
 
 Like [#`arr`](#function-arr), converts an arbitrary sequence to an array. Unlike `arr,` always makes a copy. Mutating the output doesn't affect the original.
 
 ### `function slice`
 
-Links: [source](fpx.mjs#L275); [test/example](test/test.mjs#L1846).
+Links: [source](fpx.mjs#L273); [test/example](test/test.mjs#L1817).
 
 Like [`Array.prototype.slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) but allows arbitrary [#sequences](#function-isseq) compatible with [#`arr`](#function-arr).
 
 ### `function keys`
 
-Links: [source](fpx.mjs#L284); [test/example](test/test.mjs#L1878).
+Links: [source](fpx.mjs#L282); [test/example](test/test.mjs#L1849).
 
 Takes an arbitrary input and returns an array of its keys:
 
@@ -1120,7 +1106,7 @@ Takes an arbitrary input and returns an array of its keys:
 
 ### `function values`
 
-Links: [source](fpx.mjs#L301); [test/example](test/test.mjs#L1901).
+Links: [source](fpx.mjs#L299); [test/example](test/test.mjs#L1872).
 
 Takes an arbitrary input and returns an array of its values:
 
@@ -1134,13 +1120,13 @@ Takes an arbitrary input and returns an array of its values:
 
 ### `function valuesCopy`
 
-Links: [source](fpx.mjs#L324); [test/example](test/test.mjs#L1921).
+Links: [source](fpx.mjs#L322); [test/example](test/test.mjs#L1892).
 
 Variant of [#`values`](#function-values) that always makes a copy. Mutating the output doesn't affect the original.
 
 ### `function entries`
 
-Links: [source](fpx.mjs#L326); [test/example](test/test.mjs#L1943).
+Links: [source](fpx.mjs#L324); [test/example](test/test.mjs#L1914).
 
 Takes an arbitrary input and returns an array of its entries (key-value tuples):
 
@@ -1153,19 +1139,19 @@ Takes an arbitrary input and returns an array of its entries (key-value tuples):
 
 ### `function reify`
 
-Links: [source](fpx.mjs#L352); [test/example](test/test.mjs#L1962).
+Links: [source](fpx.mjs#L350); [test/example](test/test.mjs#L1933).
 
 Takes an arbitrary value and attempts to deeply materialize it. Any [#iterators](#function-iterator), or [#lists](#function-islist) that contain iterators, or lists that contain lists that contain iterators, etc., are converted to arrays. Does not inspect other data structures such as [#sets](#function-isset) or [#dicts](#function-isdict).
 
 ### `function vac`
 
-Links: [source](fpx.mjs#L356); [test/example](test/test.mjs#L1987).
+Links: [source](fpx.mjs#L354); [test/example](test/test.mjs#L1958).
 
 Complements [#`isVac`](#function-isvac). Returns `undefined` if the input is vacuous, otherwise returns the input as-is.
 
 ### `function indexOf`
 
-Links: [source](fpx.mjs#L358); [test/example](test/test.mjs#L1994).
+Links: [source](fpx.mjs#L356); [test/example](test/test.mjs#L1965).
 
 Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf). Differences:
 
@@ -1174,7 +1160,7 @@ Like [`Array.prototype.indexOf`](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 ### `function includes`
 
-Links: [source](fpx.mjs#L366); [test/example](test/test.mjs#L2015).
+Links: [source](fpx.mjs#L364); [test/example](test/test.mjs#L1986).
 
 Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes). Differences:
 
@@ -1183,7 +1169,7 @@ Like [`Array.prototype.includes`](https://developer.mozilla.org/en-US/docs/Web/J
 
 ### `function concat`
 
-Links: [source](fpx.mjs#L367); [test/example](test/test.mjs#L2034).
+Links: [source](fpx.mjs#L365); [test/example](test/test.mjs#L2005).
 
 Like [`Array.prototype.concat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat). Differences:
 
@@ -1196,19 +1182,19 @@ Note: for individual elements, use [#`append`](#function-append) and
 
 ### `function append`
 
-Links: [source](fpx.mjs#L368); [test/example](test/test.mjs#L2052).
+Links: [source](fpx.mjs#L366); [test/example](test/test.mjs#L2023).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and appends an arbitrary value, returning the resulting array.
 
 ### `function prepend`
 
-Links: [source](fpx.mjs#L369); [test/example](test/test.mjs#L2067).
+Links: [source](fpx.mjs#L367); [test/example](test/test.mjs#L2038).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and prepends an arbitrary value, returning the resulting array.
 
 ### `function len`
 
-Links: [source](fpx.mjs#L371); [test/example](test/test.mjs#L2102).
+Links: [source](fpx.mjs#L369); [test/example](test/test.mjs#L2073).
 
 Universal length measurement:
 
@@ -1221,13 +1207,13 @@ Universal length measurement:
 
 ### `function hasLen`
 
-Links: [source](fpx.mjs#L395); [test/example](test/test.mjs#L2106).
+Links: [source](fpx.mjs#L393); [test/example](test/test.mjs#L2077).
 
 Shortcut for [#`len`](#function-len) > 0.
 
 ### `function each`
 
-Links: [source](fpx.mjs#L397); [test/example](test/test.mjs#L2138).
+Links: [source](fpx.mjs#L395); [test/example](test/test.mjs#L2109).
 
 Signature: `(Iter<A>, A => void) => void`.
 
@@ -1239,7 +1225,7 @@ Similar to `Array.prototype.forEach`, `Set.prototype.forEach`, `Map.prototype.fo
 
 ### `function map`
 
-Links: [source](fpx.mjs#L402); [test/example](test/test.mjs#L2159).
+Links: [source](fpx.mjs#L400); [test/example](test/test.mjs#L2130).
 
 Signature: `(Iter<A>, A => B) => B[]`.
 
@@ -1251,7 +1237,7 @@ Similar to [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/
 
 ### `function mapMut`
 
-Links: [source](fpx.mjs#L404); [test/example](test/test.mjs#L2192).
+Links: [source](fpx.mjs#L402); [test/example](test/test.mjs#L2163).
 
 Similar to [`Array.prototype.map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map). Differences:
 
@@ -1262,13 +1248,13 @@ For a non-mutating version, see [#`map`](#function-map).
 
 ### `function mapCompact`
 
-Links: [source](fpx.mjs#L412); [test/example](test/test.mjs#L2208).
+Links: [source](fpx.mjs#L410); [test/example](test/test.mjs#L2179).
 
 Equivalent to `f.compact(f.map(val, fun))`. See [#`map`](#function-map) and [#`compact`](#function-compact).
 
 ### `function filter`
 
-Links: [source](fpx.mjs#L414); [test/example](test/test.mjs#L2221).
+Links: [source](fpx.mjs#L412); [test/example](test/test.mjs#L2192).
 
 Signature: `(Iter<A>, A => bool) => A[]`.
 
@@ -1280,19 +1266,19 @@ Similar to [`Array.prototype.filter`](https://developer.mozilla.org/en-US/docs/W
 
 ### `function reject`
 
-Links: [source](fpx.mjs#L421); [test/example](test/test.mjs#L2237).
+Links: [source](fpx.mjs#L419); [test/example](test/test.mjs#L2208).
 
 Opposite of [#`filter`](#function-filter). Equivalent to `f.filter(val, f.not(fun))`.
 
 ### `function compact`
 
-Links: [source](fpx.mjs#L423); [test/example](test/test.mjs#L2253).
+Links: [source](fpx.mjs#L421); [test/example](test/test.mjs#L2224).
 
 Equivalent to `f.filter(val, f.id)`. Takes an arbitrary iterable and returns an array of its truthy [#`values`](#function-values), discarding falsy values.
 
 ### `function remove`
 
-Links: [source](fpx.mjs#L429); [test/example](test/test.mjs#L2265).
+Links: [source](fpx.mjs#L427); [test/example](test/test.mjs#L2236).
 
 Signature: `(Iter<A>, A) => A[]`.
 
@@ -1300,7 +1286,7 @@ Takes an arbitrary iterable and an element to remove. Returns an array of the it
 
 ### `function fold`
 
-Links: [source](fpx.mjs#L433); [test/example](test/test.mjs#L2282).
+Links: [source](fpx.mjs#L431); [test/example](test/test.mjs#L2253).
 
 Signature: `(src: Iter<A>, acc: B, fun: (B, A) => B) => B`.
 
@@ -1315,7 +1301,7 @@ Similar to [`Array.prototype.reduce`](https://developer.mozilla.org/en-US/docs/W
 
 ### `function find`
 
-Links: [source](fpx.mjs#L439); [test/example](test/test.mjs#L2298).
+Links: [source](fpx.mjs#L437); [test/example](test/test.mjs#L2269).
 
 Signature: `(Iter<A>, A => bool) => A`.
 
@@ -1327,7 +1313,7 @@ Similar to [`Array.prototype.find`](https://developer.mozilla.org/en-US/docs/Web
 
 ### `function procure`
 
-Links: [source](fpx.mjs#L445); [test/example](test/test.mjs#L2313).
+Links: [source](fpx.mjs#L443); [test/example](test/test.mjs#L2284).
 
 Signature: `(src: Iter<A>, fun: A => B) => B`.
 
@@ -1335,7 +1321,7 @@ Similar to [#`find`](#function-find), but returns the first truthy result of cal
 
 ### `function every`
 
-Links: [source](fpx.mjs#L451); [test/example](test/test.mjs#L2330).
+Links: [source](fpx.mjs#L449); [test/example](test/test.mjs#L2301).
 
 Signature: `(Iter<A>, A => bool) => bool`.
 
@@ -1347,7 +1333,7 @@ Similar to [`Array.prototype.every`](https://developer.mozilla.org/en-US/docs/We
 
 ### `function some`
 
-Links: [source](fpx.mjs#L457); [test/example](test/test.mjs#L2349).
+Links: [source](fpx.mjs#L455); [test/example](test/test.mjs#L2320).
 
 Signature: `(Iter<A>, A => bool) => bool`.
 
@@ -1359,37 +1345,37 @@ Similar to [`Array.prototype.some`](https://developer.mozilla.org/en-US/docs/Web
 
 ### `function head`
 
-Links: [source](fpx.mjs#L463); [test/example](test/test.mjs#L2368).
+Links: [source](fpx.mjs#L461); [test/example](test/test.mjs#L2339).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns its first element or `undefined`.
 
 ### `function last`
 
-Links: [source](fpx.mjs#L464); [test/example](test/test.mjs#L2378).
+Links: [source](fpx.mjs#L470); [test/example](test/test.mjs#L2349).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns its last element or `undefined`.
 
 ### `function init`
 
-Links: [source](fpx.mjs#L465); [test/example](test/test.mjs#L2388).
+Links: [source](fpx.mjs#L471); [test/example](test/test.mjs#L2359).
 
 Short for "initial". Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an array of all its values except last.
 
 ### `function tail`
 
-Links: [source](fpx.mjs#L466); [test/example](test/test.mjs#L2398).
+Links: [source](fpx.mjs#L472); [test/example](test/test.mjs#L2369).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns an array of all its values except first.
 
 ### `function take`
 
-Links: [source](fpx.mjs#L467); [test/example](test/test.mjs#L2408).
+Links: [source](fpx.mjs#L473); [test/example](test/test.mjs#L2379).
 
 Takes an arbitrary iterable compatible with [#`values`](#function-values) and returns N values from the start.
 
 ### `function count`
 
-Links: [source](fpx.mjs#L469); [test/example](test/test.mjs#L2440).
+Links: [source](fpx.mjs#L475); [test/example](test/test.mjs#L2411).
 
 Signature: `(src: Iter<A>, fun: A => B) => nat`.
 
@@ -1397,7 +1383,7 @@ Takes an arbitrary iterable compatible with [#`values`](#function-values), calls
 
 ### `function compare`
 
-Links: [source](fpx.mjs#L477); [test/example](test/test.mjs#L2455).
+Links: [source](fpx.mjs#L483); [test/example](test/test.mjs#L2426).
 
 Signature: `(a, b) => -1 | 0 | 1`.
 
@@ -1405,7 +1391,7 @@ Equivalent to the [default JS sort comparison algorithm](https://tc39.github.io/
 
 ### `function compareFin`
 
-Links: [source](fpx.mjs#L488); [test/example](test/test.mjs#L2465).
+Links: [source](fpx.mjs#L494); [test/example](test/test.mjs#L2436).
 
 Signature: `(a, b) => -1 | 0 | 1` where arguments are [#nil](#function-isnil) or [#finite](#function-isfin).
 
@@ -1413,7 +1399,7 @@ Sort comparison for finite numbers. Usable for [`Array.prototype.sort`](https://
 
 ### `function sort`
 
-Links: [source](fpx.mjs#L496); [test/example](test/test.mjs#L2477).
+Links: [source](fpx.mjs#L502); [test/example](test/test.mjs#L2448).
 
 Signature: `(src: Iter<A>, fun?: (prev: A, next: A) => -1 | 0 | 1) => A[]`.
 
@@ -1427,7 +1413,7 @@ The comparison function is optional. If omitted, default JS sorting is used.
 
 ### `function reverse`
 
-Links: [source](fpx.mjs#L497); [test/example](test/test.mjs#L2509).
+Links: [source](fpx.mjs#L503); [test/example](test/test.mjs#L2480).
 
 Similar to [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse). Differences:
 
@@ -1437,7 +1423,7 @@ Similar to [`Array.prototype.reverse`](https://developer.mozilla.org/en-US/docs/
 
 ### `function index`
 
-Links: [source](fpx.mjs#L499); [test/example](test/test.mjs#L2527).
+Links: [source](fpx.mjs#L505); [test/example](test/test.mjs#L2498).
 
 Signature: `(Iter<A>, A => Key | any) => {[Key: A]}`.
 
@@ -1447,7 +1433,7 @@ Similar to Lodash's `_.keyBy`. Compare [#`group`](#function-group) which keeps a
 
 ### `function group`
 
-Links: [source](fpx.mjs#L509); [test/example](test/test.mjs#L2572).
+Links: [source](fpx.mjs#L515); [test/example](test/test.mjs#L2543).
 
 Signature: `(Iter<A>, A => Key | any) => {[Key: A[]]}`.
 
@@ -1457,7 +1443,7 @@ Compare [#`index`](#function-index), which keeps only the last value for each gr
 
 ### `function partition`
 
-Links: [source](fpx.mjs#L519); [test/example](test/test.mjs#L2598).
+Links: [source](fpx.mjs#L525); [test/example](test/test.mjs#L2569).
 
 Signature: `(Iter<A>, A => bool) => [A[], A[]]`.
 
@@ -1465,7 +1451,7 @@ Partitions the [#`values`](#function-values) of a given iterable, returning a tu
 
 ### `function sum`
 
-Links: [source](fpx.mjs#L527); [test/example](test/test.mjs#L2615).
+Links: [source](fpx.mjs#L533); [test/example](test/test.mjs#L2586).
 
 Signature: `(Iter<A>) => fin`.
 
@@ -1473,7 +1459,7 @@ Sums all finite [#`values`](#function-values) of an arbitrary iterable, ignoring
 
 ### `function zip`
 
-Links: [source](fpx.mjs#L532); [test/example](test/test.mjs#L2626).
+Links: [source](fpx.mjs#L538); [test/example](test/test.mjs#L2597).
 
 Signature: `(Iter<[Key, A]>) => {[Key: A]}`.
 
@@ -1487,13 +1473,13 @@ Similar to [`Object.fromEntries`](https://developer.mozilla.org/en-US/docs/Web/J
 
 ### `function mapFrom`
 
-Links: [source](fpx.mjs#L538); [test/example](test/test.mjs#L2643).
+Links: [source](fpx.mjs#L544); [test/example](test/test.mjs#L2614).
 
 Syntactic shortcut for creating a `Map` with inline keys and values. Shorter and less noisy than either `new Map` with an array of entries or chained `.set` calls.
 
 ### `function range`
 
-Links: [source](fpx.mjs#L545); [test/example](test/test.mjs#L2650).
+Links: [source](fpx.mjs#L551); [test/example](test/test.mjs#L2621).
 
 Signature: `(min: int, max: int) => int[]`.
 
@@ -1501,7 +1487,7 @@ Returns an array of contiguous integers in the range of `[min, max)`. The first 
 
 ### `function span`
 
-Links: [source](fpx.mjs#L556); [test/example](test/test.mjs#L2665).
+Links: [source](fpx.mjs#L562); [test/example](test/test.mjs#L2636).
 
 Signature: `nat => nat[]`.
 
@@ -1509,7 +1495,7 @@ Returns an array of the given length, where values are integers from 0. Shortcut
 
 ### `function times`
 
-Links: [source](fpx.mjs#L557); [test/example](test/test.mjs#L2676).
+Links: [source](fpx.mjs#L563); [test/example](test/test.mjs#L2647).
 
 Signature: `(len: nat, fun: nat => A) => A[]`.
 
@@ -1517,7 +1503,7 @@ Takes an array length and a mapping function. Returns an array of the given leng
 
 ### `function repeat`
 
-Links: [source](fpx.mjs#L558); [test/example](test/test.mjs#L2697).
+Links: [source](fpx.mjs#L564); [test/example](test/test.mjs#L2668).
 
 Signature: `(len: nat, val: A) => A[]`.
 
@@ -1525,7 +1511,7 @@ Returns an array of the given length where each element is the given value. Equi
 
 ### `function set`
 
-Links: [source](fpx.mjs#L559); [test/example](test/test.mjs#L2709).
+Links: [source](fpx.mjs#L565); [test/example](test/test.mjs#L2680).
 
 Converts an arbitrary input to a native [`Set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set). Similar to `new Set`. Differences:
 
@@ -1535,7 +1521,7 @@ Converts an arbitrary input to a native [`Set`](https://developer.mozilla.org/en
 
 ### `function setCopy`
 
-Links: [source](fpx.mjs#L560); [test/example](test/test.mjs#L2733).
+Links: [source](fpx.mjs#L566); [test/example](test/test.mjs#L2704).
 
 Similar to [#`set`](#function-set): converts an arbitrary input to a set. Difference: always makes a copy. If the original was a set, it's unaffected by mutations of the output.
 

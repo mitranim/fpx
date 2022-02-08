@@ -419,6 +419,27 @@ t.bench(function bench_show_prom() {reqStr(f.show(prom))})
 t.bench(function bench_show_prim() {reqStr(f.show(10))})
 t.bench(function bench_show_fun() {reqStr(f.show(nop))})
 
+// Stupidly expensive on structs. May consider not supporting.
+deoptCollFun(f.head)
+deoptCollFun(headFromValues)
+t.bench(function bench_head_arr_with_f_head() {f.nop(f.head(numList))})
+t.bench(function bench_head_arr_from_values() {f.nop(headFromValues(numList))})
+t.bench(function bench_head_dict_with_f_head() {f.nop(f.head(numDict))})
+t.bench(function bench_head_dict_from_values() {f.nop(headFromValues(numDict))})
+t.bench(function bench_head_set_with_f_head() {f.nop(f.head(numSet))})
+t.bench(function bench_head_set_from_values() {f.nop(headFromValues(numSet))})
+t.bench(function bench_head_map_with_f_head() {f.nop(f.head(numMap))})
+t.bench(function bench_head_map_from_values() {f.nop(headFromValues(numMap))})
+
+// Stupidly expensive on any non-list. May consider supporting ONLY lists.
+deoptCollFun(f.last)
+deoptSeqFun(l.last)
+t.bench(function bench_last_arr_with_lodash() {f.nop(l.last(numList))})
+t.bench(function bench_last_arr_with_f_last() {f.nop(f.last(numList))})
+t.bench(function bench_last_dict_with_f_last() {f.nop(f.last(numDict))})
+t.bench(function bench_last_set_with_f_last() {f.nop(f.last(numSet))})
+t.bench(function bench_last_map_with_f_last() {f.nop(f.last(numMap))})
+
 t.deopt()
 t.benches()
 
@@ -657,6 +678,8 @@ function repeat(len, val) {
   return buf
 }
 
+function headFromValues(val) {return f.values(val)[0]}
+
 function deoptDictHof(fun) {
   f.reify(fun(numDict, f.nop))
   f.reify(fun(numDict, nop))
@@ -669,6 +692,9 @@ function deoptListHof(fun) {
   f.reify(fun(numList, nop))
 }
 
+// Semantically distinct. Implementation works by accident.
+function deoptSeqFun(fun) {deoptSeqHof(fun)}
+
 function deoptSeqHof(fun) {
   deoptListHof(fun)
   f.reify(fun(numList.values(), f.nop))
@@ -678,6 +704,9 @@ function deoptSeqHof(fun) {
   f.reify(fun(gen(), f.nop))
   f.reify(fun(gen(), nop))
 }
+
+// Semantically distinct. Implementation works by accident.
+function deoptCollFun(fun) {deoptCollHof(fun)}
 
 function deoptCollHof(fun) {
   deoptSeqHof(fun)

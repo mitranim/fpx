@@ -23,6 +23,7 @@ bench:
 lint_w:
 	watchexec -r -c -d=0 -e=mjs -n -- $(MAKE) lint
 
+# Amazingly slow.
 lint:
 	deno lint --rules-exclude=no-empty,require-yield,require-await
 
@@ -42,7 +43,8 @@ diff:
 watch:
 	$(PAR) test_w lint_w doc_w
 
-prep: lint test doc
+prep:
+	$(PAR) test lint doc
 
 define PRE_COMMIT
 #!/bin/sh

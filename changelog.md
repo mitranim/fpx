@@ -1,3 +1,9 @@
+## `0.12.3`
+
+* Optimize `head`.
+  * Fast for all iterables. Still slow for plain dicts.
+* Remove `jsonDecode` and `jsonEncode`.
+
 ## `0.12.2`
 
 Add `isScalar`, `scalar`, `render`.

@@ -174,8 +174,6 @@ export function id(val) {return val}
 export function di(_, val) {return val}
 export function val(value) {return function val() {return value}}
 export function panic(val) {throw val}
-export function jsonDecode(val) {return str(val) ? JSON.parse(val) : null}
-export function jsonEncode(val) {return JSON.stringify(isNil(val) ? null : val)}
 
 export function render(val) {
   if (isNil(val)) return ``
@@ -184,7 +182,7 @@ export function render(val) {
 }
 
 export function show(val) {
-  if (isStr(val)) return jsonEncode(val)
+  if (isStr(val)) return JSON.stringify(val)
   if (isFun(val)) return showFun(val)
   if (isObj(val)) return showObj(val)
   return val + ``
@@ -195,7 +193,7 @@ function showFunName(fun) {return fun.name || showFun(fun)}
 
 function showObj(val) {
   const con = getCon(val)
-  if (!con || con === Object || con === Array) return jsonEncode(val)
+  if (!con || con === Object || con === Array) return JSON.stringify(val)
   const name = getName(con)
   return name ? `[object ${name}]` : val + ``
 }
@@ -460,7 +458,15 @@ export function some(val, fun) {
   return false
 }
 
-export function head(val) {return values(val)[0]}
+export function head(val) {
+  if (!isObj(val)) return undefined
+  if (isList(val)) return val[0]
+  if (isIter(val)) return iter(val).next().value
+  return val[keys(val)[0]]
+}
+
+function iter(val) {return hasMeth(val, `values`) ? val.values() : val[Symbol.iterator]()}
+
 export function last(val) {return val = values(val), val[val.length - 1]}
 export function init(val) {return values(val).slice(0, -1)}
 export function tail(val) {return values(val).slice(1)}
