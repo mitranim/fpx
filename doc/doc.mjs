@@ -19,25 +19,7 @@ const [
 function main() {
   dat.reqTests()
   dat.reqDocs()
-  Deno.writeTextFileSync(`readme.md`, readme.toString())
-}
-
-class Templ extends String {
-  constructor(src, dat) {
-    super(src)
-    this.dat = dat
-  }
-
-  toString() {
-    const replace = (_, key) => this.repl(key)
-    return this.valueOf().replace(/{{([^{}]*)}}/g, replace)
-  }
-
-  repl(key) {
-    const {dat} = this
-    if (!(key in dat)) throw Error(`missing template method ${f.show(key)}`)
-    return dat[key]()
-  }
+  Deno.writeTextFileSync(`readme.md`, renderTemplate(srcReadme, dat))
 }
 
 class Dat {
@@ -121,27 +103,39 @@ function findTestLine(name) {
 function splitLines(str) {return str.split(/\r\n|\r|\n/g)}
 
 function touch(path) {
-  try {
-    const info = Deno.statSync(path)
-    if (!info.isFile) throw Error(`${f.show(path)} is not a file`)
-    return
-  }
+  let info
+  try {info = Deno.statSync(path)}
   catch (err) {
-    if (!f.isInst(err, Deno.errors.NotFound)) throw err
+    if (f.isInst(err, Deno.errors.NotFound)) {
+      Deno.createSync(path)
+      return
+    }
+    throw err
+  }
+  if (!info.isFile) throw Error(`${f.show(path)} is not a file`)
+}
+
+function renderTemplate(src, dat) {
+  f.req(src, f.isStr)
+  f.req(dat, f.isObj)
+
+  const replace = (_, key) => {
+    if (!f.hasMeth(dat, key)) {
+      throw Error(`missing template method ${f.show(key)}`)
+    }
+    return dat[key]()
   }
 
-  Deno.createSync(path)
+  return src.replace(/{{([^{}]*)}}/g, replace)
 }
 
 function withNewline(str) {return withNewlines(str, 1)}
 function withNewlines(str, len) {return str.trim() + newlines(len)}
-function newlines(len) {return repeatStr(len, `\n`)}
-function repeatStr(len, val) {return f.repeat(len, val).join(``)}
-function indent(len) {return repeatStr(len, `  `)}
+function newlines(len) {return `\n`.repeat(len)}
+function indent(len) {return `  `.repeat(len)}
 function joinLines(val) {return f.arr(val).join(`\n`)}
 
 export const dat = new Dat(JSON.parse(srcPackage), srcMain, srcTest)
-export const readme = new Templ(srcReadme, dat)
 
 if (import.meta.main) {
   main()

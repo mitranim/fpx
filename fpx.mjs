@@ -1,10 +1,10 @@
 /** Fun **/
 
-export function bind(fun, ...args) {return fun.bind(this, ...args)}
+export function bind(val, ...args) {return val.bind(this, ...args)}
 
-export function not(fun) {
-  req(fun, isFun)
-  return function not() {return !fun.apply(this, arguments)}
+export function not(val) {
+  req(val, isFun)
+  return function not() {return !val.apply(this, arguments)}
 }
 
 /** Bool **/
@@ -99,9 +99,9 @@ export function req(val, fun) {
   return val
 }
 
-function reqValidator(fun) {
-  if (!isFun(fun)) {
-    throw TypeError(`expected validator function, got ${show(fun)}`)
+function reqValidator(val) {
+  if (!isFun(val)) {
+    throw TypeError(`expected validator function, got ${show(val)}`)
   }
 }
 

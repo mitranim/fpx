@@ -23,7 +23,7 @@ bench:
 lint_w:
 	watchexec -r -c -d=0 -e=mjs -n -- $(MAKE) lint
 
-# Amazingly slow.
+# Weirdly slow.
 lint:
 	deno lint --rules-exclude=no-empty,require-yield,require-await
 
